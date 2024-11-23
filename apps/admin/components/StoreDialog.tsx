@@ -1,10 +1,10 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "./ui/dialog";
 import { Button } from "./ui/button";
 import { Form, FormControl, FormItem, FormField, FormLabel } from "./ui/form";
-import { Plus } from "lucide-react";
+import { LucideLoader, Plus } from "lucide-react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -14,6 +14,7 @@ import { addStore } from "@/actions/store";
 import { useQueryClient } from "@tanstack/react-query";
 import { v4 } from "uuid";
 import { useRouter } from "next/navigation";
+import { useUser } from "@clerk/nextjs";
 
 interface props {
   open: boolean;
@@ -26,9 +27,13 @@ export const StoreForm = z.object({
 });
 
 const StoreDialog = ({ open, setOpen }: props) => {
+  const [loading, setLoading] = useState(false);
+
   const queryClient = useQueryClient();
   const router = useRouter();
-  
+
+  const { user } = useUser();
+
   const form = useForm<z.infer<typeof StoreForm>>({
     resolver: zodResolver(StoreForm),
     defaultValues: {
@@ -36,10 +41,15 @@ const StoreDialog = ({ open, setOpen }: props) => {
       value: "",
     },
   });
-  
+
+  if (!user) {
+    return null;
+  }
+
   const onSubmit = async (data: z.infer<typeof StoreForm>) => {
+    setLoading(true);
     try {
-      const updatedData = { ...data, value: v4(), id: "" };
+      const updatedData = { ...data, value: v4(), id: "", userId: user.id };
       const storeId = await addStore(updatedData);
       await queryClient.invalidateQueries({ queryKey: ["stores"] });
       toast("Store created successfully.");
@@ -48,6 +58,8 @@ const StoreDialog = ({ open, setOpen }: props) => {
       setOpen(false);
     } catch (error) {
       toast("Failed to create store.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -56,7 +68,7 @@ const StoreDialog = ({ open, setOpen }: props) => {
       <DialogContent>
         <DialogTitle>
           Create Store
-          <p className="text-sm text-gray-600 font-light">
+          <p className="text-sm text-gray-600 font-light mt-1">
             Add a new store to add your products
           </p>
         </DialogTitle>
@@ -82,7 +94,14 @@ const StoreDialog = ({ open, setOpen }: props) => {
               )}
             />
             <Button type="submit" className="w-full">
-              Create
+              {loading ? (
+                <div className="flex items-center gap-2">
+                  <LucideLoader className="animate-spin" size={20} />
+                  Creating
+                </div>
+              ) : (
+                "Create"
+              )}
             </Button>
           </form>
         </Form>

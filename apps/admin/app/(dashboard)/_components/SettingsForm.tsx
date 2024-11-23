@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { v4 } from "uuid";
 import { z } from "zod";
-import { addStore, updateStore } from "@/actions/store";
+import { addStore, getStore, updateStore } from "@/actions/store";
 import { StoreForm } from "@/components/StoreDialog";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
@@ -21,12 +21,14 @@ import { Button } from "@/components/ui/button";
 import { useStores } from "@/hooks/use-store";
 import { usePathname } from "next/navigation";
 import { LucideLoader } from "lucide-react";
+import { useUser } from "@clerk/nextjs";
 
 const SettingsForm = () => {
   const [loading, setLoading] = useState(false);
 
   const queryClient = useQueryClient();
   const { isLoading, stores, refetch } = useStores();
+  const { user } = useUser();
 
   const pathname = usePathname();
 
@@ -35,6 +37,19 @@ const SettingsForm = () => {
       form.setValue("label", stores[0].label);
     }
   }, [stores]);
+
+  const fetchStore = async () => {
+    if (pathname.split("/").length < 2) {
+      return;
+    }
+    const storeId = pathname.split("/")[1];
+    const store = await getStore(storeId);
+    form.setValue("label", store.label);
+  };
+
+  useEffect(() => {
+    fetchStore();
+  }, []);
 
   const form = useForm<z.infer<typeof StoreForm>>({
     resolver: zodResolver(StoreForm),
@@ -54,6 +69,10 @@ const SettingsForm = () => {
     );
   }
 
+  if (!user) {
+    return null;
+  }
+
   const onSubmit = async (data: z.infer<typeof StoreForm>) => {
     setLoading(true);
     try {
@@ -63,10 +82,10 @@ const SettingsForm = () => {
         id:
           stores.find((store) => store.value === pathname.split("/")[1])?.id! ||
           "",
+        userId: user.id,
       };
       await updateStore(updatedData);
       await queryClient.invalidateQueries({ queryKey: ["stores"] });
-      form.setValue("label", updatedData.label);
       refetch();
       toast("Store updated successfully.");
       form.reset();

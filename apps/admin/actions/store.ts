@@ -3,6 +3,33 @@
 import { prisma } from "@/lib/prisma";
 import { Store } from "@prisma/client";
 
+export async function getStores(): Promise<Store[]> {
+  try {
+    const stores = await prisma.store.findMany();
+    return stores;
+  } catch (error) {
+    throw new Error("Failed to fetch stores");
+  }
+}
+
+export async function getStore(storeId: string): Promise<Store> {
+  try {
+    const store = await prisma.store.findUnique({
+      where: {
+        value: storeId,
+      },
+    });
+
+    if (!store) {
+      throw new Error("Store not found");
+    }
+
+    return store;
+  } catch (error) {
+    throw new Error("Failed to fetch stores");
+  }
+}
+
 export const addStore = async (data: any) => {
   if (!data) {
     throw new Error("Invalid data");
@@ -12,6 +39,7 @@ export const addStore = async (data: any) => {
     data: {
       label: data.label,
       value: data.value!,
+      userId: data.userId,
     },
   });
 
@@ -45,11 +73,13 @@ export async function updateStore(data: any) {
   }
 }
 
-export async function getStores(): Promise<Store[]> {
+export async function deleteStore(id: string) {
   try {
-    const stores = await prisma.store.findMany();
-    return stores;
+    await prisma.store.delete({ where: { value: id } });
+
+    return true;
   } catch (error) {
-    throw new Error("Failed to fetch stores");
+    console.log(error);
+    throw new Error("Failed to delete store");
   }
 }

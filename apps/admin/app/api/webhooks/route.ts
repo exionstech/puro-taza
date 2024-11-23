@@ -58,7 +58,7 @@ export async function POST(req: NextRequest) {
 
   if (eventType === "user.created") {
     const { id: clerkId, email_addresses, first_name, last_name } = evt.data;
-
+    
     const userData = {
       email: email_addresses[0].email_address,
       name: `${first_name} ${last_name}`,

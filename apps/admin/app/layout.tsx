@@ -29,7 +29,7 @@ export default function RootLayout({
       }}
     >
       <html lang="en">
-        <body className={cn("bg-primary/20", inter.className)}>
+        <body className={cn("", inter.className)}>
           <Providers>{children}</Providers>
           <Toaster />
         </body>

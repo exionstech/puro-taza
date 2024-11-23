@@ -1,10 +1,10 @@
 "use client";
 
 import React, { useEffect } from "react";
-import Sidebar from "@/components/sidebar";
 import { useStores } from "@/hooks/use-store";
 import { useRouter } from "next/navigation";
 import { Toaster } from "@/components/ui/toaster";
+import AdminPanelLayout from "@/components/admin-panel/admin-panel-layout";
 
 const layout = ({
   children,
@@ -23,13 +23,10 @@ const layout = ({
   }, [stores]);
 
   return (
-    <div className="flex">
-      <Sidebar />
-      <main className="mt-8 bg-white w-full rounded-lg h-screen">
-        {children}
-      </main>
+    <AdminPanelLayout>
+      {children}
       <Toaster />
-    </div>
+    </AdminPanelLayout>
   );
 };
 

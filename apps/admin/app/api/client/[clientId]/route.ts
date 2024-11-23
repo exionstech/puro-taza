@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -23,41 +23,55 @@ export async function OPTIONS() {
   );
 }
 
-export async function GET({ params }: { params: { clientId: string } }) {
-  const users = await prisma.client.findUnique({
-    where: {
-      id: params.clientId,
-    },
-  });
+export async function GET(
+  request: NextRequest,
+  { params }: { params: { clientId: string } }
+) {
+  try {
+    const users = await prisma.client.findUnique({
+      where: {
+        id: params.clientId,
+      },
+    });
 
-  if (!users) {
+    if (!users) {
+      return corsResponse(
+        NextResponse.json({ message: "User not found" }, { status: 404 })
+      );
+    }
+
+    return corsResponse(NextResponse.json({ users }));
+  } catch (error) {
     return corsResponse(
-      NextResponse.json({ message: "User not found", status: 404 })
+      NextResponse.json({ message: "Error fetching user" }, { status: 500 })
     );
   }
-
-  return corsResponse(NextResponse.json({ users: users }));
 }
 
-export async function POST({
-  params,
-  data,
-}: {
-  params: { clientId: string };
-  data: any;
-}) {
-  const users = await prisma.client.update({
-    where: {
-      id: params.clientId,
-    },
-    data: data,
-  });
+export async function POST(
+  request: NextRequest,
+  { params }: { params: { clientId: string } }
+) {
+  try {
+    const data = await request.json();
 
-  if (!users) {
+    const users = await prisma.client.update({
+      where: {
+        id: params.clientId,
+      },
+      data,
+    });
+
+    if (!users) {
+      return corsResponse(
+        NextResponse.json({ message: "User not found" }, { status: 404 })
+      );
+    }
+
+    return corsResponse(NextResponse.json({ users }));
+  } catch (error) {
     return corsResponse(
-      NextResponse.json({ message: "User not found", status: 404 })
+      NextResponse.json({ message: "Error updating user" }, { status: 500 })
     );
   }
-
-  return corsResponse(NextResponse.json({ users: users }));
 }

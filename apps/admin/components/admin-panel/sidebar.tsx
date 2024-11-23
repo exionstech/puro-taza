@@ -1,17 +1,21 @@
 "use client";
+
 import { Menu } from "@/components/admin-panel/menu";
 import { SidebarToggle } from "@/components/admin-panel/sidebar-toggle";
 import { Button } from "@/components/ui/button";
 import { useSidebar } from "@/hooks/use-sidebar";
-import { useStore } from "@/hooks/use-store";
+import { useStore } from "@/hooks/use-stores";
 import { cn } from "@/lib/utils";
 import { PanelsTopLeft } from "lucide-react";
 import Link from "next/link";
 
 export function Sidebar() {
   const sidebar = useStore(useSidebar, (x) => x);
+
   if (!sidebar) return null;
+
   const { isOpen, toggleOpen, getOpenState, setIsHover, settings } = sidebar;
+
   return (
     <aside
       className={cn(
@@ -44,7 +48,7 @@ export function Sidebar() {
                   : "translate-x-0 opacity-100"
               )}
             >
-              Brand
+              PuroTaja
             </h1>
           </Link>
         </Button>

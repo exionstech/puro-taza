@@ -54,7 +54,7 @@ const ProfileBox = () => {
 
   if (isLoading || !stores || !user) {
     return (
-      <div className="mb-5">
+      <div className="flex justify-center items-center mb-5">
         <LucideLoader className="animate-spin h-6 w-6" />
       </div>
     );

@@ -1,6 +1,6 @@
-import { ModeToggle } from "@/components/mode-toggle";
 import { UserNav } from "@/components/admin-panel/user-nav";
 import { SheetMenu } from "@/components/admin-panel/sheet-menu";
+import { UserButton } from "@clerk/nextjs";
 
 interface NavbarProps {
   title: string;
@@ -15,8 +15,7 @@ export function Navbar({ title }: NavbarProps) {
           <h1 className="font-bold">{title}</h1>
         </div>
         <div className="flex flex-1 items-center justify-end">
-          <ModeToggle />
-          <UserNav />
+          <UserButton />
         </div>
       </div>
     </header>

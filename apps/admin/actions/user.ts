@@ -6,13 +6,15 @@ export interface UserDataType {
   email: string;
   name: string;
   clerkId: string;
-  role: string;
 }
 
 export async function createUser(userData: UserDataType) {
   try {
     const user = await prisma.user.create({
-      data: userData,
+      data: {
+        ...userData,
+        role: "ADMIN",
+      },
     });
 
     return user;

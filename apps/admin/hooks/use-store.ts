@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { getStores } from "@/actions/store";
 import { Store } from "@prisma/client";
+import { useUser } from "@clerk/nextjs";
 
 export const useStores = () => {
   const [stores, setStores] = useState<Store[]>([]);
@@ -8,11 +9,15 @@ export const useStores = () => {
   const [isError, setIsError] = useState(false);
   const [error, setError] = useState<Error | null>(null);
 
+  const { user, isLoaded: isUserLoaded } = useUser();
+
   const fetchStores = async () => {
     try {
       setIsLoading(true);
       const fetchedStores = await getStores();
-      setStores(fetchedStores);
+      if (user?.id) {
+        setStores(fetchedStores.filter((store) => store.userId === user.id));
+      }
       setIsLoading(false);
     } catch (err) {
       setIsError(true);
@@ -22,12 +27,14 @@ export const useStores = () => {
   };
 
   useEffect(() => {
-    fetchStores();
-  }, []);
+    if (isUserLoaded) {
+      fetchStores();
+    }
+  }, [isUserLoaded, user?.id]);
 
   return {
     stores,
-    isLoading,
+    isLoading: isLoading || !isUserLoaded,
     isError,
     error,
     refetch: fetchStores,

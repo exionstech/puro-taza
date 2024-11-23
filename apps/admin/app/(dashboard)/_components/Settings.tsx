@@ -16,14 +16,6 @@ const Settings = () => {
         <div className="py-5">
           <div className="flex justify-between items-center">
             <h1 className="text-xl font-semibold">Store</h1>
-            <div className="flex items-center gap-2">
-              <Button
-                size={"sm"}
-                onClick={() => setOpen(true)}
-              >
-                Create Store
-              </Button>
-            </div>
           </div>
           <SettingsForm />
         </div>

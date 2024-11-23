@@ -37,15 +37,21 @@ const FormSchema = z.object({
 const ProfileBox = () => {
   const { isLoading, error, stores } = useStores();
   const { user } = useUser();
-
   const pathname = usePathname();
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      store: pathname.split("/")[1] || "",
+      store: "",
     },
   });
+
+  useEffect(() => {
+    const storeFromPath = pathname.split("/")[1];
+    if (storeFromPath) {
+      form.setValue("store", storeFromPath);
+    }
+  }, [pathname, form.setValue]);
 
   const onSubmit = (data: z.infer<typeof FormSchema>) => {
     console.log(data);
@@ -110,11 +116,14 @@ const ProfileBox = () => {
                           .sort((a, b) => a.label.localeCompare(b.label))
                           .map((store) => (
                             <Link
-                              href={`/${store.value}/${pathname.split("/").slice(2)}`}
+                              key={store.value}
+                              href={`/${store.value}/${pathname
+                                .split("/")
+                                .slice(2)
+                                .join("/")}`}
                             >
                               <CommandItem
                                 value={store.label}
-                                key={store.value}
                                 onSelect={() => {
                                   form.setValue("store", store.value);
                                   onSubmit(form.getValues());

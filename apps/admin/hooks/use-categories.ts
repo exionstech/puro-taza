@@ -24,7 +24,9 @@ interface UseCategories {
     categoryId: string,
     data: CategoryUpdateData
   ) => Promise<void>;
+  deleteCategory: (categoryId: string) => Promise<void>;
   isUpdating: boolean;
+  isDeleting: boolean;
 }
 
 interface CategoryUpdateData {
@@ -39,6 +41,7 @@ export const useCategories = (storeId: string): UseCategories => {
   const [categories, setCategories] = useState<CategoryWithImages[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isUpdating, setIsUpdating] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [error, setError] = useState<Error | null>(null);
 
   const fetchCategories = async () => {
@@ -102,7 +105,7 @@ export const useCategories = (storeId: string): UseCategories => {
       setError(null);
 
       const response = await fetch(`/api/${storeId}/categories/${categoryId}`, {
-        method: "PATCH", // Changed to PATCH as it's more appropriate for updates
+        method: "PATCH",
         headers: {
           "Content-Type": "application/json",
         },
@@ -133,6 +136,33 @@ export const useCategories = (storeId: string): UseCategories => {
     }
   };
 
+  const deleteCategory = async (categoryId: string) => {
+    try {
+      setIsDeleting(true);
+      setError(null);
+
+      const response = await fetch(`/api/${storeId}/categories/${categoryId}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Failed to delete category");
+      }
+
+      // Update the local state by removing the deleted category
+      setCategories((prev) => prev.filter((cat) => cat.id !== categoryId));
+    } catch (err) {
+      setError(
+        err instanceof Error ? err : new Error("Failed to delete category")
+      );
+      console.error("Error deleting category:", err);
+      throw err;
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
   useEffect(() => {
     if (storeId) {
       fetchCategories();
@@ -143,9 +173,11 @@ export const useCategories = (storeId: string): UseCategories => {
     categories,
     isLoading,
     isUpdating,
+    isDeleting,
     error,
     refetch: fetchCategories,
     createCategory,
     updateCategory,
+    deleteCategory,
   };
 };

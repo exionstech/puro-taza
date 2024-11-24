@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+  "Access-Control-Allow-Methods": "GET, POST, DELETE, OPTIONS",
   "Access-Control-Allow-Headers": "Content-Type, Authorization",
   "Access-Control-Max-Age": "86400",
 };
@@ -47,6 +47,31 @@ export async function POST(
   } catch (error) {
     return corsResponse(
       NextResponse.json({ message: "Error updating category" }, { status: 500 })
+    );
+  }
+}
+
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: { storeId: string; categoryId: string } }
+) {
+  try {
+    const category = await prisma.category.delete({
+      where: {
+        id: params.categoryId,
+      },
+    });
+
+    if (!category) {
+      return corsResponse(
+        NextResponse.json({ message: "Category not deleted" }, { status: 404 })
+      );
+    }
+
+    return corsResponse(NextResponse.json({ messgae: "Category deleted" }));
+  } catch (error) {
+    return corsResponse(
+      NextResponse.json({ message: "Error deleting category" }, { status: 500 })
     );
   }
 }

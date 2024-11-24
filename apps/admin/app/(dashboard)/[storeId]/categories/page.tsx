@@ -9,11 +9,11 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import Link from "next/link";
-import Settings from '../../_components/settings/Settings';
+import Category from '../../_components/categories/Category';
 
 const Page = () => {
   return (
-    <ContentLayout title="Settings">
+    <ContentLayout title="Categories">
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>
@@ -23,11 +23,11 @@ const Page = () => {
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
-            <BreadcrumbPage>Settings</BreadcrumbPage>
+            <BreadcrumbPage>Categories</BreadcrumbPage>
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
-      <Settings />
+      <Category />
     </ContentLayout>
   )
 }

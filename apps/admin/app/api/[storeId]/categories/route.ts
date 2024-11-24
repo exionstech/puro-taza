@@ -25,13 +25,16 @@ export async function OPTIONS() {
   );
 }
 
-export async function GET({ params }: { params: { storeId: string } }) {
+export async function GET(
+  req: Request,
+  { params }: { params: { storeId: string } }
+) {
   try {
     const categories = await prisma.category.findMany({
       select: {
         id: true,
         name: true,
-        images: {
+        image: {
           select: {
             url: true,
             key: true,

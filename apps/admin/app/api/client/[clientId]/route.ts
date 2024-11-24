@@ -54,14 +54,14 @@ export async function POST(
 ) {
   try {
     const data = await request.json();
-
+    
     const users = await prisma.client.update({
       where: {
         id: params.clientId,
       },
       data,
     });
-
+    
     if (!users) {
       return corsResponse(
         NextResponse.json({ message: "User not found" }, { status: 404 })

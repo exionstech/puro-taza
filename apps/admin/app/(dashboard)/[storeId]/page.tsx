@@ -1,4 +1,4 @@
-import Dashboard from "../_components/Dashboard";
+import Dashboard from "../_components/dashboard/Dashboard";
 import { ContentLayout } from "@/components/admin-panel/content-layout";
 import {
   Breadcrumb,

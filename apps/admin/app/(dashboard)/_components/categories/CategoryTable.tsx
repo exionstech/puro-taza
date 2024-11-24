@@ -20,9 +20,8 @@ interface Props {
 
 const CategoryTable = ({ setOpen, setMode, setInitialData }: Props) => {
   const pathname = usePathname();
-  const { categories, isLoading, isUpdating } = useCategories(
-    pathname.split("/")[1]
-  );
+  const { categories, deleteCategory, isLoading, isUpdating, isDeleting } =
+    useCategories(pathname.split("/")[1]);
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredCategories, setFilteredCategories] = useState(categories);
 
@@ -34,7 +33,7 @@ const CategoryTable = ({ setOpen, setMode, setInitialData }: Props) => {
     );
   }, [searchQuery, categories]);
 
-  if (isLoading || isUpdating) {
+  if (isLoading || isUpdating || isDeleting) {
     return (
       <div className="flex items-center justify-center mt-10">
         <LucideLoader className="animate-spin w-6 h-6" />
@@ -83,7 +82,12 @@ const CategoryTable = ({ setOpen, setMode, setInitialData }: Props) => {
                   >
                     <Pen />
                   </Button>
-                  <Button variant={"destructive"} size={"icon"}>
+                  <Button
+                    variant={"destructive"}
+                    size={"icon"}
+                    onClick={() => deleteCategory(category.id)}
+                    disabled={isDeleting}
+                  >
                     <Trash2 />
                   </Button>
                 </TableHead>

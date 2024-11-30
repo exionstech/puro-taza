@@ -1,4 +1,5 @@
 import { CategorySchema } from "@/app/(dashboard)/_components/categories/CategoryForm";
+import { SubcategorySchema } from "@/app/(dashboard)/_components/subcategories/SubcategoryForm";
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 import { z } from "zod";
@@ -30,19 +31,20 @@ export async function GET(
   { params }: { params: { storeId: string } }
 ) {
   try {
-    const categories = await prisma.category.findMany({
+    const subcategories = await prisma.subcategory.findMany({
       include: {
         image: true,
-        subcategory: true,
+        category: true
       },
     });
+    
     return corsResponse(
-      NextResponse.json({ categories: categories }, { status: 200 })
+      NextResponse.json({ subcategories: subcategories }, { status: 200 })
     );
   } catch (error) {
     return corsResponse(
       NextResponse.json(
-        { error: "Failed to fetch categories" },
+        { error: "Failed to fetch subcategories" },
         { status: 500 }
       )
     );
@@ -54,39 +56,43 @@ export async function POST(
   { params }: { params: { storeId: string } }
 ) {
   try {
-    const body: z.infer<typeof CategorySchema> = await req.json();
+    const body: z.infer<typeof SubcategorySchema> = await req.json();
 
-    const category = await prisma.category.create({
+    const subcategory = await prisma.subcategory.create({
       data: {
         name: body.name,
+        categoryId: body.categoryId,
       },
     });
-
+    
     const image = await prisma.image.create({
       data: {
         url: body.image.url,
         key: body.image.key,
-        category: {
+        subcategory: {
           connect: {
-            id: category.id,
+            id: subcategory.id,
           },
         },
       },
     });
 
-    if (category && image) {
+    if (subcategory && image) {
       return corsResponse(
-        NextResponse.json({ category: category }, { status: 200 })
+        NextResponse.json({ subcategory: subcategory }, { status: 200 })
       );
     }
 
     return corsResponse(
-      NextResponse.json({ error: "Category not created" }, { status: 400 })
+      NextResponse.json({ error: "Subcategory not created" }, { status: 400 })
     );
   } catch (error) {
     console.log(error);
     return corsResponse(
-      NextResponse.json({ error: "Failed to create category" }, { status: 500 })
+      NextResponse.json(
+        { error: "Failed to create subcategory" },
+        { status: 500 }
+      )
     );
   }
 }

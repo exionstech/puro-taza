@@ -7,6 +7,7 @@ import {
   LayoutGrid,
   LucideIcon,
   ShoppingBag,
+  BookCopyIcon,
 } from "lucide-react";
 
 type Submenu = {
@@ -48,6 +49,11 @@ export function getMenuList(pathname: string): Group[] {
           href: "/categories",
           label: "Categories",
           icon: Bookmark,
+        },
+        {
+          href: "/subcategories",
+          label: "Sub Categories",
+          icon: BookCopyIcon,
         },
         {
           href: "/orders",

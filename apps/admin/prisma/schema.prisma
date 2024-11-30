@@ -47,19 +47,36 @@ model Store {
 }
 
 model Image {
-  id         String    @id @default(auto()) @map("_id") @db.ObjectId
-  url        String
-  key        String
-  categoryId String?   @db.ObjectId
-  category   Category? @relation(fields: [categoryId], references: [id])
+  id  String @id @default(auto()) @map("_id") @db.ObjectId
+  url String
+  key String
+
+  categoryId    String? @db.ObjectId
+  subcategoryId String? @db.ObjectId
+
+  category    Category?    @relation(fields: [categoryId], references: [id])
+  subcategory Subcategory? @relation(fields: [subcategoryId], references: [id])
 }
 
 model Category {
   id   String @id @default(auto()) @map("_id") @db.ObjectId
   name String @unique
 
-  image Image[]
-  
+  image       Image[]
+  subcategory Subcategory[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Subcategory {
+  id         String @id @default(auto()) @map("_id") @db.ObjectId
+  name       String @unique
+  categoryId String @db.ObjectId
+
+  image    Image[]
+  category Category @relation(fields: [categoryId], references: [id])
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

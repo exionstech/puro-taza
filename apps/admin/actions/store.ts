@@ -39,7 +39,6 @@ export const addStore = async (data: any) => {
     data: {
       label: data.label,
       value: data.value!,
-      userId: data.userId,
     },
   });
 

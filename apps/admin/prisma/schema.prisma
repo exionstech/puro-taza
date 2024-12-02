@@ -8,18 +8,25 @@ datasource db {
 }
 
 model Client {
-  id      String  @id @default(auto()) @map("_id") @db.ObjectId
-  name    String
-  email   String
-  phone   String?
-  address String?
-  city    String?
-  state   String?
-  zip     String?
-  country String?
+  id         String  @id @default(auto()) @map("_id") @db.ObjectId
+  name       String
+  email      String  @unique
+  phone      String  @unique
+  isVerified Boolean @default(false)
+
+  otp Otp[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Otp {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  otp       String
+  createdAt DateTime @default(now())
+
+  client   Client? @relation(fields: [clientId], references: [id])
+  clientId String? @db.ObjectId
 }
 
 model User {
@@ -34,9 +41,9 @@ model User {
 }
 
 model Store {
-  id     String  @id @default(auto()) @map("_id") @db.ObjectId
-  label  String  @unique
-  value  String  @unique
+  id    String @id @default(auto()) @map("_id") @db.ObjectId
+  label String @unique
+  value String @unique
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -62,7 +69,7 @@ model Category {
 
   image       Image[]
   subcategory Subcategory[]
-  product Product[]
+  product     Product[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -90,13 +97,13 @@ model Product {
   stock       Int
   discount    Float?
   image       Image[]
-  
+
   categoryId    String @db.ObjectId
   subcategoryId String @db.ObjectId
 
   category    Category    @relation(fields: [categoryId], references: [id])
   subcategory Subcategory @relation(fields: [subcategoryId], references: [id])
-  
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

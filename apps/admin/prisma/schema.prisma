@@ -29,8 +29,6 @@ model User {
   role    String
   clerkId String @unique
 
-  stores Store[]
-
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -39,8 +37,6 @@ model Store {
   id     String  @id @default(auto()) @map("_id") @db.ObjectId
   label  String  @unique
   value  String  @unique
-  userId String?
-  user   User?   @relation(fields: [userId], references: [clerkId])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -53,9 +49,11 @@ model Image {
 
   categoryId    String? @db.ObjectId
   subcategoryId String? @db.ObjectId
+  productId     String? @db.ObjectId
 
   category    Category?    @relation(fields: [categoryId], references: [id])
   subcategory Subcategory? @relation(fields: [subcategoryId], references: [id])
+  product     Product?     @relation(fields: [productId], references: [id])
 }
 
 model Category {
@@ -64,6 +62,7 @@ model Category {
 
   image       Image[]
   subcategory Subcategory[]
+  product Product[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -77,6 +76,27 @@ model Subcategory {
   image    Image[]
   category Category @relation(fields: [categoryId], references: [id])
 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  product Product[]
+}
+
+model Product {
+  id          String  @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  description String
+  price       Float
+  stock       Int
+  discount    Float?
+  image       Image[]
+  
+  categoryId    String @db.ObjectId
+  subcategoryId String @db.ObjectId
+
+  category    Category    @relation(fields: [categoryId], references: [id])
+  subcategory Subcategory @relation(fields: [subcategoryId], references: [id])
+  
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

@@ -26,50 +26,84 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useSubCategories } from "@/hooks/use-subcategories";
+import { Image, Product } from "@prisma/client";
 
-export const SubcategorySchema = z.object({
-  name: z.string(),
+export const ProductsSchema = z.object({
+  name: z.string().min(3),
+  description: z.string().min(10),
+  price: z.number().min(1),
+  stock: z.number().min(1),
+  discount: z.number().min(0),
   categoryId: z.string(),
+  subcategoryId: z.string(),
   image: z.object({
     url: z.string(),
     key: z.string(),
   }),
 });
 
+export interface InitialDataType {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  stock: number;
+  discount: number | null;
+  categoryId: string;
+  subcategoryId: string;
+  createdAt: Date;
+  updatedAt: Date;
+  image: {
+    id: string;
+    url: string;
+    key: string;
+  }[];
+}
+
 interface Props {
   mode?: "create" | "edit";
-  initialData?: any;
+  initialData?: InitialDataType;
   setOpen: (open: boolean) => void;
 }
 
-const SubCategoryForm = ({ mode = "create", initialData, setOpen }: Props) => {
+const ProductsForm = ({ mode = "create", initialData, setOpen }: Props) => {
   const [uploadedImage, setUploadedImage] = useState<{
     url: string;
     key: string;
   } | null>(initialData?.image[0] || null);
   const [loading, setLoading] = useState(false);
-
+  
   const pathname = usePathname();
   const { categories } = useCategories(pathname.split("/")[1]);
   const { refetch, createCategory, updateCategory } = useSubCategories(
     pathname.split("/")[1]
   );
-
-  const form = useForm<z.infer<typeof SubcategorySchema>>({
-    resolver: zodResolver(SubcategorySchema),
+  
+  const form = useForm<z.infer<typeof ProductsSchema>>({
+    resolver: zodResolver(ProductsSchema),
     defaultValues: initialData
       ? {
           name: initialData.name,
+          description: initialData.description,
+          price: initialData.price,
+          stock: initialData.stock,
+          discount: initialData.discount || 0,
+          categoryId: initialData.categoryId,
+          subcategoryId: initialData.subcategoryId,
           image: {
             url: initialData.image[0].url,
             key: initialData.image[0].key,
           },
-          categoryId: initialData.categoryId,
         }
       : {
           name: "",
-          image: { url: "", key: "" },
+          description: "",
+          price: 0,
+          stock: 0,
+          discount: 0,
           categoryId: "",
+          subcategoryId: "",
+          image: { url: "", key: "" },
         },
   });
 
@@ -102,10 +136,10 @@ const SubCategoryForm = ({ mode = "create", initialData, setOpen }: Props) => {
     }
   };
 
-  const onSubmit = async (body: z.infer<typeof SubcategorySchema>) => {
+  const onSubmit = async (body: z.infer<typeof ProductsSchema>) => {
     setLoading(true);
     let updatedBody;
-    if (mode !== "create") {
+    if (mode !== "create" && initialData) {
       updatedBody = {
         ...body,
         imageId: initialData.image[0].id,
@@ -115,7 +149,7 @@ const SubCategoryForm = ({ mode = "create", initialData, setOpen }: Props) => {
     try {
       mode === "create"
         ? createCategory(body)
-        : updateCategory(initialData.id, updatedBody!);
+        : initialData && updateCategory(initialData.id, updatedBody!);
       refetch();
 
       toast.success("Category created successfully");
@@ -133,7 +167,7 @@ const SubCategoryForm = ({ mode = "create", initialData, setOpen }: Props) => {
       <form className="space-y-5" onSubmit={form.handleSubmit(onSubmit)}>
         <div className="flex flex-col w-full gap-2">
           <FormField
-            name="name"
+            name="image"
             control={form.control}
             render={({ field }) => (
               <FormItem>
@@ -220,4 +254,4 @@ const SubCategoryForm = ({ mode = "create", initialData, setOpen }: Props) => {
   );
 };
 
-export default SubCategoryForm;
+export default ProductsForm;

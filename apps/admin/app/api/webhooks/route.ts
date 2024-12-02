@@ -63,9 +63,9 @@ export async function POST(req: NextRequest) {
       email: email_addresses[0].email_address,
       name: `${first_name} ${last_name}`,
       clerkId: clerkId,
-      role: "ADMIN",
+      role: "USER",
     };
-
+    
     const newUser = await createUser(userData);
     
     console.log("New user created:", newUser);

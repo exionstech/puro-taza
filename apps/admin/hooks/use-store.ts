@@ -16,7 +16,7 @@ export const useStores = () => {
       setIsLoading(true);
       const fetchedStores = await getStores();
       if (user?.id) {
-        setStores(fetchedStores.filter((store) => store.userId === user.id));
+        setStores(fetchedStores);
       }
       setIsLoading(false);
     } catch (err) {

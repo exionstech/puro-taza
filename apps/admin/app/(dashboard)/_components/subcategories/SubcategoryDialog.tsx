@@ -1,6 +1,6 @@
 import React from "react";
 import { Dialog, DialogTitle, DialogContent } from "@/components/ui/dialog";
-import CategoryForm, { SubcategorySchema } from "./SubcategoryForm";
+import SubCategoryForm, { SubcategorySchema } from "./SubcategoryForm";
 import { z } from "zod";
 
 interface Props {
@@ -20,13 +20,13 @@ const SubcategoryDialog = ({
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent>
         <DialogTitle>
-          {mode === "create" ? "Create" : "Update"} Category
+          {mode === "create" ? "Create" : "Update"} Subcategory
           <p className="mt-1 text-sm text-muted-foreground">
-            {mode === "create" ? "Add" : "Edit"} category for your products
+            {mode === "create" ? "Add" : "Edit"} subcategory for your products
           </p>
         </DialogTitle>
         <div>
-          <CategoryForm
+          <SubCategoryForm
             mode={mode}
             setOpen={setOpen}
             initialData={initialData}

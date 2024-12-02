@@ -65,7 +65,7 @@ export async function POST(req: NextRequest) {
       clerkId: clerkId,
       role: "USER",
     };
-
+    
     const newUser = await createUser(userData);
     
     console.log("New user created:", newUser);

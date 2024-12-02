@@ -26,6 +26,7 @@ import { deleteUploadthingFiles } from "@/lib/server/uploadthing";
 import { usePathname } from "next/navigation";
 import { useCategories } from "@/hooks/use-categories";
 import { useSubCategories } from "@/hooks/use-subcategories";
+import { useProduct } from "@/hooks/use-products";
 export const ProductsSchema = z.object({
   name: z.string().min(3),
   description: z.string().min(10),
@@ -34,10 +35,12 @@ export const ProductsSchema = z.object({
   discount: z.number().min(0),
   categoryId: z.string(),
   subcategoryId: z.string(),
-  image: z.object({
-    url: z.string(),
-    key: z.string(),
-  }),
+  image: z.array(
+    z.object({
+      url: z.string(),
+      key: z.string(),
+    })
+  ),
 });
 
 export interface InitialDataType {
@@ -65,17 +68,21 @@ interface Props {
 }
 
 const ProductsForm = ({ mode = "create", initialData, setOpen }: Props) => {
-  const [uploadedImage, setUploadedImage] = useState<{
-    url: string;
-    key: string;
-  } | null>(initialData?.image[0] || null);
-  const [loading, setLoading] = useState(false);
+  const [uploadedImage, setUploadedImage] = useState<
+    | {
+        url: string;
+        key: string;
+      }[]
+    | null
+  >(initialData?.image || null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const pathname = usePathname();
   const { categories } = useCategories(pathname.split("/")[1]);
-  const { subcategories, createCategory, updateCategory } = useSubCategories(
-    pathname.split("/")[1]
-  );
+  const { subcategories } = useSubCategories(pathname.split("/")[1]);
+  const { createProduct, updateProduct, fetchProducts } = useProduct({
+    storeId: pathname.split("/")[1],
+  });
 
   const form = useForm<z.infer<typeof ProductsSchema>>({
     resolver: zodResolver(ProductsSchema),
@@ -88,10 +95,12 @@ const ProductsForm = ({ mode = "create", initialData, setOpen }: Props) => {
           discount: initialData.discount || 0,
           categoryId: initialData.categoryId,
           subcategoryId: initialData.subcategoryId,
-          image: {
-            url: initialData.image[0].url,
-            key: initialData.image[0].key,
-          },
+          image: initialData.image
+            ? initialData.image.map((img) => ({
+                url: img.url,
+                key: img.key,
+              }))
+            : [],
         }
       : {
           name: "",
@@ -101,42 +110,70 @@ const ProductsForm = ({ mode = "create", initialData, setOpen }: Props) => {
           discount: 0,
           categoryId: "",
           subcategoryId: "",
-          image: { url: "", key: "" },
+          image: [{ url: "", key: "" }],
         },
   });
 
   const handleImageUpload = async (res: ClientUploadedFileData<any>[]) => {
     console.log("Files: ", res);
-    const image = res[0];
+    const image = res;
 
-    setUploadedImage({
-      url: image.appUrl,
-      key: image.key,
-    });
-    form.setValue("image", {
-      url: image.appUrl,
-      key: image.key,
-    });
+    setUploadedImage((prev) => [
+      ...(prev || []),
+      ...image.map((img) => ({
+        url: img.appUrl,
+        key: img.key,
+      })),
+    ]);
+
+    form.setValue("image", [
+      ...form.getValues("image"),
+      ...image.map((img) => ({
+        url: img.appUrl,
+        key: img.key,
+      })),
+    ]);
 
     toast.success("Upload Completed");
   };
 
-  const handleImageDelete = async () => {
-    setLoading(true);
+  const handleImageDelete = async (key: string) => {
+    setIsLoading(true);
     try {
-      await deleteUploadthingFiles([uploadedImage?.key as string]);
-      setUploadedImage(null);
-      form.setValue("image", { url: "", key: "" });
+      await deleteUploadthingFiles([key as string]);
+      setUploadedImage((prev) => prev?.filter((img) => img.key !== key) || []);
+      form.setValue(
+        "image",
+        form.getValues("image").filter((img) => img.key !== key)
+      );
     } catch (error) {
       console.error("Error: ", error);
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
   };
 
   const onSubmit = async (body: z.infer<typeof ProductsSchema>) => {
     //TODO: Implement the submit logic
-    //Create API for products
+    const newBody = {
+      ...body,
+      categoryId:
+        subcategories.find((sub) => sub.id === body.subcategoryId)
+          ?.categoryId || "",
+    };
+
+    try {
+      mode === "create"
+        ? await createProduct(newBody)
+        : initialData && (await updateProduct(initialData.id, body));
+      toast.success("Product created successfully.");
+    } catch (error) {
+      console.log("Error: ", error);
+      toast.error("An error occurred while creating the product.");
+    } finally {
+      setOpen(false);
+      fetchProducts();
+    }
   };
 
   return (
@@ -165,28 +202,34 @@ const ProductsForm = ({ mode = "create", initialData, setOpen }: Props) => {
               </FormItem>
             )}
           />
-          {uploadedImage && (
-            <div className="relative w-32 object-cover rounded-md group">
-              <img
-                src={uploadedImage.url}
-                alt="Product Image"
-                className="rounded-md"
-              />
-              {!loading ? (
-                <button
-                  type="button"
-                  onClick={handleImageDelete}
-                  className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+          <div className="flex gap-4">
+            {uploadedImage &&
+              uploadedImage.map((image, index) => (
+                <div
+                  className="relative w-32 object-cover rounded-md group"
+                  key={index}
                 >
-                  <X size={16} />
-                </button>
-              ) : (
-                <div className="absolute top-1 right-1 bg-primary p-1 text-white rounded-full">
-                  <LucideLoader size={16} className="animate-spin" />
+                  <img
+                    src={image.url}
+                    alt="Product Image"
+                    className="rounded-md"
+                  />
+                  {!isLoading ? (
+                    <button
+                      type="button"
+                      onClick={() => handleImageDelete(image.key)}
+                      className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+                    >
+                      <X size={16} />
+                    </button>
+                  ) : (
+                    <div className="absolute top-1 right-1 bg-primary p-1 text-white rounded-full">
+                      <LucideLoader size={16} className="animate-spin" />
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
-          )}
+              ))}
+          </div>
         </div>
 
         <div className="flex flex-row gap-10 w-full">

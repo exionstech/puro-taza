@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Product } from "@prisma/client";
+import { useEffect } from "react";
 
 export interface ProductWithRelations extends Product {
   discounted_price?: number;
@@ -169,6 +170,10 @@ export function useProduct({ storeId }: { storeId: string }) {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    fetchProducts();
+  }, [products.length]);
 
   return {
     products,

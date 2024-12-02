@@ -23,7 +23,7 @@ export async function GET(
 
     // Construct where clause
     const where: any = {};
-
+    
     if (categoryId) where.categoryId = categoryId;
     if (subcategoryId) where.subcategoryId = subcategoryId;
     if (minPrice || maxPrice) {

@@ -23,7 +23,7 @@ interface Props {
 const ProductsTable = ({ setOpen, setMode, setInitialData }: Props) => {
   const pathname = usePathname();
   const [searchQuery, setSearchQuery] = useState("");
-  const { fetchProducts, products, loading } = useProduct({
+  const { fetchProducts, products, deleteProduct, loading } = useProduct({
     storeId: pathname.split("/")[1],
   });
   const [filteredProducts, setfilteredProducts] =
@@ -32,7 +32,6 @@ const ProductsTable = ({ setOpen, setMode, setInitialData }: Props) => {
   useEffect(() => {
     fetchProducts();
   }, []);
-  console.log(products);
 
   useEffect(() => {
     setfilteredProducts(
@@ -100,8 +99,8 @@ const ProductsTable = ({ setOpen, setMode, setInitialData }: Props) => {
                   <Button
                     variant={"destructive"}
                     size={"icon"}
-                    // onClick={() => deleteCategory(product.id)}
-                    // disabled={isDeleting}
+                    onClick={() => deleteProduct(product.id)}
+                    disabled={loading}
                   >
                     <Trash2 />
                   </Button>

@@ -49,7 +49,7 @@ export async function POST(req: Request) {
     switch (true) {
       case !body.name:
         return NextResponse.json(
-          { error: "Missing required field: name", success: false },
+          { message: "Missing required field: name", success: false },
           {
             status: 400,
             headers: corsHeaders,
@@ -57,7 +57,7 @@ export async function POST(req: Request) {
         );
       case !body.email:
         return NextResponse.json(
-          { error: "Missing required field: email", success: false },
+          { message: "Missing required field: email", success: false },
           {
             status: 400,
             headers: corsHeaders,
@@ -65,7 +65,7 @@ export async function POST(req: Request) {
         );
       case !body.phone:
         return NextResponse.json(
-          { error: "Missing required field: phone", success: false },
+          { message: "Missing required field: phone", success: false },
           {
             status: 400,
             headers: corsHeaders,
@@ -96,7 +96,7 @@ export async function POST(req: Request) {
 
       if (!success || !otp) {
         return NextResponse.json(
-          { error: "OTP not generated", success: false },
+          { message: "OTP not generated", success: false },
           {
             status: 500,
             headers: corsHeaders,
@@ -108,7 +108,7 @@ export async function POST(req: Request) {
 
       if (!isSent) {
         return NextResponse.json(
-          { error: "OTP not sent", success: false },
+          { message: "OTP not sent", success: false },
           {
             status: 500,
             headers: corsHeaders,
@@ -118,9 +118,7 @@ export async function POST(req: Request) {
 
       const secret = process.env.JWTSECRET as string;
 
-      const token = jwt.sign({ clientId: client.id }, secret, {
-        expiresIn: "30d",
-      });
+      const token = jwt.sign({ clientId: client.id }, secret);
 
       return NextResponse.json(
         {
@@ -136,7 +134,7 @@ export async function POST(req: Request) {
     }
 
     return NextResponse.json(
-      { error: "An error occurred", success: false },
+      { message: "An error occurred", success: false },
       {
         status: 500,
         headers: corsHeaders,
@@ -145,7 +143,7 @@ export async function POST(req: Request) {
   } catch (error) {
     console.log(error);
     return NextResponse.json(
-      { error: "An error occurred", success: false },
+      { message: "An error occurred", success: false },
       {
         status: 500,
         headers: corsHeaders,

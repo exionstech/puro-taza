@@ -1,9 +1,10 @@
 import { NextResponse } from "next/server";
 import { verifyOtp } from "@/lib/server/otp-service";
 import { prisma } from "@/lib/prisma";
+import jwt from "jsonwebtoken";
 
 interface VerificationCredentials {
-  clientId: string;
+  token: string;
   otp: string;
 }
 
@@ -31,7 +32,7 @@ export async function POST(req: Request) {
     // Basic origin check
     if (allowedOrigin !== "*" && origin !== allowedOrigin) {
       return NextResponse.json(
-        { error: "Origin not allowed", success: false },
+        { message: "Origin not allowed", success: false },
         {
           status: 403,
           headers: {
@@ -45,7 +46,7 @@ export async function POST(req: Request) {
 
     if (!body.otp) {
       return NextResponse.json(
-        { error: "Missing required field: otp", success: false },
+        { message: "Missing required field: otp", success: false },
         {
           status: 400,
           headers: corsHeaders,
@@ -53,9 +54,9 @@ export async function POST(req: Request) {
       );
     }
 
-    if (!body.clientId) {
+    if (!body.token) {
       return NextResponse.json(
-        { error: "Missing required field: client id", success: false },
+        { message: "Missing required field: client id", success: false },
         {
           status: 400,
           headers: corsHeaders,
@@ -63,11 +64,16 @@ export async function POST(req: Request) {
       );
     }
 
-    const isVerified = await verifyOtp(body.clientId, body.otp);
+    const decodedToken = jwt.verify(
+      body.token,
+      process.env.JWTSECRET as string
+    ) as jwt.JwtPayload;
+
+    const isVerified = await verifyOtp(decodedToken.clientId, body.otp);
 
     if (isVerified) {
       const client = await prisma.client.findUnique({
-        where: { id: body.clientId },
+        where: { id: decodedToken.clientId },
       });
 
       return NextResponse.json(
@@ -80,7 +86,7 @@ export async function POST(req: Request) {
     }
 
     return NextResponse.json(
-      { error: "User not verified", success: false },
+      { message: "User not verified", success: false },
       {
         status: 500,
         headers: corsHeaders,
@@ -89,7 +95,7 @@ export async function POST(req: Request) {
   } catch (error) {
     console.log(error);
     return NextResponse.json(
-      { error: "An error occurred", success: false },
+      { message: "An error occurred", success: false },
       {
         status: 500,
         headers: corsHeaders,

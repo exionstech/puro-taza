@@ -1,6 +1,6 @@
-import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import React from "react";
 import SignUpForm from "../_components/sign-up/SignUpForm";
+import { Card, CardContent, CardTitle } from "@/components/ui/card";
 
 const Page = () => {
   return (

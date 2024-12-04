@@ -76,6 +76,10 @@ export async function POST(req: Request) {
         where: { id: decodedToken.clientId },
       });
 
+      await prisma.otp.deleteMany({
+        where: { clientId: decodedToken.clientId },
+      });
+      
       return NextResponse.json(
         { client: client, success: true },
         {

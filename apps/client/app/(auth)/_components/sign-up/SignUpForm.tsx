@@ -19,7 +19,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
-const SignUpForm = () => {
+const SignUpForm = ({ setNext }: SignInFormProps) => {
   const [checkbox, setCheckbox] = useState<boolean>(false);
   const router = useRouter();
 
@@ -41,8 +41,8 @@ const SignUpForm = () => {
 
       if (response.success) {
         toast.success(response.message);
+        setNext(true);
         console.log(response);
-        router.push("/verify");
       } else {
         console.error(response.message);
       }

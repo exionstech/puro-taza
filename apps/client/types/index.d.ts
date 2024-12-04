@@ -41,6 +41,7 @@ interface UseAuthReturnTypes {
   loading: boolean;
   success: boolean;
   message: string;
+  isLoggedIn: boolean;
   login: (data: LoginData) => Promise<LoginReturnType>;
   register: (data: RegisterData) => Promise<RegisterReturnType>;
   verify: (data: VerifyData) => Promise<VerifyReturnType>;

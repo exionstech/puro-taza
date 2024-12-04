@@ -1,7 +1,7 @@
 "use client";
 
 import axios from "axios";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 
@@ -11,6 +11,7 @@ export const useAuth = (): UseAuthReturnTypes => {
   const [success, setSuccess] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
 
   const login = async (data: LoginData): Promise<LoginReturnType> => {
     setLoading(true);
@@ -82,32 +83,43 @@ export const useAuth = (): UseAuthReturnTypes => {
 
   const verify = async (data: VerifyData): Promise<VerifyReturnType> => {
     try {
-      const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL as String}/verify`,
-        { ...data, token: localStorage.getItem("token") as string }
+      const response = await axios.post(`/api/auth/verify`, {
+        ...data,
+        token: localStorage.getItem("token") as string,
+      });
+
+      const redirectUrl = new URLSearchParams(window.location.search).get(
+        "redirectUrl"
       );
 
-      return response.data;
+      router.push(redirectUrl || "/");
+
+      return response.data.data;
     } catch (error: any) {
       return error;
     }
   };
-
+  
   const logout = async (): Promise<void> => {
     try {
       localStorage.removeItem("token");
       Cookies.remove("token");
 
-      router.push("/sign-in");
+      setIsLoggedIn(false);
     } catch (error: any) {
       console.error(error);
     }
   };
-  
+
+  useEffect(() => {
+    setIsLoggedIn(!!Cookies.get("token"));
+  }, [Cookies.get("token")]);
+
   return {
     loading,
     success,
     message,
+    isLoggedIn,
     login,
     register,
     verify,

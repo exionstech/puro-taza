@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import { useForm } from "react-hook-form";
 import {
   Form,
@@ -14,14 +14,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { VerifyFormSchema } from "@/schemas";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import { useAuth } from "@/hooks/use-auth";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
 const VerifyForm = () => {
-  const router = useRouter();
-
   const { loading, verify } = useAuth();
 
   const form = useForm<z.infer<typeof VerifyFormSchema>>({
@@ -46,7 +43,7 @@ const VerifyForm = () => {
       console.error(error);
     }
   };
-
+  
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-4">
@@ -67,7 +64,7 @@ const VerifyForm = () => {
           className="w-full bg-[#735498]"
           disabled={loading}
         >
-          Create Account
+          Verify Account
         </Button>
       </form>
     </Form>

@@ -32,7 +32,7 @@ export async function POST(req: Request) {
     // Basic origin check
     if (allowedOrigin !== "*" && origin !== allowedOrigin) {
       return NextResponse.json(
-        { error: "Origin not allowed", success: false },
+        { message: "Origin not allowed", success: false },
         {
           status: 403,
           headers: {
@@ -46,7 +46,7 @@ export async function POST(req: Request) {
 
     if (!body.phone) {
       return NextResponse.json(
-        { error: "Missing required field: phone", success: false },
+        { message: "Missing required field: phone", success: false },
         {
           status: 400,
           headers: corsHeaders,
@@ -63,7 +63,7 @@ export async function POST(req: Request) {
 
       if (!success || !otp) {
         return NextResponse.json(
-          { error: "OTP not generated", success: false },
+          { message: "OTP not generated", success: false },
           {
             status: 500,
             headers: corsHeaders,
@@ -76,7 +76,7 @@ export async function POST(req: Request) {
       if (isSent) {
         const token = jwt.sign(
           { clientId: client.id },
-          process.env.JWT_SECRET as string,
+          process.env.JWTSECRET as string,
           {
             expiresIn: "30d",
           }
@@ -93,7 +93,7 @@ export async function POST(req: Request) {
     }
 
     return NextResponse.json(
-      { error: "An error occurred", success: false },
+      { message: "An error occurred", success: false },
       {
         status: 500,
         headers: corsHeaders,
@@ -102,7 +102,7 @@ export async function POST(req: Request) {
   } catch (error) {
     console.log(error);
     return NextResponse.json(
-      { error: "An error occurred", success: false },
+      { message: "An error occurred", success: false },
       {
         status: 500,
         headers: corsHeaders,

@@ -6,6 +6,16 @@ interface AuthRouteLayoutProps {
   children: React.ReactNode;
 }
 
+interface LoginData {
+  phone: string;
+}
+
+interface LoginReturnType {
+  message: string;
+  success: boolean;
+  token?: string;
+}
+
 interface RegisterData {
   name: string;
   email: string;
@@ -31,6 +41,12 @@ interface UseAuthReturnTypes {
   loading: boolean;
   success: boolean;
   message: string;
+  login: (data: LoginData) => Promise<LoginReturnType>;
   register: (data: RegisterData) => Promise<RegisterReturnType>;
   verify: (data: VerifyData) => Promise<VerifyReturnType>;
+  logout: () => void;
+}
+
+interface SignInFormProps {
+  setNext: (next: boolean) => void;
 }

@@ -39,7 +39,6 @@ const SignInForm = ({ setNext }: SignInFormProps) => {
       if (response.success) {
         toast.success(response.message);
         console.log(response);
-        // router.push("/verify");
         setNext(true);
       } else {
         console.error(response.message);

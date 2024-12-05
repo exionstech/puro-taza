@@ -41,7 +41,7 @@ model Address {
   isDefault  Boolean   @default(false)
   label      LabelType
 
-  client   Client? @relation(fields: [clientId], references: [id])
+  client   Client? @relation(fields: [clientId], references: [id], onDelete: Cascade)
   clientId String? @db.ObjectId
 
   createdAt DateTime @default(now())

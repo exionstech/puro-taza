@@ -3,6 +3,7 @@ import { Webhook } from "svix";
 import { headers } from "next/headers";
 import { WebhookEvent } from "@clerk/nextjs/server";
 import { createUser } from "@/actions/user";
+import { UserType } from "@prisma/client";
 
 export async function POST(req: NextRequest) {
   const WEBHOOK_SECRET = process.env.CLERK_WEBHOOK_SECRET!;
@@ -63,7 +64,7 @@ export async function POST(req: NextRequest) {
       email: email_addresses[0].email_address,
       name: `${first_name} ${last_name}`,
       clerkId: clerkId,
-      role: "USER",
+      role: "USER" as UserType,
     };
     
     const newUser = await createUser(userData);

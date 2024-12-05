@@ -7,6 +7,17 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum UserType {
+  ADMIN
+  USER
+}
+
+enum LabelType {
+  HOME
+  WORK
+  OTHER
+}
+
 model Client {
   id         String  @id @default(auto()) @map("_id") @db.ObjectId
   name       String
@@ -14,7 +25,24 @@ model Client {
   phone      String  @unique
   isVerified Boolean @default(false)
 
-  otp Otp[]
+  otp     Otp[]
+  address Address[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Address {
+  id         String    @id @default(auto()) @map("_id") @db.ObjectId
+  address    String
+  street     String
+  appartment String
+  postalCode String
+  isDefault  Boolean   @default(false)
+  label      LabelType
+
+  client   Client? @relation(fields: [clientId], references: [id])
+  clientId String? @db.ObjectId
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -30,11 +58,11 @@ model Otp {
 }
 
 model User {
-  id      String @id @default(auto()) @map("_id") @db.ObjectId
-  email   String @unique
+  id      String   @id @default(auto()) @map("_id") @db.ObjectId
+  email   String   @unique
   name    String
-  role    String
-  clerkId String @unique
+  role    UserType
+  clerkId String   @unique
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -58,9 +86,9 @@ model Image {
   subcategoryId String? @db.ObjectId
   productId     String? @db.ObjectId
 
-  category    Category?    @relation(fields: [categoryId], references: [id])
-  subcategory Subcategory? @relation(fields: [subcategoryId], references: [id])
-  product     Product?     @relation(fields: [productId], references: [id])
+  category    Category?    @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  subcategory Subcategory? @relation(fields: [subcategoryId], references: [id], onDelete: Cascade)
+  product     Product?     @relation(fields: [productId], references: [id], onDelete: Cascade)
 }
 
 model Category {

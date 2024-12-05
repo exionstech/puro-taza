@@ -43,9 +43,9 @@ export async function GET(
         )
       );
     }
-
+    
     return corsResponse(
-      NextResponse.json({ addresses: address, success: false }, { status: 200 })
+      NextResponse.json({ addresses: address, success: true }, { status: 200 })
     );
   } catch (error) {
     return corsResponse(

@@ -1,12 +1,23 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
+import { UserType } from "@prisma/client";
 
 export interface UserDataType {
   email: string;
   name: string;
   clerkId: string;
-  role: string;
+  role: UserType;
+}
+
+export async function getAllUsers() {
+  try {
+    const users = await prisma.user.findMany();
+
+    return users;
+  } catch (err) {
+    console.error(err);
+  }
 }
 
 export async function createUser(userData: UserDataType) {
@@ -14,6 +25,35 @@ export async function createUser(userData: UserDataType) {
     const user = await prisma.user.create({
       data: userData,
     });
+
+    return user;
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+export async function updateUser(id: string, role: UserType) {
+  try {
+    await prisma.user.update({
+      where: { id },
+      data: { role },
+    });
+
+    const user = await prisma.user.findMany();
+
+    return user;
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+export async function deleteUser(id: string) {
+  try {
+    await prisma.user.delete({
+      where: { id },
+    });
+
+    const user = await prisma.user.findMany();
 
     return user;
   } catch (err) {

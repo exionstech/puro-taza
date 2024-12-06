@@ -124,7 +124,7 @@ export const useSubCategories = (storeId: string): UseSubCategories => {
       }
 
       const { subcategory } = await response.json();
-
+      
       // Update the local state with the updated category
       setSubCategories((prev) =>
         prev.map((cat) =>

@@ -34,7 +34,17 @@ export async function POST(
       where: {
         id: params.categoryId,
       },
-      data: data,
+      data: {
+        name: data.name,
+      },
+    });
+
+    const image = await prisma.image.update({
+      where: { id: data.imageId },
+      data: {
+        url: data.image.url,
+        key: data.image.key,
+      },
     });
 
     if (!category) {
@@ -68,8 +78,11 @@ export async function DELETE(
       );
     }
 
-    return corsResponse(NextResponse.json({ messgae: "Category deleted" }));
+    return corsResponse(
+      NextResponse.json({ messgae: "Category deleted" }, { status: 200 })
+    );
   } catch (error) {
+    console.log("Error: ", error);
     return corsResponse(
       NextResponse.json({ message: "Error deleting category" }, { status: 500 })
     );

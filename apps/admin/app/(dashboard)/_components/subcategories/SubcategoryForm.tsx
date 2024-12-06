@@ -111,7 +111,7 @@ const SubCategoryForm = ({ mode = "create", initialData, setOpen }: Props) => {
         imageId: initialData.image[0].id,
       };
     }
-    console.log(updatedBody);
+    
     try {
       mode === "create"
         ? createCategory(body)

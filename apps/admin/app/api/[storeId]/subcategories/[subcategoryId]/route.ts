@@ -39,7 +39,7 @@ export async function POST(
         categoryId: data.categoryId,
       },
     });
-
+    
     const image = await prisma.image.update({
       where: { id: data.imageId },
       data: {

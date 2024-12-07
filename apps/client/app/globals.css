@@ -76,31 +76,4 @@
     background-repeat: no-repeat;
     overflow: hidden;
   }
-  .hero-chief {
-    position: relative;
-    background: url("/home/hero/hero-chief.png");
-    background-size: 43%;
-    background-position: right 0 bottom 0;
-    justify-self: end;
-    background-repeat: no-repeat;
-    overflow: hidden;
-  }
-  .hero-prawn {
-    position: relative;
-    background: url("/home/hero/hero-chief.png");
-    background-size: 43%;
-    background-position: right 0 bottom 0;
-    justify-self: end;
-    background-repeat: no-repeat;
-    overflow: hidden;
-  }
-  .hero-fish {
-    position: relative;
-    background: url("/home/hero/hero-chief.png");
-    background-size: 43%;
-    background-position: right 0 bottom 0;
-    justify-self: end;
-    background-repeat: no-repeat;
-    overflow: hidden;
-  }
 }

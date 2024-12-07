@@ -1,6 +1,6 @@
-import React from 'react'
 import Logo from './logo';
 import AddressDialog from '@/app/(routes)/(public)/_components/sub-components/hero/address-dialog';
+import SearchItem from '@/app/(routes)/(public)/_components/sub-components/hero/search-item';
 
 const Navbar = () => {
   return (
@@ -8,10 +8,11 @@ const Navbar = () => {
       <div className="w-[10%] py-3 items-center flex border-r-[1px] border-gray-300">
         <Logo height={90} width={90}/>
       </div>
-      <div className="w-[70%] items-center flex px-3">
+      <div className="w-[65%] items-center flex gap-10 px-5">
         <AddressDialog/>
+        <SearchItem/>
       </div>
-      <div className="w-[20%] items-center flex"></div>
+      <div className="w-[25%] items-center flex"></div>
     </div>
   )
 }

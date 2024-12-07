@@ -1,9 +1,9 @@
 "use client";
 
 import React, { useState } from "react";
-import SignUpForm from "../_components/sign-up/SignUpForm";
+import SignUpForm from "../_components/SignUpForm";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
-import VerifyForm from "../_components/verify/VerifyForm";
+import VerifyForm from "../_components/VerifyForm";
 
 const Page = () => {
   const [next, setNext] = useState(false);

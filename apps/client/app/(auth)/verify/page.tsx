@@ -1,6 +1,6 @@
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import React from "react";
-import VerifyForm from "../_components/verify/VerifyForm";
+import VerifyForm from "../_components/VerifyForm";
 
 const Page = () => {
   return (

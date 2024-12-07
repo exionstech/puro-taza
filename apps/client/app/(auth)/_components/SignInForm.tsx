@@ -18,6 +18,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useAuth } from "@/hooks/use-auth";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 const SignInForm = ({ setNext }: SignInFormProps) => {
   const router = useRouter();
@@ -65,12 +66,17 @@ const SignInForm = ({ setNext }: SignInFormProps) => {
         />
         <Button
           type="submit"
-          className="w-full bg-[#735498]"
+          className="w-full"
           disabled={loading}
         >
           Sign In
         </Button>
       </form>
+      <div className="mt-5">
+      <Link href={"/sign-up"} className="border-b-2 border-violet">
+          Sign Up
+      </Link>
+      </div>
     </Form>
   );
 };

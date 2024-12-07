@@ -18,6 +18,8 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useAuth } from "@/hooks/use-auth";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 
 const SignUpForm = ({ setNext }: SignInFormProps) => {
   const [checkbox, setCheckbox] = useState<boolean>(false);
@@ -99,12 +101,18 @@ const SignUpForm = ({ setNext }: SignInFormProps) => {
         </div>
         <Button
           type="submit"
-          className="w-full bg-[#735498]"
+          className="w-full"
           disabled={!checkbox || loading}
         >
           Create Account
         </Button>
       </form>
+      <div className="mt-5 w-fit">
+      <Link href={"/sign-in"} className="border-b-2 border-violet flex gap-1 items-center">
+      Sign In
+      <ArrowRight color="#735498" className="size-4"/>
+      </Link>
+      </div>
     </Form>
   );
 };

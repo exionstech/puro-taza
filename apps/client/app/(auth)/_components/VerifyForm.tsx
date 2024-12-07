@@ -61,7 +61,7 @@ const VerifyForm = () => {
         />
         <Button
           type="submit"
-          className="w-full bg-[#735498]"
+          className="w-full"
           disabled={loading}
         >
           Verify Account

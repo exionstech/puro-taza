@@ -1,6 +1,15 @@
 import Logo from './logo';
 import AddressDialog from '@/app/(routes)/(public)/_components/sub-components/hero/address-dialog';
 import SearchItem from '@/app/(routes)/(public)/_components/sub-components/hero/search-item';
+import { UserNav } from './user-nav';
+
+const user = {
+  name: 'Suman Mandal',
+  username: 'sumanmandal',
+  email: "suman9732@gmail.com",
+  image: "",
+  role: "ADMIN"
+}
 
 const Navbar = () => {
   return (
@@ -12,7 +21,9 @@ const Navbar = () => {
         <AddressDialog/>
         <SearchItem/>
       </div>
-      <div className="w-[25%] items-center flex"></div>
+      <div className="w-[25%] items-center flex gap-10 px-5">
+        <UserNav user={user}/>
+      </div>
     </div>
   )
 }

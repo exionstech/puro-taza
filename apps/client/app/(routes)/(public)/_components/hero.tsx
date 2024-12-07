@@ -14,27 +14,27 @@ const Hero = () => {
         </div>
       </div>
       <div className="flex flex-col md:flex-row gap-4 md:justify-between items-center w-full">
-        <div className="w-full flex items-center px-6 py-6 justify-center gap-2 rounded-xl bg-[#79A6EA]">
-          <div className="w-1/2 flex flex-col gap-2 text-white">
+        <div className="w-full flex items-center px-6 justify-center gap-2 rounded-xl bg-[#79A6EA]">
+          <div className="w-1/2 flex flex-col gap-2 text-white py-6">
             <h1 className="text-2xl font-bold">Sweet water fish</h1>
             <p className="text-sm">Fresh sweet water fishes just for you</p>
             <Link href={""}>
               <Button variant={"outline"} className="text-black px-8">Order Now</Button>
             </Link>
           </div>
-          <div className="w-1/2">
+          <div className="w-1/2 flex self-end h-full">
             <Image
               src={"/home/hero/hero-chief.png"}
               alt="chief"
-              height={100}
-              width={100}
+              height={200}
+              width={200}
               className="shrink-0"
             />
           </div>
         </div>
         <div className="w-full flex items-center px-6 py-6 justify-center gap-2 rounded-xl bg-[#EAD179]">
           <div className="w-1/2 flex flex-col gap-2 text-white">
-            <h1 className="text-2xl font-bold">Fresh prawns</h1>
+            <h1 className="text-2xl font-bold">Fresh <br /> prawns</h1>
             <p className="text-sm">Pure Taste, Freshly Delivered Daily</p>
             <Link href={""}>
               <Button variant={"outline"} className="text-black px-8">Order Now</Button>
@@ -42,17 +42,17 @@ const Hero = () => {
           </div>
           <div className="w-1/2">
             <Image
-              src={"/home/hero/hero-chief.png"}
+              src={"/home/hero/prawn.png"}
               alt="chief"
-              height={100}
-              width={100}
+              height={170}
+              width={170}
               className="shrink-0"
             />
           </div>
         </div>
         <div className="w-full flex items-center px-6 py-6 justify-center gap-2 rounded-xl bg-[#EA9B79]">
           <div className="w-1/2 flex flex-col gap-2 text-white">
-            <h1 className="text-2xl font-bold">Ready to cook</h1>
+            <h1 className="text-2xl font-bold">Ready <br /> to cook</h1>
             <p className="text-sm">Straight from Sea to Your Plate</p>
             <Link href={""}>
               <Button variant={"outline"} className="text-black px-8">Order Now</Button>
@@ -60,10 +60,10 @@ const Hero = () => {
           </div>
           <div className="w-1/2">
             <Image
-              src={"/home/hero/hero-chief.png"}
+              src={"/home/hero/fish.png"}
               alt="chief"
-              height={100}
-              width={100}
+              height={170}
+              width={170}
               className="shrink-0"
             />
           </div>

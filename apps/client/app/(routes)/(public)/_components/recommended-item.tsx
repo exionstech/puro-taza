@@ -31,7 +31,7 @@ const items = [
 const RecommendedItem = () => {
 
   return (
-    <section className="w-full max-w-screen-2xl h-auto px-5 md:px-14 flex items-center flex-col m-auto gap-10 mt-10 md:mt-16">
+    <section className="w-full max-w-screen-2xl h-auto px-5 md:px-14 flex items-center flex-col mx-auto gap-10 mt-10 md:mt-16">
       <div className="w-full md:text-start text-center">
         <h1 className="text-3xl text-customBlack font-medium">Recommended</h1>
       </div>

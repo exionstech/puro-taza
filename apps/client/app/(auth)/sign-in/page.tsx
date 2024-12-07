@@ -2,8 +2,8 @@
 
 import React, { useState } from "react";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
-import SignInForm from "../_components/sign-in/SignInForm";
-import VerifyForm from "../_components/verify/VerifyForm";
+import SignInForm from "../_components/SignInForm";
+import VerifyForm from "../_components/VerifyForm";
 
 const Page = () => {
   const [next, setNext] = useState(false);

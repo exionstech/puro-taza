@@ -3,6 +3,7 @@ import AddressDialog from '@/app/(routes)/(public)/_components/sub-components/he
 import SearchItem from '@/app/(routes)/(public)/_components/sub-components/hero/search-item';
 import { UserNav } from './user-nav';
 import CartItem from '@/app/(routes)/(public)/_components/sub-components/hero/cart-item';
+import UserMobileNav from './user-mobile-nav';
 
 const user = {
   name: 'Suman Mandal',
@@ -23,9 +24,12 @@ const Navbar = () => {
         <AddressDialog/>
         <SearchItem/>
       </div>
-      <div className="w-[25%] items-center flex justify-between px-5">
+      <div className="w-[25%] items-center lg:flex justify-between px-5 hidden">
         <UserNav user={user}/>
         <CartItem/>
+      </div>
+      <div className="w-[25%] flex items-center justify-end">
+        <UserMobileNav/>
       </div>
     </div>
     </div>

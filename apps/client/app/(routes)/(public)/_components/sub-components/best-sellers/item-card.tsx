@@ -7,7 +7,6 @@ interface ItemCardProps {
   itemImage: string;
   itemPrice: number;
   discount: number;
-  originalPrice: number;
 }
 
 const ItemCard = ({
@@ -15,11 +14,10 @@ const ItemCard = ({
   itemImage,
   itemPrice,
   discount,
-  originalPrice,
 }: ItemCardProps) => {
   const discountedPrice = itemPrice - (itemPrice * discount) / 100;
   return (
-    <Card className="px-3 py-3 items-center justify-center flex flex-col gap-2 w-full">
+    <Card className="px-3 py-3 items-center justify-center flex flex-col md:gap-2 w-full">
       <div className="w-full flex items-center justify-center">
         <Image
           src={itemImage}
@@ -29,7 +27,7 @@ const ItemCard = ({
           className="shrink-0"
         />
       </div>
-      <div className="flex flex-col w-full gap-2">
+      <div className="flex flex-col w-full">
         <h1 className="text-customBlack text-xl">{itemName}</h1>
         <div className="w-full flex items-center justify-between">
           <div className="flex flex-col">
@@ -37,7 +35,7 @@ const ItemCard = ({
               <span className="text-sm font-medium text-red-500">-{discount}%</span>{" "}
               {discountedPrice}/Kg
             </h1>
-            <h2 className="text-xs">M.R.P:{" "}{originalPrice}/kg</h2>
+            <h2 className="text-xs line-through">M.R.P:{" "}{itemPrice}/kg</h2>
           </div>
           <div className="flex items-center justify-center">
             <Button variant={"outline"} className="border border-violet text-violet">

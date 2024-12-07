@@ -2,6 +2,7 @@ import Logo from './logo';
 import AddressDialog from '@/app/(routes)/(public)/_components/sub-components/hero/address-dialog';
 import SearchItem from '@/app/(routes)/(public)/_components/sub-components/hero/search-item';
 import { UserNav } from './user-nav';
+import CartItem from '@/app/(routes)/(public)/_components/sub-components/hero/cart-item';
 
 const user = {
   name: 'Suman Mandal',
@@ -21,8 +22,9 @@ const Navbar = () => {
         <AddressDialog/>
         <SearchItem/>
       </div>
-      <div className="w-[25%] items-center flex gap-10 px-5">
+      <div className="w-[25%] items-center flex justify-between px-5">
         <UserNav user={user}/>
+        <CartItem/>
       </div>
     </div>
   )

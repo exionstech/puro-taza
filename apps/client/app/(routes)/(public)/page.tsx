@@ -4,6 +4,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { MaxWrapper } from "@/components/shared/max-wrapper";
 import Hero from "./_components/hero";
 import BestSellers from "./_components/best-sellers";
+import RecommendedItem from "./_components/recommended-item";
 
 export default function Home() {
 
@@ -11,6 +12,7 @@ export default function Home() {
     <MaxWrapper>
       <Hero/>
       <BestSellers/>
+      <RecommendedItem/>
     </MaxWrapper>
   );
 }

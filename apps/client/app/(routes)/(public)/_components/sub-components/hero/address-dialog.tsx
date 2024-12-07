@@ -26,14 +26,25 @@ const AddressDialog = () => {
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Edit profile</DialogTitle>
+          <DialogTitle>Select your location</DialogTitle>
           <DialogDescription>
-            Make changes to your profile here. Click save when you're done.
+          We deliver your selected or this current location
           </DialogDescription>
         </DialogHeader>
-        <DialogFooter>
-          <Button type="submit">Save changes</Button>
-        </DialogFooter>
+        <div className="w-full px-2 flex flex-col">
+            <div className="flex items-center justify-between w-full p-2 border-b-[1px] border-gray-300">
+                <h1 className="text-lg font-medium">Suman Mandal</h1>
+                <p className="text-sm">62, BM Banerjee Lane...</p>
+            </div>
+            <div className="flex items-center justify-between w-full p-2 border-b-[1px] border-gray-300">
+                <h1 className="text-lg font-medium">Suman Mandal</h1>
+                <p className="text-sm">62, BM Banerjee Lane...</p>
+            </div>
+            <div className="flex items-center justify-between w-full p-2 border-b-[1px] border-gray-300">
+                <h1 className="text-lg font-medium">Suman Mandal</h1>
+                <p className="text-sm">62, BM Banerjee Lane...</p>
+            </div>
+        </div>
       </DialogContent>
     </Dialog>
   )

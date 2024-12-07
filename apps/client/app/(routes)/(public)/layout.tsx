@@ -4,7 +4,7 @@ import React from "react";
 
 const PublicRouteLayout = ({ children }: PublicRouteLayoutProps) => {
   return (
-  <main className="flex flex-col items-center scroll-smooth min-h-screen">
+  <main className="scroll-smooth min-h-screen">
     <Navbar/>
     <MobileNav/>
     <div className="mt-14 pb-10">

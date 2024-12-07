@@ -6,6 +6,7 @@ import Hero from "./_components/hero";
 import BestSellers from "./_components/best-sellers";
 import RecommendedItem from "./_components/recommended-item";
 import { Testimonials } from "./_components/testimonials";
+import GetApp from "./_components/get-app";
 
 export default function Home() {
 
@@ -14,6 +15,7 @@ export default function Home() {
       <Hero/>
       <BestSellers/>
       <RecommendedItem/>
+      <GetApp/>
       <Testimonials/>
     </MaxWrapper>
   );

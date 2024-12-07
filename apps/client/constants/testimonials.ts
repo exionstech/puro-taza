@@ -1,39 +1,38 @@
 export const testimonials = [
-    {
-      text: "JAYMA's kombucha has become a staple in my wellness routine! I feel great knowing I'm consuming something that's as good for the environment as it is for my health.",
-      imageSrc: "/home/testimonials/1.png",
-      name: "Atmajo Chowdhury",
-      userName: "Nutritionist",
-    },
-    {
-      text: "The Sam Symphony is beyond unique! Experiencing plant music was transformative, and it deepened my appreciation for nature in an entirely new way.",
-      imageSrc: "/home/testimonials/2.png",
-      name: "Nilanjan Joarder",
-      userName: "Health Coach",
-    },
-    {
-      text: "I love the philosophy behind JAYMA. Their dedication to sustainable, high-quality products really resonates with me, and their bacterial cellulose packaging is just genius.",
-      imageSrc: "/home/testimonials/3.png",
-      name: "Suman Mondal",
-      userName: "Environmental Scientist",
-    },
-    {
-      text: "Working with JAYMA as an intern has been incredibly rewarding. The team is passionate, and I’ve gained so much hands-on experience in sustainable product innovation.",
-      imageSrc: "/home/testimonials/4.png",
-      name: "Nirupam Joarder",
-      userName: "Biotechnology Student",
-    },
-    {
-      text: "Every product I've tried from JAYMA feels like a true gift from nature. Their kombucha especially is a must-try for anyone looking to be more health-conscious.",
-      imageSrc: "/home/testimonials/5.png",
-      name: "Gourab Dey",
-      userName: "Health Coach",
-    },
-    {
-      text: "The commitment JAYMA has toward the environment is unmatched. Knowing that every purchase supports sustainability makes me a loyal customer!",
-      imageSrc: "/home/testimonials/6.png",
-      name: "Amit Singh",
-      userName: "Sustainability Consultant",
-    },
-  ];
-  
+  {
+    text: "Puro Taja's fish is always fresh and of the highest quality! I rely on them for all my seafood needs, and their service is top-notch. Highly recommend!",
+    imageSrc: "/home/testimonials/1.png",
+    name: "Atmajo Chowdhury",
+    userName: "Seafood Enthusiast",
+  },
+  {
+    text: "I’ve been ordering fish from Puro Taja for months. Their products are always fresh, and the convenience of ordering online is a game-changer. I can’t imagine buying seafood anywhere else!",
+    imageSrc: "/home/testimonials/2.png",
+    name: "Nilanjan Joarder",
+    userName: "Healthy Eating Advocate",
+  },
+  {
+    text: "Puro Taja’s fish selection is unmatched. The quality is always consistent, and I love that they offer sustainable options. Perfect for anyone looking to eat healthy and support sustainability.",
+    imageSrc: "/home/testimonials/3.png",
+    name: "Suman Mondal",
+    userName: "Sustainability Expert",
+  },
+  {
+    text: "Shopping at Puro Taja has been a fantastic experience. The fish is always fresh, and their online ordering system is seamless. It’s the best way to get seafood delivered to your door.",
+    imageSrc: "/home/testimonials/4.png",
+    name: "Nirupam Joarder",
+    userName: "Biotechnology Student",
+  },
+  {
+    text: "Puro Taja provides the freshest fish I’ve ever tasted. They are now my go-to source for all seafood, and I trust their quality every time I place an order.",
+    imageSrc: "/home/testimonials/5.png",
+    name: "Gourab Dey",
+    userName: "Health & Nutrition Specialist",
+  },
+  {
+    text: "The commitment Puro Taja has toward providing high-quality, fresh fish is unmatched. It’s great to know I’m getting the best seafood while supporting a sustainable business.",
+    imageSrc: "/home/testimonials/6.png",
+    name: "Amit Singh",
+    userName: "Eco-Conscious Consumer",
+  },
+];

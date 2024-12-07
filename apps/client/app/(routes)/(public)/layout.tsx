@@ -7,7 +7,7 @@ const PublicRouteLayout = ({ children }: PublicRouteLayoutProps) => {
   <main className="flex flex-col items-center scroll-smooth min-h-screen">
     <Navbar/>
     <MobileNav/>
-    <div className="mt-14">
+    <div className="mt-14 pb-10">
     {children}
     </div>
   </main>

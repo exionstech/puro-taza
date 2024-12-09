@@ -23,6 +23,7 @@ const config: Config = {
   			foreground: 'hsl(var(--foreground))',
 			violet: "#735498",
 			customBlack: "#1E1D1D",
+			customGray: "#A8A8A8",
   			card: {
   				DEFAULT: 'hsl(var(--card))',
   				foreground: 'hsl(var(--card-foreground))'

@@ -1,5 +1,6 @@
 import React from 'react';
 import ItemCard from './sub-components/best-sellers/item-card';
+import { Marquee } from '@/components/shared/marqee';
 
 const items = [
     {
@@ -26,7 +27,32 @@ const items = [
       itemPrice: 150,
       discount: 20,
     },
+    {
+      itemName: 'Bhetki Fish',
+      itemImage: '/home/seller-card/bhetki.png',
+      itemPrice: 150,
+      discount: 20,
+    },
+    {
+      itemName: 'Mud Crab',
+      itemImage: '/home/seller-card/mud-crab.png',
+      itemPrice: 150,
+      discount: 20,
+    },
+    {
+      itemName: 'Pabda Fish',
+      itemImage: '/home/seller-card/pabda.png',
+      itemPrice: 150,
+      discount: 20,
+    },
+    {
+      itemName: 'Pomfret Fish',
+      itemImage: '/home/seller-card/pomphet.png',
+      itemPrice: 150,
+      discount: 20,
+    },
   ];
+
 
 const BestSellers = () => {
 
@@ -36,17 +62,19 @@ const BestSellers = () => {
       <div className="w-full md:text-start text-center">
         <h1 className="text-3xl text-customBlack font-medium">Best Sellers</h1>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 w-full">
-        {items.map((item, index) => (
-          <ItemCard
-            key={index}
-            itemName={item.itemName}
-            itemImage={item.itemImage}
-            itemPrice={item.itemPrice}
-            discount={item.discount}
-          />
-        ))}
-      </div>
+      <Marquee pauseOnHover className="[--duration:50s] max-w-screen-2xl [mask-image:linear-gradient(to_right,transparent,black_5%,black_95%,transparent)]">
+        <div className="flex gap-6 w-max py-2 overflow-x-hidden">
+          {items.map((item, index) => (
+            <ItemCard
+              key={index}
+              itemName={item.itemName}
+              itemImage={item.itemImage}
+              itemPrice={item.itemPrice}
+              discount={item.discount}
+            />
+          ))}
+        </div>
+      </Marquee>
     </section>
   );
 };

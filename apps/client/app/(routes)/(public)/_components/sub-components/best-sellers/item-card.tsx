@@ -38,7 +38,7 @@ const ItemCard = ({
             <h2 className="text-xs line-through">M.R.P:{" "}{itemPrice}/kg</h2>
           </div>
           <div className="flex items-center justify-center">
-            <Button variant={"outline"} className="border border-violet text-violet">
+            <Button variant={"outline"} className="border px-8 border-violet text-violet">
               ADD
             </Button>
           </div>

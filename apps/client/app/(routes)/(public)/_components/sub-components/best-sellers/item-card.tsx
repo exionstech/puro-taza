@@ -17,7 +17,7 @@ const ItemCard = ({
 }: ItemCardProps) => {
   const discountedPrice = itemPrice - (itemPrice * discount) / 100;
   return (
-    <Card className="px-3 py-3 items-center justify-center flex flex-col md:gap-2 w-full">
+    <Card className="px-5 py-4 items-center justify-center flex flex-col md:gap-2 w-full">
       <div className="w-full flex items-center justify-center">
         <Image
           src={itemImage}

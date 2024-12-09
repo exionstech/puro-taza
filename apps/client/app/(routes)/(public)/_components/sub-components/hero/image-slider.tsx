@@ -25,13 +25,13 @@ const ImageSlider: React.FC<ImageSliderProps> = ({ images, interval = 5000 }) =>
           initial={{ opacity: 0, x: -100 }}
           animate={{ opacity: 1, x: 0 }}
           exit={{ opacity: 0, x: 100 }}
-          transition={{ duration: 0.5 }}
+          transition={{ duration: 0.8 }}
           className="absolute top-0 left-0 w-full h-full bg-cover bg-center"
           style={{ backgroundImage: `url(${images[currentIndex]})` }}
         />
       </AnimatePresence>
       <div className="absolute bottom-0 left-0 w-full text-center mb-10">
-        <h1 className="font-semibold text-2xl md:text-5xl text-white">
+        <h1 className="font-semibold text-3xl md:text-5xl text-white">
           Your favourites fishes are now online
         </h1>
       </div>

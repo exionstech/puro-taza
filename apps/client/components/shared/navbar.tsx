@@ -10,7 +10,8 @@ const user = {
   username: 'sumanmandal',
   email: "suman9732@gmail.com",
   image: "",
-  role: "ADMIN"
+  role: "ADMIN",
+  contact: "9876543210"
 }
 
 const Navbar = () => {
@@ -24,9 +25,9 @@ const Navbar = () => {
         <AddressDialog/>
         <SearchItem/>
       </div>
-      <div className="w-[25%] items-center lg:flex justify-between px-5 hidden">
-        <CartItem/>
+      <div className="w-[25%] items-center lg:flex justify-end gap-8 px-5 hidden">
         <UserNav user={user}/>
+        <CartItem/>
       </div>
       <div className="w-[25%] flex items-center justify-end lg:hidden">
         <UserMobileNav/>

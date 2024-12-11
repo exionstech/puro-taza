@@ -11,7 +11,7 @@ const Copyright = () => {
   return (
     <section className='w-full max-w-screen-2xl mx-auto px-5 md:px-14 py-2 flex items-center justify-between mt-6'>
         <div className="">
-            <h1 className='text-customGray'>© 2024 PuroTaja. All Rights Reserved</h1>
+            <h1 className='text-customGray text-xs'>© 2024 PuroTaja. All Rights Reserved</h1>
         </div>
         <div className="items-center flex justify-center gap-3">
           {socials.map((social, index) => (

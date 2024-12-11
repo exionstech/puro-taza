@@ -27,6 +27,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useAuth } from "@/hooks/use-auth";
+import DropdownIcon from "./dropdown-icon";
 
 interface UserNavProps {
   user: any;
@@ -36,7 +37,7 @@ export function UserNav({ user }: UserNavProps) {
   const { logout, isLoggedIn } = useAuth();
   return (
     <DropdownMenu>
-      <TooltipProvider disableHoverableContent>
+      {/* <TooltipProvider disableHoverableContent>
         <Tooltip delayDuration={100}>
           <TooltipTrigger asChild>
             <DropdownMenuTrigger asChild className="hidden md:flex">
@@ -60,14 +61,23 @@ export function UserNav({ user }: UserNavProps) {
           </TooltipTrigger>
           <TooltipContent side="bottom">Profile</TooltipContent>
         </Tooltip>
-      </TooltipProvider>
+      </TooltipProvider> */}
+      <DropdownMenuTrigger asChild>
+        <Button
+          variant="outline"
+          className="border-none flex items-center dropdown-button"
+        >
+          Account
+          <DropdownIcon size={3} className="ml-1"/>
+        </Button>
+      </DropdownMenuTrigger>
 
       <DropdownMenuContent className="w-60" align="end" forceMount>
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
             <p className="text-sm font-medium leading-none"> {user?.name}</p>
             <p className="text-xs leading-none text-muted-foreground">
-              {user?.email}
+              {user?.contact}
             </p>
           </div>
         </DropdownMenuLabel>

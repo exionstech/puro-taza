@@ -80,4 +80,13 @@
     background-repeat: no-repeat;
     overflow: hidden;
   }
+  .dropdown-button {
+    border: none !important;
+  }
+  
+  .dropdown-button:focus,
+  .dropdown-button:hover {
+    border: none !important;
+    outline: none !important;
+  }
 }

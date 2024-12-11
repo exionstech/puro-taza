@@ -69,6 +69,10 @@
     @apply bg-background text-foreground;
   }
 
+  ::-webkit-scrollbar {
+    display: none;
+  }
+
   .hero {
     position: relative;
     background: url("/home/hero/hero-main.png");

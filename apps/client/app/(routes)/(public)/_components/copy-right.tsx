@@ -13,7 +13,7 @@ const Copyright = () => {
         <div className="">
             <h1 className='text-customGray text-xs'>© 2024 PuroTaja. All Rights Reserved</h1>
         </div>
-        <div className="items-center flex justify-center gap-3">
+        <div className="items-center flex justify-center gap-5">
           {socials.map((social, index) => (
             <Link href={social.link} key={index} className="cursor-pointer">
               <Image src={social.image} alt={social.name} width={20} height={20} />

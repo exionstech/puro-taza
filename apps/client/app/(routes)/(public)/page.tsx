@@ -7,7 +7,6 @@ import BestSellers from "./_components/best-sellers";
 import RecommendedItem from "./_components/recommended-item";
 import { Testimonials } from "./_components/testimonials";
 import GetApp from "./_components/get-app";
-import FooterSection from "./_components/footer";
 
 export default function Home() {
 
@@ -18,7 +17,6 @@ export default function Home() {
       <RecommendedItem/>
       <GetApp/>
       <Testimonials/>
-      <FooterSection/>
     </MaxWrapper>
   );
 }

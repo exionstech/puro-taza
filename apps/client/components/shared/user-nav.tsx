@@ -4,19 +4,11 @@ import {
   Cog,
   LayoutDashboard,
   LogIn,
-  LogOut,
   LogOutIcon,
   ShoppingBasket,
   User,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-  TooltipProvider,
-} from "@/components/ui/tooltip";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -37,31 +29,6 @@ export function UserNav({ user }: UserNavProps) {
   const { logout, isLoggedIn } = useAuth();
   return (
     <DropdownMenu>
-      {/* <TooltipProvider disableHoverableContent>
-        <Tooltip delayDuration={100}>
-          <TooltipTrigger asChild>
-            <DropdownMenuTrigger asChild className="hidden md:flex">
-              <Button
-                variant="ghost"
-                className="relative h-12 w-12 rounded-full"
-              >
-                <Avatar className="h-12 w-12 border">
-                  <AvatarImage
-                    src={user?.image}
-                    alt={`${user?.username}'s profile image`}
-                  />
-                  {user?.name && (
-                    <AvatarFallback className="bg-transparent h-12 w-12 text-xl">
-                      {user?.name[0]}
-                    </AvatarFallback>
-                  )}
-                </Avatar>
-              </Button>
-            </DropdownMenuTrigger>
-          </TooltipTrigger>
-          <TooltipContent side="bottom">Profile</TooltipContent>
-        </Tooltip>
-      </TooltipProvider> */}
       <DropdownMenuTrigger asChild>
         <Button
           variant="outline"

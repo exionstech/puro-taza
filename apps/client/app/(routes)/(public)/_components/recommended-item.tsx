@@ -56,12 +56,12 @@ const items = [
 const RecommendedItem = () => {
 
   return (
-    <section className="w-full max-w-screen-2xl h-auto px-5 md:px-10 flex items-center flex-col mx-auto gap-10 mt-10 md:mt-16">
+    <section className="w-full max-w-screen-2xl h-auto px-5 md:px-10 flex items-center flex-col mx-auto gap-2 mt-10 md:mt-16">
       <div className="w-full md:text-start text-center">
         <h1 className="text-3xl text-customBlack font-medium">Recommended</h1>
       </div>
       <Marquee reverse pauseOnHover className="[--duration:50s] max-w-screen-2xl [mask-image:linear-gradient(to_right,transparent,black_5%,black_95%,transparent)]">
-        <div className="flex gap-6 w-max py-2 overflow-x-hidden">
+        <div className="flex gap-6 w-max py-8 overflow-x-hidden">
           {items.map((item, index) => (
             <ItemCard
               key={index}

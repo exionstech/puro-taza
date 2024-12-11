@@ -69,11 +69,24 @@
     @apply bg-background text-foreground;
   }
 
+  ::-webkit-scrollbar {
+    display: none;
+  }
+
   .hero {
     position: relative;
     background: url("/home/hero/hero-main.png");
     background-size: cover;
     background-repeat: no-repeat;
     overflow: hidden;
+  }
+  .dropdown-button {
+    border: none !important;
+  }
+  
+  .dropdown-button:focus,
+  .dropdown-button:hover {
+    border: none !important;
+    outline: none !important;
   }
 }

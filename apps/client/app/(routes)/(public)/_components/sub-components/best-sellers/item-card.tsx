@@ -21,8 +21,8 @@ const ItemCard = ({
     <div className="relative">
       <Card
         className="px-5 py-4 items-center justify-center flex flex-col md:gap-2 w-full 
-                   transition-all duration-300 ease-in-out 
-                   hover:scale-105 hover:shadow-sm 
+                   transition-all duration-500 ease-in-out 
+                   hover:scale-100 hover:shadow-sm 
                    cursor-pointer peer"
       >
         <div className="w-full flex items-center justify-center overflow-hidden">

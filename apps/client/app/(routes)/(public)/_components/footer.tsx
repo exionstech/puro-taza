@@ -25,8 +25,8 @@ const footerItemsCategories = [
 
 const FooterDiv = () => {
   return (
-    <section className="w-full border-t mx-auto">
-    <div className="w-full border-t max-w-screen-2xl px-[1rem] md:px-14 mx-auto flex flex-col md:flex-row items-start gap-10 mt-10 md:mt-20">
+    <section className="w-full border-t mx-auto mt-10 md:mt-20">
+    <div className="w-full max-w-screen-2xl px-[1rem] md:px-14 mx-auto flex flex-col md:flex-row items-start gap-10">
       <div className="md:w-[60%] w-full mt-10 flex gap-6 lg:justify-between">
         <div className="w-[40%] md:w-1/2 flex flex-col gap-4">
           <div className="w-full">

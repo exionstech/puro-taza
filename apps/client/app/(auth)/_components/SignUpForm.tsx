@@ -19,11 +19,11 @@ import { useAuth } from "@/hooks/use-auth";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
 import Image from "next/image";
 import { FormInput } from "./form-input";
 import { FcGoogle } from "react-icons/fc";
 import { Separator } from "@/components/ui/separator";
+import { SignInFormProps } from "@/types";
 
 const SignUpForm = ({ setNext }: SignInFormProps) => {
   const [checkbox, setCheckbox] = useState<boolean>(false);

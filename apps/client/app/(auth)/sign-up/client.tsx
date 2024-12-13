@@ -10,7 +10,7 @@ const SignUpClientPage = () => {
 
   return (
     <section className="w-full max-w-screen-2xl h-screen overflow-y-hidden mx-auto px-5 md:px-14 flex items-center justify-center">
-      <div className="md:w-[50%] w-full h-full flex items-center justify-center px-10">
+      <div className="md:w-[50%] w-full h-full flex items-center justify-center md:px-10">
         <div className="w-full px-5 mt-8">
           <h1 className="text-3xl font-bold">{!next ? "Signup" : "Verify"}</h1>
           <div className="w-full py-10">

@@ -19,9 +19,9 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Separator } from "@/components/ui/separator";
-import { Dot } from "lucide-react";
 import Image from "next/image";
 import { FormInput } from "./form-input";
+import { SignInFormProps } from "@/types";
 
 const SignInForm = ({ setNext }: SignInFormProps) => {
   const router = useRouter();

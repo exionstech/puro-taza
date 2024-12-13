@@ -29,3 +29,15 @@ export const VerifyFormSchema = z.object({
     message: "OTP is required",
   }),
 });
+
+
+export const addressSchema = z.object({
+  name: z.string().min(2, { message: "Name must be at least 2 characters" }),
+  mobileNo: z.string()
+    .regex(/^[6-9]\d{9}$/, { message: "Invalid mobile number" }),
+  houseNo: z.string().min(1, { message: "House number is required" }),
+  street: z.string().min(2, { message: "Street must be at least 2 characters" }),
+  district: z.string().min(2, { message: "District must be at least 2 characters" }),
+  pinCode: z.string()
+    .regex(/^\d{6}$/, { message: "Pin code must be 6 digits" })
+});

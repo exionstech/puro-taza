@@ -26,14 +26,14 @@ const SearchItem = ({
   };
 
   return (
-      <div className="relative w-full">
+      <div className="relative w-full bg-[#F6F6F6] rounded-xl">
         <Search className="absolute left-2 top-2.5 size-5 text-[#CBCBCB]" />
         <Input
           type="text"
           placeholder={placeholder}
           value={searchValue}
           onChange={handleChange}
-          className="pl-8 pr-8 text-neutral-500 bg-muted"
+          className="pl-8 pr-8 text-neutral-500 bg-[#F6F6F6]"
         />
         {searchValue && (
           <Button

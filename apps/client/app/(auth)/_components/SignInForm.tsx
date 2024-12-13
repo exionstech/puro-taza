@@ -58,7 +58,7 @@ const SignInForm = ({ setNext }: SignInFormProps) => {
           render={({ field }) => (
             <FormItem>
               <FormControl>
-                <Input type="tel" {...field} placeholder="Phone" />
+                <Input type="tel" {...field} placeholder="Phone"  className="h-12 text-xl rounded-xl"/>
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -66,15 +66,28 @@ const SignInForm = ({ setNext }: SignInFormProps) => {
         />
         <Button
           type="submit"
-          className="w-full"
+          className="w-full text-2xl py-6 flex items-center rounded-xl"
           disabled={loading}
         >
-          Sign In
+          <h1 className="text-2xl">Login</h1>
+        </Button>
+        <div className="flex w-full gap-4 items-center justify-center">
+          <div className="h-[1px] w-1/2 bg-[#1E1D1D]"/>
+          <h1 className="text-xl">or</h1>
+          <div className="h-[1px] w-1/2 bg-[#1E1D1D]"/>
+        </div>
+        <Button
+        variant={"outline"}
+        className="w-full py-6 flex items-center"
+        disabled={loading}
+        >
+          <h1 className="text-xl">Sign in with Google</h1>
         </Button>
       </form>
-      <div className="mt-5">
-      <Link href={"/sign-up"} className="border-b-2 border-violet">
-          Sign Up
+      <div className="mt-5 flex gap-3">
+        <h1>New to Puro Taja?</h1>
+      <Link href={"/sign-up"} className="border-b-2 border-violet text-violet font-medium">
+          Create Account
       </Link>
       </div>
     </Form>

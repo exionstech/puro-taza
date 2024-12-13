@@ -13,7 +13,6 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FcGoogle } from "react-icons/fc";
 import { SignInFormSchema } from "@/schemas";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/use-auth";
 import { toast } from "sonner";
@@ -22,6 +21,7 @@ import Link from "next/link";
 import { Separator } from "@/components/ui/separator";
 import { Dot } from "lucide-react";
 import Image from "next/image";
+import { FormInput } from "./form-input";
 
 const SignInForm = ({ setNext }: SignInFormProps) => {
   const router = useRouter();
@@ -66,16 +66,16 @@ const SignInForm = ({ setNext }: SignInFormProps) => {
                     <Image
                       src="/auth/indian-flag.svg"
                       alt="India"
-                      width={24}
-                      height={24}
+                      width={20}
+                      height={20}
                     />
                     <h1 className="text-muted-foreground">+91</h1>
                   </div>
-                  <Input
+                  <FormInput
                     type="tel"
                     {...field}
                     placeholder="Phone"
-                    className="flex-1 rounded-none h-full placeholder:text-lg text-lg focus:outline-none"
+                    className="flex-1 h-full focus:outline-none"
                   />
                 </div>
               </FormControl>
@@ -85,7 +85,7 @@ const SignInForm = ({ setNext }: SignInFormProps) => {
         />
         <Button
           type="submit"
-          className="w-full text-2xl py-6 flex items-center justify-center rounded-xl"
+          className="w-full text-xl py-6 flex items-center justify-center rounded-xl"
           disabled={loading}
         >
           Login

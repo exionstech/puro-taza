@@ -3,6 +3,7 @@ import Navbar from "@/components/shared/navbar";
 import React from "react";
 import FooterSection from "./_components/footer";
 import Copyright from "./_components/copy-right";
+import { PublicRouteLayoutProps } from "@/types";
 
 const PublicRouteLayout = ({ children }: PublicRouteLayoutProps) => {
   return (

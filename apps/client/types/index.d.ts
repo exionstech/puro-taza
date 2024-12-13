@@ -51,3 +51,12 @@ interface UseAuthReturnTypes {
 interface SignInFormProps {
   setNext: (next: boolean) => void;
 }
+
+export interface Address {
+  id: number;
+  name: string;
+  address: string;
+  isDefault?: boolean;
+  latitude?: number;
+  longitude?: number;
+}

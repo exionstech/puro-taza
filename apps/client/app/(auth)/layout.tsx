@@ -1,4 +1,5 @@
 import { Toaster } from "@/components/ui/toaster";
+import { AuthRouteLayoutProps } from "@/types";
 import React from "react";
 
 const AuthRouteLayout = ({ children }: AuthRouteLayoutProps) => {

@@ -3,7 +3,7 @@ import React from "react";
 
 const AuthRouteLayout = ({ children }: AuthRouteLayoutProps) => {
   return (
-    <main className="flex justify-center items-center h-screen">
+    <main className="flex justify-center items-center min-h-screen">
       {children}
       <Toaster />
     </main>

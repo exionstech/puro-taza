@@ -18,12 +18,8 @@ const ItemCard = ({
   const discountedPrice = itemPrice - (itemPrice * discount) / 100;
 
   return (
-    <div className="relative">
       <Card
-        className="px-5 py-4 items-center justify-center flex flex-col md:gap-2 w-full 
-                   transition-all duration-500 ease-in-out 
-                   hover:scale-100 hover:shadow-sm 
-                   cursor-pointer peer"
+        className="px-5 py-4 items-center justify-center flex flex-col md:gap-2 w-full"
       >
         <div className="w-full flex items-center justify-center overflow-hidden">
           <Image
@@ -31,14 +27,12 @@ const ItemCard = ({
             alt={itemName}
             height={250}
             width={250}
-            className="shrink-0 transition-transform duration-300 
-                       peer-hover:scale-110"
+            className="shrink-0"
           />
         </div>
         <div className="flex flex-col w-full">
           <h1
-            className="text-customBlack text-xl font-medium transition-colors duration-300 
-                         peer-hover:text-violet"
+            className="text-customBlack text-xl font-medium"
           >
             {itemName}
           </h1>
@@ -46,8 +40,7 @@ const ItemCard = ({
             <div className="flex flex-col">
               <h1 className="text-lg font-semibold">
                 <span
-                  className="text-sm font-medium text-red-500 transition-transform duration-300 
-                                peer-hover:scale-110 mr-2"
+                  className="text-sm font-medium text-red-500 mr-2"
                 >
                   -{discount}%
                 </span>{" "}
@@ -58,9 +51,7 @@ const ItemCard = ({
             <div className="flex items-center justify-center">
               <Button
                 variant={"outline"}
-                className="border px-8 border-violet text-violet 
-                           transition-all duration-300 
-                           peer-hover:bg-violet peer-hover:text-white"
+                className="border px-8 border-violet text-violet"
               >
                 ADD
               </Button>
@@ -68,7 +59,6 @@ const ItemCard = ({
           </div>
         </div>
       </Card>
-    </div>
   );
 };
 

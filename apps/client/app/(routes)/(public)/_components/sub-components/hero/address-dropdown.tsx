@@ -13,15 +13,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Plus, MapPin, LocateFixed } from 'lucide-react';
 import GoogleMapModal from '@/components/shared/google-map-modal';
-
-interface Address {
-  id: number | undefined;
-  name: string;
-  address: string;
-  isDefault?: boolean;
-  latitude?: number;
-  longitude?: number;
-}
+import { Address, AddressInput } from '@/types';
+import AddAddressModal from './address-modal';
 
 const AddressDropdown: React.FC = () => {
   const [addresses, setAddresses] = useState<Address[]>([
@@ -48,17 +41,33 @@ const AddressDropdown: React.FC = () => {
   );
 
   const [isMapModalOpen, setIsMapModalOpen] = useState(false);
+  const [isAddAddressModalOpen, setIsAddAddressModalOpen] = useState(false);
 
   const handleAddressSelect = (address: Address) => {
     setSelectedAddress(address);
   };
 
   const handleAddNewAddress = () => {
-    alert('Add New Address functionality to be implemented');
+    setIsAddAddressModalOpen(true);
   };
 
   const handleCurrentLocation = () => {
     setIsMapModalOpen(true);
+  };
+
+  const handleAddAddress = (newAddress: AddressInput) => {
+    const newAddressWithId: Address = {
+      ...newAddress,
+      id: addresses.length > 0 ? Math.max(...addresses.map(a => a.id)) + 1 : 1
+    };
+
+    // Add new address to the list
+    const updatedAddresses = [...addresses, newAddressWithId];
+    setAddresses(updatedAddresses);
+    
+    // Select the newly added address
+    setSelectedAddress(newAddressWithId);
+    setIsAddAddressModalOpen(false);
   };
 
   const handleMapAddressSelect = (selectedLocationAddress: Address) => {
@@ -73,11 +82,12 @@ const AddressDropdown: React.FC = () => {
       // Create a new address with a unique ID
       const newAddress: Address = {
         ...selectedLocationAddress,
-        id: addresses.length + 1
+        id: addresses.length > 0 ? Math.max(...addresses.map(a => a.id)) + 1 : 1
       };
 
       // Add new address to the list
-      setAddresses(prev => [...prev, newAddress]);
+      const updatedAddresses = [...addresses, newAddress];
+      setAddresses(updatedAddresses);
       setSelectedAddress(newAddress);
     } else {
       // Select existing address
@@ -99,7 +109,7 @@ const AddressDropdown: React.FC = () => {
               {selectedAddress.name}
             </h1>
             <p className="flex items-center">
-              <span className="text-sm text-gray-600 line-clamp-1 max-w-[20vh]">
+              <span className="text-sm text-gray-600 line-clamp-1 max-w-[25vh] rounded-r-lg">
                 {selectedAddress.address}
               </span>
               <DropdownIcon size={3} className="ml-3"/>
@@ -134,6 +144,11 @@ const AddressDropdown: React.FC = () => {
                       <p className="text-sm text-gray-500 line-clamp-1">
                         {address.address}
                       </p>
+                      {address.mobileNo && (
+                        <p className="text-xs text-gray-400">
+                          {address.mobileNo}
+                        </p>
+                      )}
                     </div>
                   </div>
                   {selectedAddress.id === address.id && (
@@ -177,6 +192,14 @@ const AddressDropdown: React.FC = () => {
           isOpen={isMapModalOpen}
           onClose={() => setIsMapModalOpen(false)}
           onAddressSelect={handleMapAddressSelect}
+        />
+      )}
+
+      {isAddAddressModalOpen && (
+        <AddAddressModal 
+          isOpen={isAddAddressModalOpen}
+          onClose={() => setIsAddAddressModalOpen(false)}
+          onAddAddress={handleAddAddress}
         />
       )}
     </>

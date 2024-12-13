@@ -1,5 +1,5 @@
 import Logo from './logo';
-import AddressDialog from '@/app/(routes)/(public)/_components/sub-components/hero/address-dialog';
+import AddressDialog from '@/app/(routes)/(public)/_components/sub-components/hero/address-dropdown';
 import SearchItem from '@/app/(routes)/(public)/_components/sub-components/hero/search-item';
 import { UserNav } from './user-nav';
 import CartItem from '@/app/(routes)/(public)/_components/sub-components/hero/cart-item';

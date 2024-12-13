@@ -52,11 +52,17 @@ interface SignInFormProps {
   setNext: (next: boolean) => void;
 }
 
+
+
 export interface Address {
   id: number;
   name: string;
   address: string;
+  mobileNo?: string;
   isDefault?: boolean;
   latitude?: number;
   longitude?: number;
 }
+
+// Create a type that includes all properties except 'id'
+export type AddressInput = Omit<Address, 'id'>;

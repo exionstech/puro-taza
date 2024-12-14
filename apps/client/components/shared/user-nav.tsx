@@ -32,7 +32,7 @@ export function UserNav({ user }: UserNavProps) {
       <DropdownMenuTrigger asChild>
         <Button
           variant="outline"
-          className="border-none flex items-center dropdown-button"
+          className="border-none font-normal text-lg flex items-center dropdown-button"
         >
           Account
           <DropdownIcon size={3} className="ml-1"/>

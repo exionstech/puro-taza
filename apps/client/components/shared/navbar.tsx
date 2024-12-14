@@ -1,9 +1,9 @@
 import Logo from './logo';
-import AddressDialog from '@/app/(routes)/(public)/_components/sub-components/hero/address-dropdown';
-import SearchItem from '@/app/(routes)/(public)/_components/sub-components/hero/search-item';
+import SearchItem from '@/components/shared/navbar/search-item';
 import { UserNav } from './user-nav';
-import CartItem from '@/app/(routes)/(public)/_components/sub-components/hero/cart-item';
+import CartItem from '@/components/shared/navbar/cart-item';
 import UserMobileNav from './user-mobile-nav';
+import AddressDropdown from './navbar/address-dropdown';
 
 const user = {
   name: 'Suman Mandal',
@@ -22,7 +22,7 @@ const Navbar = () => {
         <Logo height={90} width={90}/>
       </div>
       <div className="w-[65%] items-center flex gap-10 px-5">
-        <AddressDialog/>
+        <AddressDropdown/>
         <SearchItem/>
       </div>
       <div className="w-[25%] items-center lg:flex justify-end gap-8 px-5 hidden">

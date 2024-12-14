@@ -1,4 +1,11 @@
+interface RoutesLayoutProps {
+  children: React.ReactNode;
+}
 interface PublicRouteLayoutProps {
+  children: React.ReactNode;
+}
+
+interface ProtectedRouteLayoutProps {
   children: React.ReactNode;
 }
 

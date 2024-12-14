@@ -11,24 +11,16 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Plus, MapPin, LocateFixed, Edit, Trash2, Dot } from "lucide-react";
+import { Plus, MapPin, LocateFixed } from "lucide-react";
 import GoogleMapModal from "@/components/shared/navbar/google-map-modal";
 import { Address, AddressInput } from "@/types";
 import AddAddressModal from "./address-modal";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogFooter,
-} from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 
 const AddressDropdown: React.FC = () => {
   const [addresses, setAddresses] = useState<Address[]>(() => {
-    if (typeof window !== 'undefined') {
+    if (typeof window !== "undefined") {
       const savedAddresses = localStorage.getItem("savedAddresses");
       return savedAddresses ? JSON.parse(savedAddresses) : [];
     }
@@ -38,10 +30,6 @@ const AddressDropdown: React.FC = () => {
   const [selectedAddress, setSelectedAddress] = useState<Address | null>(null);
   const [isMapModalOpen, setIsMapModalOpen] = useState(false);
   const [isAddAddressModalOpen, setIsAddAddressModalOpen] = useState(false);
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [addressToEdit, setAddressToEdit] = useState<Address | null>(null);
-  const [addressToDelete, setAddressToDelete] = useState<Address | null>(null);
 
   // Save addresses to localStorage whenever they change
   useEffect(() => {
@@ -116,45 +104,6 @@ const AddressDropdown: React.FC = () => {
     console.log("Added Location Address:", selectedLocationAddress);
   };
 
-  const handleEditAddress = (editedAddress: Address) => {
-    const updatedAddresses = addresses.map((addr) =>
-      addr.id === editedAddress.id ? editedAddress : addr
-    );
-    setAddresses(updatedAddresses);
-    setSelectedAddress(editedAddress);
-    setIsEditModalOpen(false);
-    console.log("Edited Address:", editedAddress);
-  };
-
-  const handleDeleteAddress = () => {
-    if (addressToDelete) {
-      const updatedAddresses = addresses.filter(
-        (addr) => addr.id !== addressToDelete.id
-      );
-      setAddresses(updatedAddresses);
-
-      // If the deleted address was selected, select the first address or null
-      if (selectedAddress?.id === addressToDelete.id) {
-        setSelectedAddress(
-          updatedAddresses.length > 0 ? updatedAddresses[0] : null
-        );
-      }
-
-      setIsDeleteModalOpen(false);
-      console.log("Deleted Address:", addressToDelete);
-    }
-  };
-
-  const openEditModal = (address: Address) => {
-    setAddressToEdit(address);
-    setIsEditModalOpen(true);
-  };
-
-  const openDeleteModal = (address: Address) => {
-    setAddressToDelete(address);
-    setIsDeleteModalOpen(true);
-  };
-
   return (
     <>
       <DropdownMenu>
@@ -197,38 +146,15 @@ const AddressDropdown: React.FC = () => {
                       "bg-violet/10 border-r-[3px] border-violet"
                   )}
                 >
-                  <div className="flex items-center justify-between w-full">
-                    <div className="flex items-center space-x-3">
-                      <MapPin className="w-5 h-5 text-violet" />
-                      <div>
-                        <p className="text-sm text-gray-500 line-clamp-1">
-                          {address.address}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="flex space-x-2">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-8 w-8"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          openEditModal(address);
-                        }}
-                      >
-                        <Edit className="h-4 w-4 text-gray-500" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-8 w-8"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          openDeleteModal(address);
-                        }}
-                      >
-                        <Trash2 className="h-4 w-4 text-red-500" />
-                      </Button>
+                  <div className="flex items-center space-x-3">
+                    <MapPin className="w-5 h-5 text-violet" />
+                    <div className="flex justify-between">
+                      <p className="text-sm text-gray-500 line-clamp-1">
+                        {address.address}
+                      </p>
+                      {address.id === selectedAddress?.id && (
+                        <p className="text-xs text-center text-white bg-violet px-2 py-1 rounded-lg">Selected</p>
+                      )}
                     </div>
                   </div>
                 </DropdownMenuItem>
@@ -286,41 +212,6 @@ const AddressDropdown: React.FC = () => {
           onClose={() => setIsAddAddressModalOpen(false)}
           onAddAddress={handleAddAddress}
         />
-      )}
-  
-        {/* Edit Address Modal */}
-      {isEditModalOpen && addressToEdit && (
-        <AddAddressModal
-          isOpen={isEditModalOpen}
-          onClose={() => setIsEditModalOpen(false)}
-          onAddAddress={(address) => handleEditAddress(address as Address)}
-          initialData={addressToEdit}
-        />
-      )}
-
-      {/* Delete Confirmation Modal */}
-      {isDeleteModalOpen && addressToDelete && (
-        <Dialog open={isDeleteModalOpen} onOpenChange={setIsDeleteModalOpen}>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Delete Address</DialogTitle>
-              <DialogDescription>
-                Are you sure you want to delete this address?
-              </DialogDescription>
-            </DialogHeader>
-            <DialogFooter>
-              <Button
-                variant="outline"
-                onClick={() => setIsDeleteModalOpen(false)}
-              >
-                Cancel
-              </Button>
-              <Button variant="destructive" onClick={handleDeleteAddress}>
-                Delete
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
       )}
     </>
   );

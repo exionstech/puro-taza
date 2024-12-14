@@ -3,7 +3,7 @@ import React from "react";
 
 const EmptyCart = () => {
   return (
-    <div className="w-full flex items-center justify-center flex-col gap-10 text-center">
+    <div className="w-full flex items-center justify-center flex-col mt-10 gap-10 text-center">
         <h1 className="text-3xl">Opps ! Nothing in cart.</h1>
       <Image
         src={"/cart/empty-cart.png"}

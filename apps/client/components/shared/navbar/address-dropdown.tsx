@@ -116,7 +116,7 @@ const AddressDropdown: React.FC = () => {
               Select Address
             </h1>
             <p className="flex items-center">
-              <span className="text-sm text-gray-600 line-clamp-1 max-w-[25vh] rounded-r-lg [mask-image:linear-gradient(to_right,transparent,black_0%,black_95%,transparent)]">
+              <span className="text-sm text-gray-600 line-clamp-1 max-w-[20vh] rounded-r-lg [mask-image:linear-gradient(to_right,transparent,black_0%,black_95%,transparent)]">
                 {selectedAddress ? selectedAddress.address : "No address added"}
               </span>
               <DropdownIcon size={3} className="ml-3" />

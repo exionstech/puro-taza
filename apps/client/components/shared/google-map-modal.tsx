@@ -258,7 +258,7 @@ const GoogleMapModal: React.FC<GoogleMapModalProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="w-full h-full md:max-w-[800px] md:h-[600px] flex flex-col">
+      <DialogContent className="w-full h-full md:max-w-[800px] md:h-[550px] 2xl:h-[600px] flex flex-col">
         <DialogHeader>
           <DialogTitle>Select Location on Map</DialogTitle>
         </DialogHeader>

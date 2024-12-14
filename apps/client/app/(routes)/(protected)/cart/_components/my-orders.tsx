@@ -1,6 +1,7 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 import React from "react";
+import OngoingOrder from "./ongoing-order";
 
 const MyOrders = () => {
   return (
@@ -13,8 +14,8 @@ const MyOrders = () => {
           <TabsTrigger className="w-[50%] text-center text-xl" value="ongoing">Ongoing</TabsTrigger>
           <TabsTrigger className="w-[50%] text-center text-xl" value="history">History</TabsTrigger>
         </TabsList>
-        <TabsContent value="ongoing">
-          Make changes to your account here.
+        <TabsContent value="ongoing" className="pt-3">
+          <OngoingOrder/>
         </TabsContent>
         <TabsContent value="history">Change your password here.</TabsContent>
       </Tabs>

@@ -61,7 +61,7 @@ const RecommendedItem = () => {
         <h1 className="text-3xl text-customBlack font-medium">Recommended</h1>
       </div>
       <Marquee reverse pauseOnHover className="[--duration:50s] max-w-screen-2xl [mask-image:linear-gradient(to_right,transparent,black_5%,black_95%,transparent)]">
-        <div className="flex gap-6 w-max py-8 overflow-x-hidden">
+        <div className="flex gap-4 w-max py-8 overflow-x-hidden">
           {items.map((item, index) => (
             <ItemCard
               key={index}

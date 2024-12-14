@@ -50,9 +50,9 @@ export async function GET(
     const total = await prisma.product.count({ where });
     const afterDiscount = products.map((product) => ({
       ...product,
-      discounted_price:
-        product.discount &&
-        product.price - (product.price * product.discount) / 100,
+      discounted_price: product.discount
+        ? product.price - (product.price * product.discount) / 100
+        : product.price,
     }));
 
     return NextResponse.json({

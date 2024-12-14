@@ -24,9 +24,9 @@ export async function GET(
     }
     const afterDiscount = {
       ...product,
-      discounted_price:
-        product.discount &&
-        product.price - (product.price * product.discount) / 100,
+      discounted_price: product.discount
+        ? product.price - (product.price * product.discount) / 100
+        : product.price,
     };
 
     return NextResponse.json(afterDiscount);

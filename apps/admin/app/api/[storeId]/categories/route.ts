@@ -33,7 +33,6 @@ export async function GET(
     const categories = await prisma.category.findMany({
       include: {
         image: true,
-        subcategory: true,
       },
     });
     return corsResponse(

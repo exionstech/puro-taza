@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useSubCategories } from "@/hooks/use-subcategories";
 import { ProductWithRelations, useProduct } from "@/hooks/use-products";
+import { toast } from "sonner";
 
 interface Props {
   setOpen: (open: boolean) => void;
@@ -74,17 +75,22 @@ const ProductsTable = ({ setOpen, setMode, setInitialData }: Props) => {
               <TableRow key={product.id}>
                 <TableHead>{product.id}</TableHead>
                 <TableHead>
-                  {product.image && product.image.length > 0 && (
+                  {product.image && product.image?.length > 0 ? (
                     <img
                       src={product.image[0].url}
-                      alt={product.image[0].id}
+                      alt={product.image[0].url}
                       className="w-10 h-10 rounded-md"
                     />
+                  ) : (
+                    <p>No image</p>
                   )}
                 </TableHead>
                 <TableHead>{product.name}</TableHead>
                 <TableHead>{product.category.name}</TableHead>
-                <TableHead>{product.subcategory.name}</TableHead>
+                <TableHead>
+                  {product.subcategories &&
+                    product.subcategories.map((scat) => scat.name).join(", ")}
+                </TableHead>
                 <TableHead className="flex items-center gap-2">
                   <Button
                     size={"icon"}
@@ -99,7 +105,10 @@ const ProductsTable = ({ setOpen, setMode, setInitialData }: Props) => {
                   <Button
                     variant={"destructive"}
                     size={"icon"}
-                    onClick={() => deleteProduct(product.id)}
+                    onClick={() => {
+                      deleteProduct(product.id);
+                      toast.success("Product deleted successfully.");
+                    }}
                     disabled={loading}
                   >
                     <Trash2 />

@@ -23,7 +23,7 @@ export async function GET(
 
     // Construct where clause
     const where: any = {};
-    
+
     if (categoryId) where.categoryId = categoryId;
     if (subcategoryId) where.subcategoryId = subcategoryId;
     if (minPrice || maxPrice) {
@@ -39,7 +39,6 @@ export async function GET(
       take: limit,
       include: {
         category: true,
-        subcategory: true,
         image: true,
       },
       orderBy: {
@@ -85,25 +84,31 @@ export async function POST(
       description,
       price,
       categoryId,
-      subcategoryId,
       stock,
       image,
-      discount
+      discount,
+      subcategories,
     } = body;
 
     // Validate required fields
     if (!name) {
       return new NextResponse("Name is required", { status: 400 });
     }
+
     if (!price) {
       return new NextResponse("Price is required", { status: 400 });
     }
+
     if (!categoryId) {
       return new NextResponse("Category ID is required", { status: 400 });
     }
-    if (!subcategoryId) {
-      return new NextResponse("Subcategory ID is required", { status: 400 });
-    }
+
+    const subdata = await prisma.subcategory.findMany({});
+
+    const addSubcategories = subcategories?.map(
+      (subcategoryId: string) =>
+        subdata.find((sub) => sub.id === subcategoryId) || {}
+    );
 
     // Create product
     const product = await prisma.product.create({
@@ -114,15 +119,20 @@ export async function POST(
         stock: stock || 0,
         discount: discount || 0,
         categoryId,
-        subcategoryId,
+        subcategories: addSubcategories,
+        image: image && {
+          deleteMany: {},
+          createMany: {
+            data: image.map((image: { url: string }) => image),
+          },
+        },
       },
       include: {
         image: true,
         category: true,
-        subcategory: true,
       },
     });
-
+    
     return NextResponse.json(product);
   } catch (error) {
     console.error("[PRODUCTS_POST]", error);

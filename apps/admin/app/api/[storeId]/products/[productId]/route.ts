@@ -14,7 +14,6 @@ export async function GET(
       },
       include: {
         category: true,
-        subcategory: true,
         image: true,
       },
     });
@@ -53,7 +52,7 @@ export async function PATCH(
       price,
       stock,
       categoryId,
-      subcategoryId,
+      subcategories,
       image,
     } = body;
 
@@ -68,6 +67,13 @@ export async function PATCH(
       return new NextResponse("Product not found", { status: 404 });
     }
 
+    const subdata = await prisma.subcategory.findMany({});
+
+    const addSubcategories = subcategories?.map(
+      (subcategoryId: string) =>
+        subdata.find((sub) => sub.id === subcategoryId) || {}
+    );
+
     // Update product
     const product = await prisma.product.update({
       where: {
@@ -79,7 +85,7 @@ export async function PATCH(
         price,
         stock,
         categoryId,
-        subcategoryId,
+        subcategories: addSubcategories,
         image: image && {
           deleteMany: {},
           createMany: {
@@ -90,7 +96,6 @@ export async function PATCH(
       include: {
         image: true,
         category: true,
-        subcategory: true,
       },
     });
 

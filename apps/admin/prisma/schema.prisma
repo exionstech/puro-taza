@@ -85,7 +85,7 @@ model Image {
   categoryId    String? @db.ObjectId
   subcategoryId String? @db.ObjectId
   productId     String? @db.ObjectId
-
+  
   category    Category?    @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   subcategory Subcategory? @relation(fields: [subcategoryId], references: [id], onDelete: Cascade)
   product     Product?     @relation(fields: [productId], references: [id], onDelete: Cascade)
@@ -96,7 +96,6 @@ model Category {
   name String @unique
 
   image       Image[]
-  subcategory Subcategory[]
   product     Product[]
 
   createdAt DateTime @default(now())
@@ -106,15 +105,11 @@ model Category {
 model Subcategory {
   id         String @id @default(auto()) @map("_id") @db.ObjectId
   name       String @unique
-  categoryId String @db.ObjectId
 
   image    Image[]
-  category Category @relation(fields: [categoryId], references: [id])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
-  product Product[]
 }
 
 model Product {
@@ -126,11 +121,10 @@ model Product {
   discount    Float?
   image       Image[]
 
-  categoryId    String @db.ObjectId
-  subcategoryId String @db.ObjectId
+  subcategories Json[]
 
-  category    Category    @relation(fields: [categoryId], references: [id])
-  subcategory Subcategory @relation(fields: [subcategoryId], references: [id])
+  categoryId String @db.ObjectId
+  category Category @relation(fields: [categoryId], references: [id])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

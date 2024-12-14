@@ -39,7 +39,7 @@ export const ProductsSchema = z.object({
   stock: z.number().min(1),
   discount: z.number().min(0),
   categoryId: z.string(),
-  subcategories: z.array(z.string()),
+  subcategories: z.array(z.string()).optional(),
   image: z.array(
     z.object({
       url: z.string(),
@@ -174,7 +174,7 @@ const ProductsForm = ({ mode = "create", initialData, setOpen }: Props) => {
       mode === "create"
         ? await createProduct(body)
         : initialData && (await updateProduct(initialData.id, body));
-      
+
       const message =
         mode === "create"
           ? "Product created successfully."

@@ -67,7 +67,11 @@ export async function PATCH(
       return new NextResponse("Product not found", { status: 404 });
     }
 
-    const subdata = await prisma.subcategory.findMany({});
+    const subdata = await prisma.subcategory.findMany({
+      include: {
+        image: true,
+      },
+    });
 
     const addSubcategories = subcategories?.map(
       (subcategoryId: string) =>
@@ -89,7 +93,7 @@ export async function PATCH(
         image: image && {
           deleteMany: {},
           createMany: {
-            data: image.map((image: { url: string }) => image),
+            data: image.map((image: { url: string; key: string }) => image),
           },
         },
       },

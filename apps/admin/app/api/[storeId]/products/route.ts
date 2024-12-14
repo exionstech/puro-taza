@@ -103,7 +103,11 @@ export async function POST(
       return new NextResponse("Category ID is required", { status: 400 });
     }
 
-    const subdata = await prisma.subcategory.findMany({});
+    const subdata = await prisma.subcategory.findMany({
+      include: {
+        image: true,
+      },
+    });
 
     const addSubcategories = subcategories?.map(
       (subcategoryId: string) =>
@@ -120,19 +124,28 @@ export async function POST(
         discount: discount || 0,
         categoryId,
         subcategories: addSubcategories,
-        image: image && {
-          deleteMany: {},
-          createMany: {
-            data: image.map((image: { url: string }) => image),
-          },
-        },
       },
       include: {
         image: true,
         category: true,
       },
     });
-    
+
+    // Create images if provided
+    if (image && Array.isArray(image)) {
+      await Promise.all(
+        image.map(async (img: { url: string; key: string }) => {
+          await prisma.image.create({
+            data: {
+              url: img.url,
+              key: img.key,
+              productId: product.id,
+            },
+          });
+        })
+      );
+    }
+
     return NextResponse.json(product);
   } catch (error) {
     console.error("[PRODUCTS_POST]", error);

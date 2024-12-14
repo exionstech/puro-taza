@@ -19,7 +19,7 @@ const ItemCard = ({
 
   return (
       <Card
-        className="px-5 py-4 items-center justify-center flex flex-col md:gap-2 w-full"
+        className="px-5 py-4 items-center rounded-xl shadow-sm justify-center flex flex-col md:gap-2 w-full"
       >
         <div className="w-full flex items-center justify-center overflow-hidden">
           <Image
@@ -32,7 +32,7 @@ const ItemCard = ({
         </div>
         <div className="flex flex-col w-full">
           <h1
-            className="text-customBlack text-xl font-medium"
+            className="text-customBlack text-xl font-normal"
           >
             {itemName}
           </h1>
@@ -51,7 +51,7 @@ const ItemCard = ({
             <div className="flex items-center justify-center">
               <Button
                 variant={"outline"}
-                className="border px-8 border-violet text-violet"
+                className="border px-8 border-violet text-violet hover:bg-violet hover:text-white"
               >
                 ADD
               </Button>

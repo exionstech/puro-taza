@@ -1,4 +1,11 @@
+interface RoutesLayoutProps {
+  children: React.ReactNode;
+}
 interface PublicRouteLayoutProps {
+  children: React.ReactNode;
+}
+
+interface ProtectedRouteLayoutProps {
   children: React.ReactNode;
 }
 
@@ -51,3 +58,18 @@ interface UseAuthReturnTypes {
 interface SignInFormProps {
   setNext: (next: boolean) => void;
 }
+
+
+
+export interface Address {
+  id: number;
+  address: string;
+  isDefault?: boolean;
+  latitude?: number;
+  longitude?: number;
+
+  nickname?: string;
+  isDefault?: boolean;
+}
+
+export type AddressInput = Omit<Address, 'id'>;

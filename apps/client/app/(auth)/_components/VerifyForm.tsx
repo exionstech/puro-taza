@@ -43,7 +43,7 @@ const VerifyForm = () => {
       console.error(error);
     }
   };
-  
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-4">
@@ -53,7 +53,12 @@ const VerifyForm = () => {
           render={({ field }) => (
             <FormItem>
               <FormControl>
-                <Input type="text" {...field} placeholder="Enter your OTP" />
+                <Input
+                  type="text"
+                  {...field}
+                  placeholder="Enter your OTP"
+                  className="h-12 rounded-xl"
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -61,7 +66,7 @@ const VerifyForm = () => {
         />
         <Button
           type="submit"
-          className="w-full bg-[#735498]"
+          className="w-full text-xl py-6 flex items-center justify-center rounded-xl"
           disabled={loading}
         >
           Verify Account

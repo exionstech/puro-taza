@@ -1,4 +1,5 @@
 import { DEFAULT_ROUTE } from "@/routes";
+import { LoginReturnType } from "@/types";
 import axios from "axios";
 import { NextApiResponse } from "next";
 import { NextRequest, NextResponse } from "next/server";

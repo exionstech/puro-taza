@@ -18,6 +18,12 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useAuth } from "@/hooks/use-auth";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
+import Image from "next/image";
+import { FormInput } from "./form-input";
+import { FcGoogle } from "react-icons/fc";
+import { Separator } from "@/components/ui/separator";
+import { SignInFormProps } from "@/types";
 
 const SignUpForm = ({ setNext }: SignInFormProps) => {
   const [checkbox, setCheckbox] = useState<boolean>(false);
@@ -50,7 +56,7 @@ const SignUpForm = ({ setNext }: SignInFormProps) => {
       console.error(error);
     }
   };
-  
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-4">
@@ -60,7 +66,7 @@ const SignUpForm = ({ setNext }: SignInFormProps) => {
           render={({ field }) => (
             <FormItem>
               <FormControl>
-                <Input type="text" {...field} placeholder="Full Name" />
+                <Input type="text" {...field} placeholder="Full Name" className="h-12 rounded-xl"/>
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -72,7 +78,23 @@ const SignUpForm = ({ setNext }: SignInFormProps) => {
           render={({ field }) => (
             <FormItem>
               <FormControl>
-                <Input type="tel" {...field} placeholder="Phone" />
+                <div className="flex items-center border rounded-xl h-12">
+                  <div className="px-4 flex gap-2">
+                    <Image
+                      src="/auth/indian-flag.svg"
+                      alt="India"
+                      width={20}
+                      height={20}
+                    />
+                    <h1 className="text-muted-foreground">+91</h1>
+                  </div>
+                  <FormInput
+                    type="tel"
+                    {...field}
+                    placeholder="Phone"
+                    className="flex-1 h-full focus:outline-none"
+                  />
+                </div>
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -84,7 +106,7 @@ const SignUpForm = ({ setNext }: SignInFormProps) => {
           render={({ field }) => (
             <FormItem>
               <FormControl>
-                <Input type="email" {...field} placeholder="Email Address" />
+                <Input type="email" {...field} placeholder="Email Address" className="h-12 rounded-xl"/>
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -99,12 +121,35 @@ const SignUpForm = ({ setNext }: SignInFormProps) => {
         </div>
         <Button
           type="submit"
-          className="w-full bg-[#735498]"
-          disabled={!checkbox || loading}
+          className="w-full text-xl py-6 flex items-center justify-center rounded-xl"
+          disabled={loading}
         >
           Create Account
         </Button>
+        <div className="flex w-full gap-4 items-center justify-center mb-4">
+          <div className="h-[1px] w-1/2 bg-[#1E1D1D]" />
+          <h1 className="text-xl">or</h1>
+          <div className="h-[1px] w-1/2 bg-[#1E1D1D]" />
+        </div>
+        <Button
+          variant="outline"
+          className="w-full flex items-center justify-center space-x-2 mt-10 h-full"
+          disabled={loading}
+        >
+          <FcGoogle className="w-20 h-20 flex shrink-0" />
+          <span className="text-xl">Sign in with Google</span>
+        </Button>
       </form>
+      <Separator className="mt-10" />
+      <div className="mt-5 flex gap-3">
+        <h1>New to Puro Taja?</h1>
+        <Link
+          href="/sign-in"
+          className="border-b-2 border-violet text-violet font-medium"
+        >
+          Login
+        </Link>
+      </div>
     </Form>
   );
 };

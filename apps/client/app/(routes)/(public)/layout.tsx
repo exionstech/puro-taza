@@ -1,7 +1,11 @@
-import React from "react";
+import { PublicRouteLayoutProps } from "@/types";
 
 const PublicRouteLayout = ({ children }: PublicRouteLayoutProps) => {
-  return <main>{children}</main>;
+  return (
+  <main className="scroll-smooth min-h-screen">
+    {children}
+  </main>
+  );
 };
 
 export default PublicRouteLayout;

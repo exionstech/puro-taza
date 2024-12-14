@@ -134,15 +134,17 @@ export async function POST(
     // Create images if provided
     if (image && Array.isArray(image)) {
       await Promise.all(
-        image.map(async (img: { url: string; key: string }) => {
-          await prisma.image.create({
-            data: {
-              url: img.url,
-              key: img.key,
-              productId: product.id,
-            },
-          });
-        })
+        image
+          .filter((img: { url: string; key: string }) => img.url && img.key)
+          .map(async (img: { url: string; key: string }) => {
+            await prisma.image.create({
+              data: {
+                url: img.url,
+                key: img.key,
+                productId: product.id,
+              },
+            });
+          })
       );
     }
 

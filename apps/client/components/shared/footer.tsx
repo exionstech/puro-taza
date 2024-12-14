@@ -23,7 +23,7 @@ const footerItemsCategories = [
   { title: "Ready to cook", link: "/categories/ready-to-cook" },
 ];
 
-const FooterDiv = () => {
+const FooterSection = () => {
   return (
     <section className="w-full border-t mx-auto mt-10 md:mt-20">
     <div className="w-full max-w-screen-2xl px-[1rem] md:px-14 mx-auto flex flex-col md:flex-row items-start gap-10">
@@ -106,4 +106,4 @@ const FooterDiv = () => {
   );
 };
 
-export default FooterDiv;
+export default FooterSection;

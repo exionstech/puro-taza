@@ -12,7 +12,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Plus, MapPin, LocateFixed, Edit, Trash2, Dot } from "lucide-react";
-import GoogleMapModal from "@/components/shared/google-map-modal";
+import GoogleMapModal from "@/components/shared/navbar/google-map-modal";
 import { Address, AddressInput } from "@/types";
 import AddAddressModal from "./address-modal";
 import {

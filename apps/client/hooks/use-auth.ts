@@ -4,6 +4,7 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
+import { LoginData, LoginReturnType, RegisterData, RegisterReturnType, UseAuthReturnTypes, VerifyData, VerifyReturnType } from "@/types";
 
 export const useAuth = (): UseAuthReturnTypes => {
   const router = useRouter();

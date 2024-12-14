@@ -28,9 +28,11 @@ import { toast } from "sonner";
 
 const AddressDropdown: React.FC = () => {
   const [addresses, setAddresses] = useState<Address[]>(() => {
-    // Try to get addresses from localStorage on initial load
-    const savedAddresses = localStorage.getItem("savedAddresses");
-    return savedAddresses ? JSON.parse(savedAddresses) : [];
+    if (typeof window !== 'undefined') {
+      const savedAddresses = localStorage.getItem("savedAddresses");
+      return savedAddresses ? JSON.parse(savedAddresses) : [];
+    }
+    return [];
   });
 
   const [selectedAddress, setSelectedAddress] = useState<Address | null>(null);

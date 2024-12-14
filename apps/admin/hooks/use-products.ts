@@ -4,10 +4,22 @@ import { useState } from "react";
 import { Product } from "@prisma/client";
 import { useEffect } from "react";
 
-export interface ProductWithRelations extends Product {
+interface Subcategories {
+  id: string;
+  name: string;
+}
+
+export interface ProductWithRelations extends Omit<Product, "subcategories"> {
   discounted_price?: number;
+  subcategories?: Subcategories[];
   category?: any;
-  subcategory?: any;
+  image?: any[];
+}
+
+export interface ProductCreateUpdate extends Omit<Product, "subcategories"> {
+  discounted_price?: number;
+  subcategories?: string[];
+  category?: any;
   image?: any[];
 }
 
@@ -84,7 +96,7 @@ export function useProduct({ storeId }: { storeId: string }) {
     }
   };
 
-  const createProduct = async (productData: Partial<ProductWithRelations>) => {
+  const createProduct = async (productData: Partial<ProductCreateUpdate>) => {
     setLoading(true);
     setError(null);
 
@@ -113,7 +125,7 @@ export function useProduct({ storeId }: { storeId: string }) {
 
   const updateProduct = async (
     id: string,
-    productData: Partial<ProductWithRelations>
+    productData: Partial<ProductCreateUpdate>
   ) => {
     setLoading(true);
     setError(null);

@@ -22,12 +22,7 @@ const layout = ({
     }
   }, [stores]);
 
-  return (
-    <AdminPanelLayout>
-      {children}
-      <Toaster />
-    </AdminPanelLayout>
-  );
+  return <AdminPanelLayout>{children}</AdminPanelLayout>;
 };
 
 export default layout;

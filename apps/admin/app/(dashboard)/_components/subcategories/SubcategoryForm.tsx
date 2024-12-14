@@ -18,18 +18,10 @@ import { LucideLoader, X } from "lucide-react";
 import { deleteUploadthingFiles } from "@/lib/server/uploadthing";
 import { useCategories } from "@/hooks/use-categories";
 import { usePathname } from "next/navigation";
-import {
-  Select,
-  SelectTrigger,
-  SelectContent,
-  SelectItem,
-  SelectValue,
-} from "@/components/ui/select";
 import { useSubCategories } from "@/hooks/use-subcategories";
 
 export const SubcategorySchema = z.object({
   name: z.string(),
-  categoryId: z.string(),
   image: z.object({
     url: z.string(),
     key: z.string(),
@@ -64,12 +56,10 @@ const SubCategoryForm = ({ mode = "create", initialData, setOpen }: Props) => {
             url: initialData.image[0].url,
             key: initialData.image[0].key,
           },
-          categoryId: initialData.categoryId,
         }
       : {
           name: "",
           image: { url: "", key: "" },
-          categoryId: "",
         },
   });
 
@@ -111,7 +101,7 @@ const SubCategoryForm = ({ mode = "create", initialData, setOpen }: Props) => {
         imageId: initialData.image[0].id,
       };
     }
-    
+
     try {
       mode === "create"
         ? createCategory(body)
@@ -181,36 +171,6 @@ const SubCategoryForm = ({ mode = "create", initialData, setOpen }: Props) => {
               <FormControl>
                 <Input {...field} />
               </FormControl>
-            </FormItem>
-          )}
-        />
-        <FormField
-          name="categoryId"
-          control={form.control}
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Category</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select a category" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {categories.map((cat) => (
-                    <SelectItem value={cat.id} className="capitalize">
-                      <div className="flex gap-2 items-center">
-                        <img
-                          src={cat.image[0].url}
-                          alt={cat.image[0].key}
-                          className="w-8 h-8 rounded-md"
-                        />
-                        {cat.name}
-                      </div>
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
             </FormItem>
           )}
         />

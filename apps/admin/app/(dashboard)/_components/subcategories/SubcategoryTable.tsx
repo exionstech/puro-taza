@@ -23,7 +23,6 @@ const SubcategoryTable = ({ setOpen, setMode, setInitialData }: Props) => {
   const pathname = usePathname();
   const { subcategories, deleteCategory, isLoading, isUpdating, isDeleting } =
     useSubCategories(pathname.split("/")[1]);
-  const { categories } = useCategories(pathname.split("/")[1]);
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredSubCategories, setFilteredSubCategories] =
     useState(subcategories);
@@ -59,7 +58,6 @@ const SubcategoryTable = ({ setOpen, setMode, setInitialData }: Props) => {
               <TableHead>Id</TableHead>
               <TableHead>Image</TableHead>
               <TableHead>Name</TableHead>
-              <TableHead>Category</TableHead>
               <TableHead>Actions</TableHead>
             </TableRow>
           </TableHeader>
@@ -77,11 +75,6 @@ const SubcategoryTable = ({ setOpen, setMode, setInitialData }: Props) => {
                   )}
                 </TableHead>
                 <TableHead>{subcategory.name}</TableHead>
-                <TableHead>
-                  {categories.map((cat) => {
-                    return cat.id === subcategory.categoryId && cat.name;
-                  })}
-                </TableHead>
                 <TableHead className="flex items-center gap-2">
                   <Button
                     size={"icon"}

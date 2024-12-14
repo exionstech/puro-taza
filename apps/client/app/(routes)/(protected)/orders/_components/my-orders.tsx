@@ -10,7 +10,7 @@ const MyOrders = () => {
         <div className="w-full">
             <h1 className="text-xl font-bold">My Orders</h1>
         </div>
-      <Tabs defaultValue="account" className="w-full">
+      <Tabs defaultValue="ongoing" className="w-full">
         <TabsList className="justify-between flex w-full">
           <TabsTrigger className="w-[50%] text-center text-xl" value="ongoing">Ongoing</TabsTrigger>
           <TabsTrigger className="w-[50%] text-center text-xl" value="history">History</TabsTrigger>

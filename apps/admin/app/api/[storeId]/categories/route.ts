@@ -61,18 +61,20 @@ export async function POST(
       },
     });
 
-    const image = await prisma.image.create({
-      data: {
-        url: body.image.url,
-        key: body.image.key,
-        category: {
-          connect: {
-            id: category.id,
+    const image = body.image.url
+      ? await prisma.image.create({
+          data: {
+            url: body.image.url,
+            key: body.image.key,
+            category: {
+              connect: {
+                id: category.id,
+              },
+            },
           },
-        },
-      },
-    });
-
+        })
+      : null;
+    
     if (category && image) {
       return corsResponse(
         NextResponse.json({ category: category }, { status: 200 })

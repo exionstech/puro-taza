@@ -64,11 +64,15 @@ const CategoryTable = ({ setOpen, setMode, setInitialData }: Props) => {
               <TableRow key={category.id}>
                 <TableHead>{category.id}</TableHead>
                 <TableHead>
-                  <img
-                    src={category.image[0].url}
-                    alt={category.image[0].key}
-                    className="w-10 h-10 rounded-md"
-                  />
+                  {category.image[0] ? (
+                    <img
+                      src={category.image[0].url}
+                      alt={category.image[0].key}
+                      className="w-10 h-10 rounded-md"
+                    />
+                  ) : (
+                    <p>No Image</p>
+                  )}
                 </TableHead>
                 <TableHead>{category.name}</TableHead>
                 <TableHead className="flex items-center gap-2">

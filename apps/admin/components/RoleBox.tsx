@@ -59,10 +59,11 @@ const RoleBox = ({ id, user_role }: Props) => {
   const onSubmit = (data: z.infer<typeof FormSchema>) => {
     try {
       updateUser(id, data.role as UserType);
+      toast.success("Role changed.");
     } catch (error) {
       console.log(error);
+      toast.error("Failed to change role.");
     }
-    toast("Role changed.");
   };
 
   if (isLoading || !user) {
@@ -117,31 +118,24 @@ const RoleBox = ({ id, user_role }: Props) => {
                       <CommandEmpty>No roles found.</CommandEmpty>
                       <CommandGroup>
                         {roles.map((role) => (
-                          <Link
+                          <CommandItem
+                            value={role}
                             key={role}
-                            href={`/${role}/${pathname
-                              .split("/")
-                              .slice(2)
-                              .join("/")}`}
+                            onSelect={() => {
+                              form.setValue("role", role);
+                              onSubmit(form.getValues());
+                            }}
                           >
-                            <CommandItem
-                              value={role}
-                              onSelect={() => {
-                                form.setValue("role", role);
-                                onSubmit(form.getValues());
-                              }}
-                            >
-                              {role}
-                              <Check
-                                className={cn(
-                                  "ml-auto",
-                                  role === field.value
-                                    ? "opacity-100"
-                                    : "opacity-0"
-                                )}
-                              />
-                            </CommandItem>
-                          </Link>
+                            {role}
+                            <Check
+                              className={cn(
+                                "ml-auto",
+                                role === field.value
+                                  ? "opacity-100"
+                                  : "opacity-0"
+                              )}
+                            />
+                          </CommandItem>
                         ))}
                         <Separator />
                       </CommandGroup>

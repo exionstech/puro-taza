@@ -3,10 +3,11 @@
 import React, { useEffect } from "react";
 import { useStores } from "@/hooks/use-store";
 import { useRouter } from "next/navigation";
-import { Toaster } from "@/components/ui/toaster";
 import AdminPanelLayout from "@/components/admin-panel/admin-panel-layout";
+import { getUsers } from "@/hooks/get-users";
+import { useUser } from "@clerk/nextjs";
 
-const layout = ({
+const Layout = ({
   children,
   params,
 }: {
@@ -14,15 +15,26 @@ const layout = ({
   params: { storeId: string };
 }) => {
   const { isLoading, stores } = useStores();
+  const { users } = getUsers();
+  const { user, isLoaded: isUserLoaded } = useUser();
   const router = useRouter();
 
+  const currUser = users.find((ur) => ur.clerkId === user?.id);
+
   useEffect(() => {
-    if (!isLoading && stores.length === 0) {
-      router.push("/");
+    if (isUserLoaded && !isLoading) {
+      if (stores.length === 0) {
+        router.push("/");
+      } else if (currUser) {
+        const isAdmin = currUser?.role === "ADMIN";
+        if (!isAdmin) {
+          router.push("/waiting/access");
+        }
+      }
     }
-  }, [stores]);
+  }, [isLoading, stores, currUser, router, isUserLoaded]);
 
   return <AdminPanelLayout>{children}</AdminPanelLayout>;
 };
 
-export default layout;
+export default Layout;

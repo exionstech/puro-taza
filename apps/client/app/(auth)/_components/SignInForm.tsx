@@ -22,6 +22,7 @@ import { Separator } from "@/components/ui/separator";
 import Image from "next/image";
 import { FormInput } from "./form-input";
 import { SignInFormProps } from "@/types";
+import { Loader2 } from "lucide-react";
 
 const SignInForm = ({ setNext }: SignInFormProps) => {
   const router = useRouter();
@@ -88,7 +89,14 @@ const SignInForm = ({ setNext }: SignInFormProps) => {
           className="w-full text-xl py-6 flex items-center justify-center rounded-xl"
           disabled={loading}
         >
-          Login
+          {loading ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Logging in...
+            </>
+          ) : (
+            "Login"
+          )}
         </Button>
         <div className="flex w-full gap-4 items-center justify-center mb-4">
           <div className="h-[1px] w-1/2 bg-[#1E1D1D]" />

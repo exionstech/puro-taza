@@ -23,14 +23,27 @@ const ShoppingCart: React.FC = () => {
     resolver: zodResolver(formSchema),
   });
 
-   const calculateOrderSummary = () => {
-    const subtotal = cart.items.reduce((total, item) => total + item.price * item.qty, 0);
+  const calculateOrderSummary = () => {
+    const itemsWithDiscount = cart.items.map(item => ({
+        ...item,
+        discountedPrice: item.price * (1 - item.discount / 100)
+    }));
+
+    const subtotal = itemsWithDiscount.reduce((total, item) => 
+        total + item.discountedPrice * item.qty, 0);
+    
     const tax = subtotal * 0.05;
     const shipping = subtotal * 0.05;
     const total = subtotal + tax + shipping;
 
-    return { subtotal, tax, shipping, total };
-  };
+    return { 
+        items: itemsWithDiscount,
+        subtotal, 
+        tax, 
+        shipping, 
+        total 
+    };
+};
 
   const onSubmit = (data: FormData) => {
     // Calculate order summary
@@ -39,20 +52,20 @@ const ShoppingCart: React.FC = () => {
     // Prepare order details
     const orderDetails = {
       customerInfo: data,
-      items: cart.items.map(item => ({
+      items: cart.items.map((item) => ({
         id: item.id,
         name: item.name,
         quantity: item.qty,
         price: item.price,
         total: item.price * item.qty,
-        images: item.images
+        images: item.images,
       })),
       orderSummary: {
         subtotal: orderSummary.subtotal,
         tax: orderSummary.tax,
         shipping: orderSummary.shipping,
-        total: orderSummary.total
-      }
+        total: orderSummary.total,
+      },
     };
 
     // Console log the complete order details
@@ -60,7 +73,6 @@ const ShoppingCart: React.FC = () => {
 
     // TODO: Implement actual order submission to your backend/database
   };
-
 
   if (cart.items.length === 0) {
     return <EmptyCart />;
@@ -73,21 +85,29 @@ const ShoppingCart: React.FC = () => {
       </div>
       <div className="flex gap-5 w-full">
         <div className="w-[50%] flex flex-col mt-5 overflow-y-auto max-h-[500px]">
-          {cart.items.map((item) => (
-            <ShoppingItemCard
-              key={item.id}
-              item={{
-                id: item.id,
-                name: item.name,
-                image: item.images[0].url,
-                price: item.price,
-                quantity: item.qty
-              }}
-            />
-          ))}
+          {cart.items.map((item) => {
+            const discountedPrice = item.price * (1 - item.discount / 100);
+            return (
+              <ShoppingItemCard
+                key={item.id}
+                item={{
+                  id: item.id,
+                  name: item.name,
+                  image: item.images[0].url,
+                  price: item.price,
+                  discountedPrice,
+                  discount: item.discount,
+                  quantity: item.qty,
+                }}
+              />
+            );
+          })}
         </div>
         <div className="w-[50%] flex flex-col">
-          <OrderSummary items={cart.items} orderSummary={calculateOrderSummary()}/>
+          <OrderSummary
+            items={cart.items}
+            orderSummary={calculateOrderSummary()}
+          />
           <form onSubmit={handleSubmit(onSubmit)} className="mt-4">
             <div className="flex flex-col gap-4">
               <input

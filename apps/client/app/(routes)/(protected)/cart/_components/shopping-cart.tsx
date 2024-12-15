@@ -1,10 +1,11 @@
 "use client";
-import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import ShoppingItemCard from "./shopping-item-card";
 import OrderSummary from "./order-summary";
+import useCart from "@/hooks/use-cart";
+import EmptyCart from "./empty-cart";
 
 const formSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -16,61 +17,54 @@ const formSchema = z.object({
 type FormData = z.infer<typeof formSchema>;
 
 const ShoppingCart: React.FC = () => {
-  const [items, setItems] = useState([
-    {
-      id: 1,
-      name: "Bata Fish",
-      image: "/home/seller-card/bata.png",
-      price: 150,
-      quantity: 2,
-    },
-    {
-      id: 2,
-      name: "Bhetki Fish",
-      image: "/home/seller-card/bhetki.png",
-      price: 150,
-      quantity: 2,
-    },
-    {
-      id: 3,
-      name: "Mud Crab",
-      image: "/home/seller-card/mud-crab.png",
-      price: 150,
-      quantity: 1,
-    },
-    {
-      id: 4,
-      name: "Pabda Fish",
-      image: "/home/seller-card/pabda.png",
-      price: 150,
-      quantity: 2,
-    },
-    {
-      id: 5,
-      name: "Pomfret Fish",
-      image: "/home/seller-card/pomphet.png",
-      price: 150,
-      quantity: 1,
-    },
-  ]);
+  const cart = useCart();
 
   const { register, handleSubmit, formState } = useForm<FormData>({
     resolver: zodResolver(formSchema),
   });
 
-  const onSubmit = (data: FormData) => {
-    console.log(data);
+   const calculateOrderSummary = () => {
+    const subtotal = cart.items.reduce((total, item) => total + item.price * item.qty, 0);
+    const tax = subtotal * 0.05;
+    const shipping = subtotal * 0.05;
+    const total = subtotal + tax + shipping;
+
+    return { subtotal, tax, shipping, total };
   };
 
-  const updateItem = (item: {
-    id: number;
-    name: string;
-    image: string;
-    price: number;
-    quantity: number;
-  }) => {
-    setItems(items.map((i) => (i.id === item.id ? item : i)));
+  const onSubmit = (data: FormData) => {
+    // Calculate order summary
+    const orderSummary = calculateOrderSummary();
+
+    // Prepare order details
+    const orderDetails = {
+      customerInfo: data,
+      items: cart.items.map(item => ({
+        id: item.id,
+        name: item.name,
+        quantity: item.qty,
+        price: item.price,
+        total: item.price * item.qty,
+        images: item.images
+      })),
+      orderSummary: {
+        subtotal: orderSummary.subtotal,
+        tax: orderSummary.tax,
+        shipping: orderSummary.shipping,
+        total: orderSummary.total
+      }
+    };
+
+    // Console log the complete order details
+    console.log("Complete Order Details:", orderDetails);
+
+    // TODO: Implement actual order submission to your backend/database
   };
+
+
+  if (cart.items.length === 0) {
+    return <EmptyCart />;
+  }
 
   return (
     <div className="w-full flex flex-col gap-5 items-center justify-center">
@@ -79,16 +73,21 @@ const ShoppingCart: React.FC = () => {
       </div>
       <div className="flex gap-5 w-full">
         <div className="w-[50%] flex flex-col mt-5 overflow-y-auto max-h-[500px]">
-          {items.map((item) => (
+          {cart.items.map((item) => (
             <ShoppingItemCard
               key={item.id}
-              item={item}
-              updateItem={updateItem}
+              item={{
+                id: item.id,
+                name: item.name,
+                image: item.images[0].url,
+                price: item.price,
+                quantity: item.qty
+              }}
             />
           ))}
         </div>
         <div className="w-[50%] flex flex-col">
-          <OrderSummary items={items} />
+          <OrderSummary items={cart.items} orderSummary={calculateOrderSummary()}/>
           <form onSubmit={handleSubmit(onSubmit)} className="mt-4">
             <div className="flex flex-col gap-4">
               <input

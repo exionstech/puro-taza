@@ -34,7 +34,7 @@ export async function GET(
       },
       include: {
         image: true,
-        product: true
+        product: true,
       },
     });
 
@@ -43,6 +43,17 @@ export async function GET(
         NextResponse.json({ message: "Category not found" }, { status: 404 })
       );
     }
+
+    const products = await prisma.product.findMany({
+      where: {
+        categoryId: params.categoryId,
+      },
+      include: {
+        image: true,
+      },
+    });
+
+    data.product = products;
 
     return corsResponse(NextResponse.json({ category: data }, { status: 200 }));
   } catch (error) {

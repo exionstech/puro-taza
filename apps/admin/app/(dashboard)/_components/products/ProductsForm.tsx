@@ -56,7 +56,7 @@ export interface InitialDataType {
   stock: number;
   discount: number | null;
   categoryId: string;
-  subcategories: string[];
+  subcategories: any[];
   createdAt: Date;
   updatedAt: Date;
   image: {
@@ -74,7 +74,7 @@ interface Props {
 
 const ProductsForm = ({ mode = "create", initialData, setOpen }: Props) => {
   const [subcategory, setSubcategory] = useState<string[]>(
-    initialData ? initialData.subcategories : []
+    initialData ? initialData.subcategories.map((scat) => scat.id) : []
   );
   const [uploadedImage, setUploadedImage] = useState<
     | {
@@ -86,8 +86,12 @@ const ProductsForm = ({ mode = "create", initialData, setOpen }: Props) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const pathname = usePathname();
-  const { categories } = useCategories(pathname.split("/")[1]);
-  const { subcategories } = useSubCategories(pathname.split("/")[1]);
+  const { categories, isLoading: catloading } = useCategories(
+    pathname.split("/")[1]
+  );
+  const { subcategories, isLoading: subcatloading } = useSubCategories(
+    pathname.split("/")[1]
+  );
   const { createProduct, updateProduct, fetchProducts } = useProduct({
     storeId: pathname.split("/")[1],
   });
@@ -106,7 +110,9 @@ const ProductsForm = ({ mode = "create", initialData, setOpen }: Props) => {
           stock: initialData.stock,
           discount: initialData.discount || 0,
           categoryId: initialData.categoryId,
-          subcategories: initialData.subcategories,
+          subcategories: initialData.subcategories
+            ? initialData.subcategories.map((scat) => scat.id)
+            : [],
           image: initialData.image
             ? initialData.image.map((img) => ({
                 url: img.url,
@@ -188,6 +194,14 @@ const ProductsForm = ({ mode = "create", initialData, setOpen }: Props) => {
       fetchProducts();
     }
   };
+
+  if (catloading || subcatloading) {
+    return (
+      <div className="flex justify-center items-center h-96">
+        <LucideLoader size={32} className="animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <Form {...form}>
@@ -311,19 +325,18 @@ const ProductsForm = ({ mode = "create", initialData, setOpen }: Props) => {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {categories.map((cat) => (
-                        <SelectItem
-                          value={cat.id}
-                          key={cat.id}
-                          className="capitalize"
-                        >
-                          <div className="flex gap-2 items-center">
-                            <img
-                              src={cat.image[0].url}
-                              alt={cat.image[0].key}
-                              className="w-8 h-8 rounded-md"
-                            />
-                            {cat.name}
+                      {categories.map(({ id, name, image }, idx) => (
+                        <SelectItem value={id} key={idx} className="capitalize">
+                          <div className="flex gap-2 items-center" key={idx}>
+                            {image.slice(0).map((img) => (
+                              <img
+                                src={img.url}
+                                alt={img.key}
+                                key={img.key}
+                                className="w-8 h-8 rounded-md"
+                              />
+                            ))}
+                            {name}
                           </div>
                         </SelectItem>
                       ))}

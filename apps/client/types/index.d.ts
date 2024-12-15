@@ -73,3 +73,26 @@ export interface Address {
 }
 
 export type AddressInput = Omit<Address, 'id'>;
+
+
+
+export interface Product {
+  id: number;
+  name: string;
+  image: string;
+  price: number;
+  discount?: number;
+  category?: string;
+}
+
+export interface CartItem extends Product {
+  quantity: number;
+}
+
+export interface CartState {
+  items: CartItem[];
+  addToCart: (product: Product, quantity?: number) => void;
+  removeFromCart: (productId: number) => void;
+  updateQuantity: (productId: number, quantity: number) => void;
+  clearCart: () => void;
+}

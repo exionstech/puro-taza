@@ -24,6 +24,7 @@ import { FormInput } from "./form-input";
 import { FcGoogle } from "react-icons/fc";
 import { Separator } from "@/components/ui/separator";
 import { SignInFormProps } from "@/types";
+import { Loader2 } from "lucide-react";
 
 const SignUpForm = ({ setNext }: SignInFormProps) => {
   const [checkbox, setCheckbox] = useState<boolean>(false);
@@ -124,7 +125,14 @@ const SignUpForm = ({ setNext }: SignInFormProps) => {
           className="w-full text-xl py-6 flex items-center justify-center rounded-xl"
           disabled={loading}
         >
-          Create Account
+          {loading ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Creating Account...
+            </>
+          ) : (
+            "Create Account"
+          )}
         </Button>
         <div className="flex w-full gap-4 items-center justify-center mb-4">
           <div className="h-[1px] w-1/2 bg-[#1E1D1D]" />

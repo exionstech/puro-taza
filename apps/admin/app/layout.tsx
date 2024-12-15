@@ -8,6 +8,7 @@ import Providers from "@/components/provider/provider";
 import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
 import { extractRouterConfig } from "uploadthing/server";
 import { ourFileRouter } from "@/app/api/uploadthing/core";
+import NextTopLoader from "nextjs-toploader";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -33,6 +34,19 @@ export default function RootLayout({
     >
       <html lang="en">
         <body className={inter.className}>
+          <NextTopLoader
+            color="#000000"
+            initialPosition={0.08}
+            crawlSpeed={200}
+            height={3}
+            crawl={true}
+            showSpinner={true}
+            easing="ease"
+            speed={200}
+            shadow="0 0 10px #151515,0 0 5px #151515"
+            zIndex={1600}
+            showAtBottom={false}
+          />
           <NextSSRPlugin routerConfig={extractRouterConfig(ourFileRouter)} />
           <Providers>{children}</Providers>
           <Toaster />

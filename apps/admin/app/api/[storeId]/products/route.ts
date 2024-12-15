@@ -23,7 +23,7 @@ export async function GET(
 
     // Construct where clause
     const where: any = {};
-    
+
     if (categoryId) where.categoryId = categoryId;
     if (subcategoryId) where.subcategoryId = subcategoryId;
     if (minPrice || maxPrice) {
@@ -39,7 +39,6 @@ export async function GET(
       take: limit,
       include: {
         category: true,
-        subcategory: true,
         image: true,
       },
       orderBy: {
@@ -51,9 +50,9 @@ export async function GET(
     const total = await prisma.product.count({ where });
     const afterDiscount = products.map((product) => ({
       ...product,
-      discounted_price:
-        product.discount &&
-        product.price - (product.price * product.discount) / 100,
+      discounted_price: product.discount
+        ? product.price - (product.price * product.discount) / 100
+        : product.price,
     }));
 
     return NextResponse.json({
@@ -85,25 +84,35 @@ export async function POST(
       description,
       price,
       categoryId,
-      subcategoryId,
       stock,
       image,
-      discount
+      discount,
+      subcategories,
     } = body;
 
     // Validate required fields
     if (!name) {
       return new NextResponse("Name is required", { status: 400 });
     }
+
     if (!price) {
       return new NextResponse("Price is required", { status: 400 });
     }
+
     if (!categoryId) {
       return new NextResponse("Category ID is required", { status: 400 });
     }
-    if (!subcategoryId) {
-      return new NextResponse("Subcategory ID is required", { status: 400 });
-    }
+
+    const subdata = await prisma.subcategory.findMany({
+      include: {
+        image: true,
+      },
+    });
+
+    const addSubcategories = subcategories?.map(
+      (subcategoryId: string) =>
+        subdata.find((sub) => sub.id === subcategoryId) || {}
+    );
 
     // Create product
     const product = await prisma.product.create({
@@ -114,14 +123,30 @@ export async function POST(
         stock: stock || 0,
         discount: discount || 0,
         categoryId,
-        subcategoryId,
+        subcategories: addSubcategories,
       },
       include: {
         image: true,
         category: true,
-        subcategory: true,
       },
     });
+
+    // Create images if provided
+    if (image && Array.isArray(image)) {
+      await Promise.all(
+        image
+          .filter((img: { url: string; key: string }) => img.url && img.key)
+          .map(async (img: { url: string; key: string }) => {
+            await prisma.image.create({
+              data: {
+                url: img.url,
+                key: img.key,
+                productId: product.id,
+              },
+            });
+          })
+      );
+    }
 
     return NextResponse.json(product);
   } catch (error) {

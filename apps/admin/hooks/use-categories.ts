@@ -31,6 +31,7 @@ interface UseCategories {
 
 interface CategoryUpdateData {
   name?: string;
+  imageId?: string;
   image?: {
     url: string;
     key: string;
@@ -105,7 +106,7 @@ export const useCategories = (storeId: string): UseCategories => {
       setError(null);
 
       const response = await fetch(`/api/${storeId}/categories/${categoryId}`, {
-        method: "PATCH",
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
         },

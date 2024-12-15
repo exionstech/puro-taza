@@ -34,10 +34,9 @@ export async function GET(
     const subcategories = await prisma.subcategory.findMany({
       include: {
         image: true,
-        category: true
       },
     });
-    
+
     return corsResponse(
       NextResponse.json({ subcategories: subcategories }, { status: 200 })
     );
@@ -61,21 +60,22 @@ export async function POST(
     const subcategory = await prisma.subcategory.create({
       data: {
         name: body.name,
-        categoryId: body.categoryId,
       },
     });
-    
-    const image = await prisma.image.create({
-      data: {
-        url: body.image.url,
-        key: body.image.key,
-        subcategory: {
-          connect: {
-            id: subcategory.id,
+
+    const image = body.image.url
+      ? await prisma.image.create({
+          data: {
+            url: body.image.url,
+            key: body.image.key,
+            category: {
+              connect: {
+                id: subcategory.id,
+              },
+            },
           },
-        },
-      },
-    });
+        })
+      : null;
 
     if (subcategory && image) {
       return corsResponse(

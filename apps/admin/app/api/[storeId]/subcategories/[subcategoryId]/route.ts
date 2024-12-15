@@ -36,7 +36,6 @@ export async function POST(
       },
       data: {
         name: data.name,
-        categoryId: data.categoryId,
       },
     });
 
@@ -75,6 +74,9 @@ export async function DELETE(
       where: {
         id: params.subcategoryId,
       },
+      include: {
+        image: true,
+      },
     });
 
     if (!subcategory) {
@@ -85,7 +87,7 @@ export async function DELETE(
         )
       );
     }
-
+    
     return corsResponse(NextResponse.json({ messgae: "Subcategory deleted" }));
   } catch (error) {
     return corsResponse(

@@ -27,6 +27,11 @@ import { usePathname } from "next/navigation";
 import { useCategories } from "@/hooks/use-categories";
 import { useSubCategories } from "@/hooks/use-subcategories";
 import { useProduct } from "@/hooks/use-products";
+import { MultiSelect } from "@/components/ui/multi-select";
+import { Cat, Dog, Fish, Rabbit, Turtle } from "lucide-react";
+import { Label } from "@/components/ui/label";
+import { Subcategory } from "@prisma/client";
+
 export const ProductsSchema = z.object({
   name: z.string().min(3),
   description: z.string().min(10),
@@ -34,7 +39,7 @@ export const ProductsSchema = z.object({
   stock: z.number().min(1),
   discount: z.number().min(0),
   categoryId: z.string(),
-  subcategoryId: z.string(),
+  subcategories: z.array(z.string()).optional(),
   image: z.array(
     z.object({
       url: z.string(),
@@ -51,7 +56,7 @@ export interface InitialDataType {
   stock: number;
   discount: number | null;
   categoryId: string;
-  subcategoryId: string;
+  subcategories: string[];
   createdAt: Date;
   updatedAt: Date;
   image: {
@@ -68,6 +73,9 @@ interface Props {
 }
 
 const ProductsForm = ({ mode = "create", initialData, setOpen }: Props) => {
+  const [subcategory, setSubcategory] = useState<string[]>(
+    initialData ? initialData.subcategories : []
+  );
   const [uploadedImage, setUploadedImage] = useState<
     | {
         url: string;
@@ -84,6 +92,10 @@ const ProductsForm = ({ mode = "create", initialData, setOpen }: Props) => {
     storeId: pathname.split("/")[1],
   });
 
+  const frameworksList = subcategories.map((sub) => {
+    return { value: sub.id, label: sub.name };
+  });
+
   const form = useForm<z.infer<typeof ProductsSchema>>({
     resolver: zodResolver(ProductsSchema),
     defaultValues: initialData
@@ -94,7 +106,7 @@ const ProductsForm = ({ mode = "create", initialData, setOpen }: Props) => {
           stock: initialData.stock,
           discount: initialData.discount || 0,
           categoryId: initialData.categoryId,
-          subcategoryId: initialData.subcategoryId,
+          subcategories: initialData.subcategories,
           image: initialData.image
             ? initialData.image.map((img) => ({
                 url: img.url,
@@ -109,13 +121,12 @@ const ProductsForm = ({ mode = "create", initialData, setOpen }: Props) => {
           stock: 0,
           discount: 0,
           categoryId: "",
-          subcategoryId: "",
+          subcategories: [],
           image: [{ url: "", key: "" }],
         },
   });
 
   const handleImageUpload = async (res: ClientUploadedFileData<any>[]) => {
-    console.log("Files: ", res);
     const image = res;
 
     setUploadedImage((prev) => [
@@ -154,19 +165,21 @@ const ProductsForm = ({ mode = "create", initialData, setOpen }: Props) => {
   };
 
   const onSubmit = async (body: z.infer<typeof ProductsSchema>) => {
-    //TODO: Implement the submit logic
-    const newBody = {
+    body = {
       ...body,
-      categoryId:
-        subcategories.find((sub) => sub.id === body.subcategoryId)
-          ?.categoryId || "",
+      subcategories: subcategory,
     };
 
     try {
       mode === "create"
-        ? await createProduct(newBody)
+        ? await createProduct(body)
         : initialData && (await updateProduct(initialData.id, body));
-      toast.success("Product created successfully.");
+
+      const message =
+        mode === "create"
+          ? "Product created successfully."
+          : "Product updated successfully.";
+      toast.success(message);
     } catch (error) {
       console.log("Error: ", error);
       toast.error("An error occurred while creating the product.");
@@ -183,7 +196,7 @@ const ProductsForm = ({ mode = "create", initialData, setOpen }: Props) => {
         className="flex flex-col space-y-4"
       >
         {/* Image Upload */}
-        <div className="flex flex-col w-full gap-2">
+        <div className="flex flex-row w-full gap-2">
           <FormField
             name="image"
             control={form.control}
@@ -280,6 +293,45 @@ const ProductsForm = ({ mode = "create", initialData, setOpen }: Props) => {
                 </FormItem>
               )}
             />
+
+            {/* Category Selection */}
+            <FormField
+              control={form.control}
+              name="categoryId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Category</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select a category" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {categories.map((cat) => (
+                        <SelectItem
+                          value={cat.id}
+                          key={cat.id}
+                          className="capitalize"
+                        >
+                          <div className="flex gap-2 items-center">
+                            <img
+                              src={cat.image[0].url}
+                              alt={cat.image[0].key}
+                              className="w-8 h-8 rounded-md"
+                            />
+                            {cat.name}
+                          </div>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </FormItem>
+              )}
+            />
           </div>
 
           <div className="w-full">
@@ -322,32 +374,18 @@ const ProductsForm = ({ mode = "create", initialData, setOpen }: Props) => {
             />
 
             {/* Subcategory Selection */}
-            <FormField
-              control={form.control}
-              name="subcategoryId"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Subcategory</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select a subcategory" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {subcategories.map((subcategory) => (
-                        <SelectItem value={subcategory.id} key={subcategory.id}>
-                          {subcategory.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </FormItem>
-              )}
-            />
+            <div>
+              <Label>Subcategory</Label>
+              <MultiSelect
+                options={frameworksList}
+                onValueChange={setSubcategory}
+                defaultValue={subcategory}
+                placeholder="Select subcategories"
+                variant="inverted"
+                animation={2}
+                maxCount={3}
+              />
+            </div>
           </div>
         </div>
 

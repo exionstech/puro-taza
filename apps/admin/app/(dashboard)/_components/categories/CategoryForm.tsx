@@ -41,11 +41,21 @@ const CategoryForm = ({ mode = "create", initialData, setOpen }: Props) => {
   } | null>(initialData?.image[0] || null);
   const [loading, setLoading] = useState(false);
   const pathname = usePathname();
-  const { createCategory } = useCategories(pathname.split("/")[1]);
+  const { createCategory, updateCategory } = useCategories(
+    pathname.split("/")[1]
+  );
 
   const form = useForm<z.infer<typeof CategorySchema>>({
     resolver: zodResolver(CategorySchema),
-    defaultValues: initialData || { name: "", image: { url: "", key: "" } },
+    defaultValues: initialData
+      ? {
+          name: initialData.name,
+          image: {
+            url: initialData.image[0].url,
+            key: initialData.image[0].key,
+          },
+        }
+      : { name: "", image: { url: "", key: "" } },
   });
 
   const handleImageUpload = async (res: ClientUploadedFileData<any>[]) => {
@@ -78,9 +88,18 @@ const CategoryForm = ({ mode = "create", initialData, setOpen }: Props) => {
   };
 
   const onSubmit = async (body: z.infer<typeof CategorySchema>) => {
-    setLoading(true);
+    let updatedBody;
+    if (mode !== "create") {
+      updatedBody = {
+        ...body,
+        imageId: initialData.image[0].id,
+      };
+    }
     try {
-      createCategory(body);
+      mode === "create"
+        ? createCategory(body)
+        : updateCategory(initialData.id, updatedBody!);
+
       toast.success("Category created successfully");
       setOpen(false);
     } catch (error) {

@@ -4,7 +4,6 @@ import {
   BreadcrumbLink,
 } from "@/components/ui/breadcrumb";
 import { ChevronLeft } from "lucide-react";
-import EmptyCart from "./_components/empty-cart";
 import ShoppingCart from "./_components/shopping-cart";
 
 const CartPage = () => {
@@ -21,7 +20,6 @@ const CartPage = () => {
         </Breadcrumb>
       </div>
       <div className="w-full flex items-center justify-center">
-        {/* <EmptyCart/> */}
         <ShoppingCart/>
       </div>
     </section>

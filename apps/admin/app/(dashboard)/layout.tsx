@@ -19,15 +19,20 @@ const Layout = ({
   const { user, isLoaded: isUserLoaded } = useUser();
   const router = useRouter();
 
+  const currUser = users.find((ur) => ur.clerkId === user?.id);
+
   useEffect(() => {
     if (isUserLoaded && !isLoading) {
       if (stores.length === 0) {
         router.push("/");
+      } else if (currUser) {
+        const isAdmin = currUser?.role === "ADMIN";
+        if (!isAdmin) {
+          router.push("/waiting/access");
+        }
       }
-
-      user?.externalId !== "ADMIN" && router.push("/waiting/access");
     }
-  }, [isLoading, stores, router, isUserLoaded]);
+  }, [isLoading, stores, currUser, router, isUserLoaded]);
 
   return <AdminPanelLayout>{children}</AdminPanelLayout>;
 };

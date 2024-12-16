@@ -1,11 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Webhook } from "svix";
 import { headers } from "next/headers";
-import { WebhookEvent } from "@clerk/nextjs/server";
+import { clerkClient, WebhookEvent } from "@clerk/nextjs/server";
 import { createUser } from "@/actions/user";
 import { UserType } from "@prisma/client";
 
 export async function POST(req: NextRequest) {
+  const client = await clerkClient();
   const WEBHOOK_SECRET = process.env.CLERK_WEBHOOK_SECRET!;
 
   if (!WEBHOOK_SECRET) {
@@ -67,9 +68,11 @@ export async function POST(req: NextRequest) {
       role: "USER" as UserType,
     };
 
-    const newUser = await createUser(userData);
+    await client.users.updateUser(clerkId, {
+      externalId: userData.role,
+    });
 
-    console.log("New user created:", newUser);
+    const newUser = await createUser(userData);
 
     return NextResponse.json({ message: "New user created", user: newUser });
   }

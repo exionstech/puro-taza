@@ -27,6 +27,10 @@ interface UserNavProps {
 
 export function UserNav({ user }: UserNavProps) {
   const { logout, isLoggedIn } = useAuth();
+  const handleLogout = () => {
+    logout();
+    window.location.reload();
+  };
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -89,7 +93,7 @@ export function UserNav({ user }: UserNavProps) {
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         {isLoggedIn ? (
-          <Button onClick={logout} variant={"outline"} className="w-full">
+          <Button onClick={handleLogout} variant={"outline"} className="w-full">
             <LogOutIcon/>
             Log Out
             </Button>

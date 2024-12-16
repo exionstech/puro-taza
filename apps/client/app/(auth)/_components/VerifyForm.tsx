@@ -17,6 +17,7 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/use-auth";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { Loader2 } from "lucide-react";
 
 const VerifyForm = () => {
   const { loading, verify } = useAuth();
@@ -69,7 +70,14 @@ const VerifyForm = () => {
           className="w-full text-xl py-6 flex items-center justify-center rounded-xl"
           disabled={loading}
         >
-          Verify Account
+          {loading ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Verifying
+            </>
+          ) : (
+            "Verify"
+          )}
         </Button>
       </form>
     </Form>

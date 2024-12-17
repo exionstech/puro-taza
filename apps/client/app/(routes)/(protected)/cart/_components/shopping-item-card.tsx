@@ -52,7 +52,7 @@ const ShoppingItemCard: React.FC<ShoppingItemCardProps> = ({ item }) => {
               <span className="line-through text-muted-foreground md:text-sm text-xs">
                 ₹{item.price.toFixed(2)}
               </span>
-              <span className="text-green-600 md:text-sm text-xs">
+              <span className="text-red-500 md:text-sm text-xs">
                 {item.discount}% OFF
               </span>
             </div>

@@ -56,7 +56,7 @@ const CustomSwiper: React.FC<CustomSwiperProps> = ({
       className="w-full relative overflow-x-hidden"
     >
       {React.Children.map(children, (child, index) => (
-        <SwiperSlide key={index} className="flex">
+        <SwiperSlide key={index} className="flex px-[2px]">
           {child}
         </SwiperSlide>
       ))}

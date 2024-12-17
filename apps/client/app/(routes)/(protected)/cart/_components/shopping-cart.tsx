@@ -83,8 +83,8 @@ const ShoppingCart: React.FC = () => {
       <div className="w-full mt-3">
         <h1 className="text-2xl font-bold">Shopping Cart</h1>
       </div>
-      <div className="flex gap-5 w-full">
-        <div className="w-[50%] flex flex-col mt-5 overflow-y-auto max-h-[500px]">
+      <div className="flex flex-col md:flex-row gap-5 w-full">
+        <div className="md:w-[50%] w-full flex flex-col mt-5 overflow-y-auto max-h-[500px]">
           {cart.items.map((item) => {
             const discountedPrice = item.price * (1 - item.discount / 100);
             return (
@@ -103,7 +103,7 @@ const ShoppingCart: React.FC = () => {
             );
           })}
         </div>
-        <div className="w-[50%] flex flex-col">
+        <div className="md:w-[50%] w-full flex flex-col">
           <OrderSummary
             items={cart.items}
             orderSummary={calculateOrderSummary()}

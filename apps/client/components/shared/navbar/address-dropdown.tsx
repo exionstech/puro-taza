@@ -30,6 +30,7 @@ const AddressDropdown: React.FC = () => {
   const [selectedAddress, setSelectedAddress] = useState<Address | null>(null);
   const [isMapModalOpen, setIsMapModalOpen] = useState(false);
   const [isAddAddressModalOpen, setIsAddAddressModalOpen] = useState(false);
+  const [pendingLocationAddress, setPendingLocationAddress] = useState<Address | null>(null);
 
   // Save addresses to localStorage whenever they change
   useEffect(() => {
@@ -61,14 +62,14 @@ const AddressDropdown: React.FC = () => {
   const handleAddAddress = (newAddress: AddressInput) => {
     const newAddressWithId: Address = {
       ...newAddress,
-      id:
-        addresses.length > 0 ? Math.max(...addresses.map((a) => a.id)) + 1 : 1,
+      id: addresses.length > 0 ? Math.max(...addresses.map((a) => a.id)) + 1 : 1,
       isDefault: addresses.length === 0,
     };
     const updatedAddresses = [...addresses, newAddressWithId];
     setAddresses(updatedAddresses);
     setSelectedAddress(newAddressWithId);
     setIsAddAddressModalOpen(false);
+    setPendingLocationAddress(null);
     console.log("Added Manual Address:", newAddressWithId);
   };
 
@@ -85,23 +86,14 @@ const AddressDropdown: React.FC = () => {
     );
 
     if (!existingAddress) {
-      const newAddress: Address = {
-        ...selectedLocationAddress,
-        id:
-          addresses.length > 0
-            ? Math.max(...addresses.map((a) => a.id)) + 1
-            : 1,
-        isDefault: addresses.length === 0,
-      };
-      const updatedAddresses = [...addresses, newAddress];
-      setAddresses(updatedAddresses);
-      setSelectedAddress(newAddress);
+      // Open address modal with location details for user to confirm/edit
+      setPendingLocationAddress(selectedLocationAddress);
+      setIsAddAddressModalOpen(true);
     } else {
       setSelectedAddress(existingAddress);
     }
 
     setIsMapModalOpen(false);
-    console.log("Added Location Address:", selectedLocationAddress);
   };
 
   return (
@@ -153,7 +145,9 @@ const AddressDropdown: React.FC = () => {
                         {address.address}
                       </p>
                       {address.id === selectedAddress?.id && (
-                        <p className="text-xs text-center text-white bg-violet px-2 py-1 rounded-lg">Selected</p>
+                        <p className="text-xs text-center text-white bg-violet px-2 py-1 rounded-lg">
+                          Selected
+                        </p>
                       )}
                     </div>
                   </div>
@@ -209,8 +203,15 @@ const AddressDropdown: React.FC = () => {
       {isAddAddressModalOpen && (
         <AddAddressModal
           isOpen={isAddAddressModalOpen}
-          onClose={() => setIsAddAddressModalOpen(false)}
+          onClose={() => {
+            setIsAddAddressModalOpen(false);
+            setPendingLocationAddress(null);
+          }}
           onAddAddress={handleAddAddress}
+          initialData={pendingLocationAddress ? {
+            ...pendingLocationAddress,
+            address: pendingLocationAddress.address || '',
+          } : undefined}
         />
       )}
     </>

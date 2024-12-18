@@ -30,6 +30,24 @@ const AddAddressModal = ({
   onAddAddress,
   initialData,
 }: AddAddressModalProps) => {
+  // Function to safely parse address
+  const parseAddressParts = (address?: string) => {
+    if (!address) return {
+      houseNo: '',
+      street: '',
+      district: '',
+      pinCode: ''
+    };
+
+    const parts = address.split(',').map(part => part.trim());
+    return {
+      houseNo: parts[0] || '',
+      street: parts[1] || '',
+      district: parts[2] || '',
+      pinCode: parts[3] || ''
+    };
+  };
+
   const {
     register,
     handleSubmit,
@@ -38,21 +56,20 @@ const AddAddressModal = ({
   } = useForm<AddressFormData>({
     resolver: zodResolver(addressSchema),
     defaultValues: initialData
-      ? {
-          houseNo: initialData.address.split(",")[0].trim(),
-          street: initialData.address.split(",")[1].trim(),
-          district: initialData.address.split(",")[2].trim(),
-          pinCode: initialData.address.split(",")[3]?.trim(),
-        }
+      ? parseAddressParts(initialData.address)
       : undefined,
   });
 
   const onSubmit = (data: AddressFormData) => {
     const fullAddress = `${data.houseNo}, ${data.street}, ${data.district}, ${data.pinCode}`;
 
-    const addressToSubmit = initialData
-      ? { ...initialData, address: fullAddress }
-      : { address: fullAddress };
+    const addressToSubmit: AddressInput = {
+      address: fullAddress,
+      latitude: initialData?.latitude,
+      longitude: initialData?.longitude,
+      isDefault: initialData?.isDefault,
+      nickname: initialData?.nickname
+    };
 
     console.log("Submitted Address:", addressToSubmit);
     onAddAddress(addressToSubmit);

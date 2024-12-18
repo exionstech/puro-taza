@@ -1,7 +1,7 @@
 import { ProtectedRouteLayoutProps } from "@/types";
 
 
-const OrderLayout = ({ children }: ProtectedRouteLayoutProps) => {
+const CheckoutLayOut = ({ children }: ProtectedRouteLayoutProps) => {
   return (
     <main className="scroll-smooth min-h-screen overflow-x-hidden">
         {children}
@@ -9,4 +9,4 @@ const OrderLayout = ({ children }: ProtectedRouteLayoutProps) => {
   );
 };
 
-export default OrderLayout;
+export default CheckoutLayOut;

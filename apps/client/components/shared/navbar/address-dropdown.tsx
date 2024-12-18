@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import DropdownIcon from "@/components/shared/dropdown-icon";
 import { Button } from "@/components/ui/button";
 import {
@@ -16,41 +16,32 @@ import GoogleMapModal from "@/components/shared/navbar/google-map-modal";
 import { Address, AddressInput } from "@/types";
 import AddAddressModal from "./address-modal";
 import { cn } from "@/lib/utils";
-import { toast } from "sonner";
+import { useAddressManagement } from "@/hooks/use-address";
+import { useUser } from "@/hooks/user";
 
-const AddressDropdown: React.FC = () => {
-  const [addresses, setAddresses] = useState<Address[]>(() => {
-    if (typeof window !== "undefined") {
-      const savedAddresses = localStorage.getItem("savedAddresses");
-      return savedAddresses ? JSON.parse(savedAddresses) : [];
-    }
-    return [];
-  });
+const AddressDropdown = () => {
 
-  const [selectedAddress, setSelectedAddress] = useState<Address | null>(null);
+  const { user } = useUser();
+  const userId = user?.id || "guest";
+
+  const {
+    addresses,
+    selectedAddress,
+    addAddress,
+    setSelectedAddress,
+    isAddressExists,
+  } = useAddressManagement(userId);
+
   const [isMapModalOpen, setIsMapModalOpen] = useState(false);
   const [isAddAddressModalOpen, setIsAddAddressModalOpen] = useState(false);
-
-  // Save addresses to localStorage whenever they change
-  useEffect(() => {
-    localStorage.setItem("savedAddresses", JSON.stringify(addresses));
-
-    // Set a default address if one exists
-    if (addresses.length > 0 && !selectedAddress) {
-      setSelectedAddress(addresses[0]);
-    }
-  }, [addresses]);
+  const [pendingLocationAddress, setPendingLocationAddress] =
+    useState<Address | null>(null);
 
   const handleAddressSelect = (address: Address) => {
     setSelectedAddress(address);
-    console.log("Selected Address:", address);
   };
 
   const handleAddNewAddress = () => {
-    if (addresses.length >= 4) {
-      toast.message("You can only add up to 4 addresses.");
-      return;
-    }
     setIsAddAddressModalOpen(true);
   };
 
@@ -59,49 +50,36 @@ const AddressDropdown: React.FC = () => {
   };
 
   const handleAddAddress = (newAddress: AddressInput) => {
-    const newAddressWithId: Address = {
-      ...newAddress,
-      id:
-        addresses.length > 0 ? Math.max(...addresses.map((a) => a.id)) + 1 : 1,
-      isDefault: addresses.length === 0,
-    };
-    const updatedAddresses = [...addresses, newAddressWithId];
-    setAddresses(updatedAddresses);
-    setSelectedAddress(newAddressWithId);
+    addAddress(newAddress);
     setIsAddAddressModalOpen(false);
-    console.log("Added Manual Address:", newAddressWithId);
+    setPendingLocationAddress(null);
   };
 
   const handleMapAddressSelect = (selectedLocationAddress: Address) => {
-    if (addresses.length >= 4) {
-      toast.message("You can only add up to 4 addresses.");
-      return;
-    }
+    // Check if address already exists
+    if (
+      isAddressExists(
+        selectedLocationAddress.latitude,
+        selectedLocationAddress.longitude
+      )
+    ) {
+      // If exists, just select the existing address
+      const existingAddress = addresses.find(
+        (addr) =>
+          addr.latitude === selectedLocationAddress.latitude &&
+          addr.longitude === selectedLocationAddress.longitude
+      );
 
-    const existingAddress = addresses.find(
-      (addr) =>
-        addr.latitude === selectedLocationAddress.latitude &&
-        addr.longitude === selectedLocationAddress.longitude
-    );
-
-    if (!existingAddress) {
-      const newAddress: Address = {
-        ...selectedLocationAddress,
-        id:
-          addresses.length > 0
-            ? Math.max(...addresses.map((a) => a.id)) + 1
-            : 1,
-        isDefault: addresses.length === 0,
-      };
-      const updatedAddresses = [...addresses, newAddress];
-      setAddresses(updatedAddresses);
-      setSelectedAddress(newAddress);
+      if (existingAddress) {
+        setSelectedAddress(existingAddress);
+      }
     } else {
-      setSelectedAddress(existingAddress);
+      // Open address modal with location details for user to confirm/edit
+      setPendingLocationAddress(selectedLocationAddress);
+      setIsAddAddressModalOpen(true);
     }
 
     setIsMapModalOpen(false);
-    console.log("Added Location Address:", selectedLocationAddress);
   };
 
   return (
@@ -153,7 +131,9 @@ const AddressDropdown: React.FC = () => {
                         {address.address}
                       </p>
                       {address.id === selectedAddress?.id && (
-                        <p className="text-xs text-center text-white bg-violet px-2 py-1 rounded-lg">Selected</p>
+                        <p className="text-xs text-center text-white bg-violet px-2 py-1 rounded-lg">
+                          Selected
+                        </p>
                       )}
                     </div>
                   </div>
@@ -168,7 +148,7 @@ const AddressDropdown: React.FC = () => {
             onSelect={handleCurrentLocation}
             className={cn(
               "cursor-pointer hover:bg-gray-100",
-              addresses.length >= 4 && "opacity-50 pointer-events-none"
+              addresses.length >= 5 && "opacity-50 pointer-events-none"
             )}
           >
             <div className="flex items-center space-x-3">
@@ -183,13 +163,13 @@ const AddressDropdown: React.FC = () => {
             onSelect={handleAddNewAddress}
             className={cn(
               "cursor-pointer hover:bg-gray-100",
-              addresses.length >= 4 && "opacity-50 pointer-events-none"
+              addresses.length >= 5 && "opacity-50 pointer-events-none"
             )}
           >
             <div className="flex items-center space-x-3">
               <Plus className="w-5 h-5 text-green-600" />
               <span className="text-green-600">
-                {addresses.length < 4
+                {addresses.length < 5
                   ? "Add New Address"
                   : "Maximum Addresses Reached"}
               </span>
@@ -209,8 +189,19 @@ const AddressDropdown: React.FC = () => {
       {isAddAddressModalOpen && (
         <AddAddressModal
           isOpen={isAddAddressModalOpen}
-          onClose={() => setIsAddAddressModalOpen(false)}
+          onClose={() => {
+            setIsAddAddressModalOpen(false);
+            setPendingLocationAddress(null);
+          }}
           onAddAddress={handleAddAddress}
+          initialData={
+            pendingLocationAddress
+              ? {
+                  ...pendingLocationAddress,
+                  address: pendingLocationAddress.address || "",
+                }
+              : undefined
+          }
         />
       )}
     </>

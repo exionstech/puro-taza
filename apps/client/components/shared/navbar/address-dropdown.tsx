@@ -47,7 +47,7 @@ const AddressDropdown: React.FC = () => {
   };
 
   const handleAddNewAddress = () => {
-    if (addresses.length >= 4) {
+    if (addresses.length >= 5) {
       toast.message("You can only add up to 4 addresses.");
       return;
     }
@@ -73,7 +73,7 @@ const AddressDropdown: React.FC = () => {
   };
 
   const handleMapAddressSelect = (selectedLocationAddress: Address) => {
-    if (addresses.length >= 4) {
+    if (addresses.length >= 5) {
       toast.message("You can only add up to 4 addresses.");
       return;
     }
@@ -168,7 +168,7 @@ const AddressDropdown: React.FC = () => {
             onSelect={handleCurrentLocation}
             className={cn(
               "cursor-pointer hover:bg-gray-100",
-              addresses.length >= 4 && "opacity-50 pointer-events-none"
+              addresses.length >= 5 && "opacity-50 pointer-events-none"
             )}
           >
             <div className="flex items-center space-x-3">
@@ -183,13 +183,13 @@ const AddressDropdown: React.FC = () => {
             onSelect={handleAddNewAddress}
             className={cn(
               "cursor-pointer hover:bg-gray-100",
-              addresses.length >= 4 && "opacity-50 pointer-events-none"
+              addresses.length >= 5 && "opacity-50 pointer-events-none"
             )}
           >
             <div className="flex items-center space-x-3">
               <Plus className="w-5 h-5 text-green-600" />
               <span className="text-green-600">
-                {addresses.length < 4
+                {addresses.length < 5
                   ? "Add New Address"
                   : "Maximum Addresses Reached"}
               </span>

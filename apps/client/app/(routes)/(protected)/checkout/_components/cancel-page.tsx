@@ -4,13 +4,13 @@ import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 
-const EmptyOrder = () => {
+const CancelOrder = () => {
   return (
     <div>
       <div className="w-full flex items-center justify-center flex-col mt-20 md:mt-10 gap-16 md:gap-10 text-center">
-        <h1 className="text-3xl">Opps ! You have not ordered anything</h1>
+        <h1 className="text-3xl">Your order has been cancelled!</h1>
         <Image
-          src={"/orders/empty-order.png"}
+          src={"/checkout/cancel.png"}
           alt="empty cart"
           width={450}
           height={450}
@@ -30,4 +30,4 @@ const EmptyOrder = () => {
   );
 };
 
-export default EmptyOrder;
+export default CancelOrder;

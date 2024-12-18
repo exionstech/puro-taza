@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 
-const SuccessfulOrder = () => {
+const FailedOrder = () => {
   return (
     <div>
       <div className="w-full flex items-center justify-center flex-col mt-20 md:mt-10 gap-16 md:gap-10 text-center">
@@ -30,4 +30,4 @@ const SuccessfulOrder = () => {
   );
 };
 
-export default SuccessfulOrder;
+export default FailedOrder;

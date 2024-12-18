@@ -4,6 +4,9 @@ import {
   BreadcrumbLink,
 } from "@/components/ui/breadcrumb";
 import { ChevronLeft } from "lucide-react";
+import CancelOrder from "./_components/cancel-page";
+import SuccessfulOrder from "./_components/successful-page";
+import FailedOrder from "./_components/failed-order";
 
 const OrderPage = () => {
   return (
@@ -18,7 +21,11 @@ const OrderPage = () => {
           </BreadcrumbItem>
         </Breadcrumb>
       </div>
-      <div className="w-full flex items-center justify-center"></div>
+      <div className="w-full flex items-center justify-center">
+        <CancelOrder/>
+        {/* <SuccessfulOrder/>
+        <FailedOrder/> */}
+      </div>
     </section>
   );
 };

@@ -8,9 +8,9 @@ const SuccessfulOrder = () => {
   return (
     <div>
       <div className="w-full flex items-center justify-center flex-col mt-20 md:mt-10 gap-16 md:gap-10 text-center">
-        <h1 className="text-3xl">Your order has been placed successfully !</h1>
+        <h1 className="text-3xl">Your payment has failed!</h1>
         <Image
-          src={"/checkout/successful.png"}
+          src={"/checkout/failed.png"}
           alt="empty cart"
           width={450}
           height={450}

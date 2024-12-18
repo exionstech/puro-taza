@@ -17,10 +17,11 @@ import { Address, AddressInput } from "@/types";
 import AddAddressModal from "./address-modal";
 import { cn } from "@/lib/utils";
 import { useAddressManagement } from "@/hooks/use-address";
-import { useAuth } from "@/hooks/use-auth";
+import { useUser } from "@/hooks/user";
 
-const AddressDropdown: React.FC = () => {
-  const { user } = useAuth();
+const AddressDropdown = () => {
+
+  const { user } = useUser();
   const userId = user?.id || "guest";
 
   const {

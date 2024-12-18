@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -32,7 +32,7 @@ const AddAddressModal = ({
   onAddAddress,
   initialData,
 }: AddAddressModalProps) => {
-  // Function to safely parse address
+
   const parseAddressParts = (address?: string) => {
     if (!address) return {
       houseNo: '',
@@ -42,12 +42,34 @@ const AddAddressModal = ({
     };
 
     const parts = address.split(',').map(part => part.trim());
-    return {
-      houseNo: parts[0] || '',
-      street: parts[1] || '',
-      district: parts[2] || '',
-      pinCode: parts[3] || ''
+
+    const parsedAddress = {
+      houseNo: '',
+      street: '',
+      district: '',
+      pinCode: ''
     };
+
+    const pinCodeMatch = address.match(/\b\d{5,6}\b/);
+    if (pinCodeMatch) {
+      parsedAddress.pinCode = pinCodeMatch[0];
+    }
+
+    if (parts.length > 1) {
+      if (parts.length >= 2) {
+        parsedAddress.district = parts[parts.length - 2];
+      }
+
+      const streetParts = parts.slice(0, Math.min(2, parts.length - 2));
+      parsedAddress.street = streetParts.join(', ');
+
+      const houseNoMatch = parts[0].match(/^\d+\s*(?:[-/]?\w+)?/);
+      if (houseNoMatch) {
+        parsedAddress.houseNo = houseNoMatch[0];
+      }
+    }
+
+    return parsedAddress;
   };
 
   const {
@@ -55,10 +77,23 @@ const AddAddressModal = ({
     handleSubmit,
     formState: { errors },
     reset,
+    setValue,
   } = useForm<AddressFormData>({
     resolver: zodResolver(addressSchema),
     defaultValues: initialData,
   });
+
+  // Effect to set form values when initialData changes
+  useEffect(() => {
+    if (initialData?.address) {
+      const { houseNo, street, district, pinCode } = parseAddressParts(initialData.address);
+      
+      setValue('houseNo', houseNo);
+      setValue('street', street);
+      setValue('district', district);
+      setValue('pinCode', pinCode);
+    }
+  }, [initialData, setValue]);
 
   const onSubmit = (data: AddressFormData) => {
     const fullAddress = `${data.houseNo}, ${data.street}, ${data.district}, ${data.pinCode}`;
@@ -75,7 +110,6 @@ const AddAddressModal = ({
     reset();
     onClose();
   };
-
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -135,6 +169,14 @@ const AddAddressModal = ({
               {errors.pinCode && (
                 <p className="text-red-500 text-sm">{errors.pinCode.message}</p>
               )}
+            </div>
+            <div className="col-span-2 space-y-2">
+              <Label htmlFor="nickname">Address Nickname (Optional)</Label>
+              <Input
+                id="nickname"
+                placeholder="Home, Work, etc."
+                {...register("nickname")}
+              />
             </div>
           </div>
 

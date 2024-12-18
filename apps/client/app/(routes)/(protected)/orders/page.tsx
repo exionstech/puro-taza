@@ -5,6 +5,7 @@ import {
 } from "@/components/ui/breadcrumb";
 import { ChevronLeft } from "lucide-react";
 import MyOrders from "./_components/my-orders";
+import EmptyOrder from "./_components/empty-card";
 
 const OrderPage = () => {
   return (
@@ -21,6 +22,7 @@ const OrderPage = () => {
       </div>
       <div className="w-full flex items-center justify-center">
         <MyOrders/>
+        {/* <EmptyOrder/> */}
       </div>
     </section>
   );

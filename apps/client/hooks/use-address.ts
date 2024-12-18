@@ -2,133 +2,126 @@ import { useState, useEffect, useCallback } from 'react';
 import { Address, AddressInput } from '@/types';
 import { toast } from 'sonner';
 
-// Interface for hook return type
-interface UseAddressHook {
-  addresses: Address[];
-  selectedAddress: Address | null;
-  addAddress: (newAddress: AddressInput) => void;
-  updateAddress: (id: number, updatedAddress: AddressInput) => void;
-  deleteAddress: (id: number) => void;
-  selectAddress: (id: number) => void;
-  clearAddresses: () => void;
-}
+// Unique storage key with user-specific prefix (replace with actual user ID in production)
+const generateStorageKey = (userId: string) => `savedAddresses_${userId}`;
 
-// Helper function to generate a unique user identifier
-const generateUserIdentifier = () => {
-  // In a real application, this would come from authentication
-  // For now, we'll use a simple method to simulate user-specific storage
-  if (typeof window !== 'undefined') {
-    const storedUserId = localStorage.getItem('userId');
-    if (storedUserId) return storedUserId;
-
-    const newUserId = `user_${Math.random().toString(36).substr(2, 9)}`;
-    localStorage.setItem('userId', newUserId);
-    return newUserId;
-  }
-  return 'anonymous_user';
-};
-
-export const useAddressManager = (): UseAddressHook => {
-  const [addresses, setAddresses] = useState<Address[]>([]);
-  const [selectedAddress, setSelectedAddress] = useState<Address | null>(null);
-  const userId = generateUserIdentifier();
-
-  // Load addresses from localStorage on hook initialization
-  useEffect(() => {
+export const useAddressManagement = (userId: string) => {
+  const [addresses, setAddresses] = useState<Address[]>(() => {
+    // Initialize addresses from localStorage with user-specific key
     if (typeof window !== 'undefined') {
-      const storageKey = `savedAddresses_${userId}`;
-      const savedAddresses = localStorage.getItem(storageKey);
-      
-      if (savedAddresses) {
-        const parsedAddresses = JSON.parse(savedAddresses);
-        setAddresses(parsedAddresses);
-        
-        // Set first address as selected if exists
-        if (parsedAddresses.length > 0) {
-          setSelectedAddress(parsedAddresses[0]);
-        }
-      }
+      const savedAddresses = localStorage.getItem(generateStorageKey(userId));
+      return savedAddresses ? JSON.parse(savedAddresses) : [];
     }
-  }, [userId]);
+    return [];
+  });
+
+  const [selectedAddress, setSelectedAddress] = useState<Address | null>(
+    addresses.find(addr => addr.isDefault) || addresses[0] || null
+  );
 
   // Save addresses to localStorage whenever they change
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const storageKey = `savedAddresses_${userId}`;
-      localStorage.setItem(storageKey, JSON.stringify(addresses));
+      localStorage.setItem(
+        generateStorageKey(userId), 
+        JSON.stringify(addresses)
+      );
+
+      // Update selected address if current selection is no longer in the list
+      if (
+        selectedAddress && 
+        !addresses.some(addr => addr.id === selectedAddress.id)
+      ) {
+        setSelectedAddress(addresses[0] || null);
+      }
     }
   }, [addresses, userId]);
 
-  // Add a new address
+  // Add new address
   const addAddress = useCallback((newAddress: AddressInput) => {
     if (addresses.length >= 5) {
-      toast.error("You can only add up to 4 addresses.");
-      return;
+      toast.message("You can only add up to 4 addresses.");
+      return null;
     }
 
     const newAddressWithId: Address = {
       ...newAddress,
-      id: addresses.length > 0 ? Math.max(...addresses.map((a) => a.id)) + 1 : 1,
+      id: addresses.length > 0 
+        ? Math.max(...addresses.map((a) => a.id)) + 1 
+        : 1,
       isDefault: addresses.length === 0,
     };
 
     const updatedAddresses = [...addresses, newAddressWithId];
-    setAddresses(updatedAddresses);
     
-    // Automatically select the new address if it's the first one
+    // If this is the first address, set it as default
     if (updatedAddresses.length === 1) {
-      setSelectedAddress(newAddressWithId);
+      newAddressWithId.isDefault = true;
     }
 
+    setAddresses(updatedAddresses);
+    setSelectedAddress(newAddressWithId);
+    
     toast.success("Address added successfully");
     return newAddressWithId;
   }, [addresses]);
 
-  // Update an existing address
-  const updateAddress = useCallback((id: number, updatedAddress: AddressInput) => {
+  // Update existing address
+  const updateAddress = useCallback((updatedAddress: Address) => {
     const updatedAddresses = addresses.map(addr => 
-      addr.id === id 
-        ? { ...addr, ...updatedAddress } 
-        : addr
+      addr.id === updatedAddress.id ? updatedAddress : addr
     );
 
     setAddresses(updatedAddresses);
     
-    // Update selected address if the updated address is the current selected one
-    if (selectedAddress?.id === id) {
-      setSelectedAddress(updatedAddresses.find(addr => addr.id === id) || null);
+    // If updating the selected address, update selection
+    if (selectedAddress?.id === updatedAddress.id) {
+      setSelectedAddress(updatedAddress);
     }
 
     toast.success("Address updated successfully");
+    return updatedAddress;
   }, [addresses, selectedAddress]);
 
-  // Delete an address
-  const deleteAddress = useCallback((id: number) => {
-    const updatedAddresses = addresses.filter(addr => addr.id !== id);
+  // Delete address
+  const deleteAddress = useCallback((addressId: number) => {
+    const updatedAddresses = addresses.filter(addr => addr.id !== addressId);
+    
     setAddresses(updatedAddresses);
 
-    // If the deleted address was selected, select the first address or null
-    if (selectedAddress?.id === id) {
-      setSelectedAddress(updatedAddresses.length > 0 ? updatedAddresses[0] : null);
+    // If deleting the selected address, select another or set to null
+    if (selectedAddress?.id === addressId) {
+      setSelectedAddress(updatedAddresses[0] || null);
     }
 
     toast.success("Address deleted successfully");
+    return updatedAddresses;
   }, [addresses, selectedAddress]);
 
-  // Select an address
-  const selectAddress = useCallback((id: number) => {
-    const addressToSelect = addresses.find(addr => addr.id === id);
-    if (addressToSelect) {
-      setSelectedAddress(addressToSelect);
-    }
+  // Set default address
+  const setDefaultAddress = useCallback((addressId: number) => {
+    const updatedAddresses = addresses.map(addr => ({
+      ...addr,
+      isDefault: addr.id === addressId
+    }));
+
+    setAddresses(updatedAddresses);
+    setSelectedAddress(
+      updatedAddresses.find(addr => addr.id === addressId) || null
+    );
+
+    toast.success("Default address updated");
+    return updatedAddresses;
   }, [addresses]);
 
-  // Clear all addresses
-  const clearAddresses = useCallback(() => {
-    setAddresses([]);
-    setSelectedAddress(null);
-    toast.success("All addresses cleared");
-  }, []);
+  // Check if an address already exists based on latitude and longitude
+  const isAddressExists = useCallback((latitude?: number, longitude?: number) => {
+    return addresses.some(
+      addr => 
+        addr.latitude === latitude && 
+        addr.longitude === longitude
+    );
+  }, [addresses]);
 
   return {
     addresses,
@@ -136,7 +129,8 @@ export const useAddressManager = (): UseAddressHook => {
     addAddress,
     updateAddress,
     deleteAddress,
-    selectAddress,
-    clearAddresses
+    setDefaultAddress,
+    isAddressExists,
+    setSelectedAddress
   };
 };

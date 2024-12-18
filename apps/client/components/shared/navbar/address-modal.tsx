@@ -15,13 +15,15 @@ import { Label } from "@/components/ui/label";
 import { Address, AddressInput } from "@/types";
 import { addressSchema } from "@/schemas";
 
-type AddressFormData = z.infer<typeof addressSchema>;
+type AddressFormData = z.infer<typeof addressSchema> & {
+  nickname: string;
+};
 
 interface AddAddressModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onAddAddress: (address: AddressInput | Address) => void;
-  initialData?: Address;
+  onAddAddress: (address: AddressInput) => void;
+  initialData?: Partial<Address>;
 }
 
 const AddAddressModal = ({
@@ -55,9 +57,7 @@ const AddAddressModal = ({
     reset,
   } = useForm<AddressFormData>({
     resolver: zodResolver(addressSchema),
-    defaultValues: initialData
-      ? parseAddressParts(initialData.address)
-      : undefined,
+    defaultValues: initialData,
   });
 
   const onSubmit = (data: AddressFormData) => {
@@ -68,14 +68,14 @@ const AddAddressModal = ({
       latitude: initialData?.latitude,
       longitude: initialData?.longitude,
       isDefault: initialData?.isDefault,
-      nickname: initialData?.nickname
+      nickname: data.nickname
     };
 
-    console.log("Submitted Address:", addressToSubmit);
     onAddAddress(addressToSubmit);
     reset();
     onClose();
   };
+
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>

@@ -46,10 +46,16 @@ export function UserNav() {
       <DropdownMenuContent className="w-60" align="end" forceMount>
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
-            <p className="text-sm font-medium leading-none"> {user?.name}</p>
+            {user ? (
+              <>
+              <p className="text-sm font-medium leading-none"> {user?.name}</p>
             <p className="text-xs leading-none text-muted-foreground">
               {user?.phone}
             </p>
+              </>
+            ): (
+              <Loader2 className="w-6 h-6 animate-spin"/>
+            )}
           </div>
         </DropdownMenuLabel>
         {user ? <DropdownMenuSeparator /> : null}

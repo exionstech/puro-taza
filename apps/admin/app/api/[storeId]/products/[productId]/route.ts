@@ -49,6 +49,7 @@ export async function PATCH(
     const {
       name,
       description,
+      discount,
       price,
       stock,
       categoryId,
@@ -89,6 +90,7 @@ export async function PATCH(
         price,
         stock,
         categoryId,
+        discount,
         subcategories: addSubcategories,
         image: image && {
           deleteMany: {},

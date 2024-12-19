@@ -6,18 +6,29 @@ import { z } from "zod";
 interface Props {
   open: boolean;
   setOpen: (open: boolean) => void;
-  mode?: "create" | "edit";
+  mode: "create" | "edit";
+  setMode: (mode: "create" | "edit") => void;
   initialData?: z.infer<typeof CategorySchema>;
+  setInitialData: (data: any) => void;
 }
 
 const CategoryDialog = ({
   open,
   setOpen,
   mode = "create",
+  setMode,
   initialData,
+  setInitialData,
 }: Props) => {
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog
+      open={open}
+      onOpenChange={() => {
+        setOpen(false);
+        setMode("create");
+        setInitialData(null);
+      }}
+    >
       <DialogContent>
         <DialogTitle>
           {mode === "create" ? "Create" : "Update"} Category
@@ -27,7 +38,7 @@ const CategoryDialog = ({
         </DialogTitle>
         <div>
           <CategoryForm
-            mode={mode}
+            mode={"create"}
             setOpen={setOpen}
             initialData={initialData}
           />

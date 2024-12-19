@@ -31,6 +31,7 @@ export function UserNav({ user }: UserNavProps) {
     logout();
     window.location.reload();
   };
+  console.log(user);
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -54,29 +55,6 @@ export function UserNav({ user }: UserNavProps) {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          {user?.role === "ADMIN" && (
-            <>
-              <DropdownMenuItem className="hover:cursor-pointer" asChild>
-                <Link href="" className="flex items-center">
-                  <Cog className="w-4 h-4 mr-3 text-muted-foreground" />
-                  Admin Dashboard
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-            </>
-          )}
-          {user?.role === "ADMIN" && (
-            <>
-              <DropdownMenuItem className="hover:cursor-pointer" asChild>
-                <Link href="" target="_blank" className="flex items-center">
-                  <LayoutDashboard className="w-4 h-4 mr-3 text-muted-foreground" />
-                  Manage Store
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-            </>
-          )}
-
           <DropdownMenuItem className="hover:cursor-pointer" asChild>
             <Link href="/orders" className="flex items-center">
               <ShoppingBasket className="w-4 h-4 mr-3 text-muted-foreground" />

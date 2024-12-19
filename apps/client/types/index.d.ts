@@ -60,19 +60,23 @@ interface SignInFormProps {
 }
 
 
-
 export interface Address {
   id: number;
   address: string;
   isDefault?: boolean;
   latitude?: number;
   longitude?: number;
-
   nickname?: string;
-  isDefault?: boolean;
 }
 
-export type AddressInput = Omit<Address, 'id'>;
+export interface AddressInput {
+  address: string;
+  isDefault?: boolean;
+  latitude?: number;
+  longitude?: number;
+  nickname?: string;
+}
+
 
 
 

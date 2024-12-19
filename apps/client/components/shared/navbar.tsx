@@ -1,20 +1,15 @@
+"use client"
 import Logo from './logo';
 import SearchItem from '@/components/shared/navbar/search-item';
 import { UserNav } from './user-nav';
 import CartItem from '@/components/shared/navbar/cart-item';
 import UserMobileNav from './user-mobile-nav';
 import AddressDropdown from './navbar/address-dropdown';
+import { useUser } from '@/hooks/user';
 
-const user = {
-  name: 'Suman Mandal',
-  username: 'sumanmandal',
-  email: "suman9732@gmail.com",
-  image: "",
-  role: "ADMIN",
-  contact: "9876543210"
-}
 
 const Navbar = () => {
+  const { user } = useUser();
   return (
     <div className="fixed right-0 left-0 top-0 w-full shadow-md z-10 bg-white">
       <div className='w-full max-w-screen-2xl px-8 2xl:px-12 items-center md:flex hidden backdrop-blur-md mx-auto'>

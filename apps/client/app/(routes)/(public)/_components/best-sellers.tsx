@@ -1,6 +1,6 @@
 import React from "react";
 import ItemCard from "./sub-components/best-sellers/item-card";
-import { Marquee } from "@/components/shared/marqee";
+import CustomSwiper from "@/components/shared/swiper";
 
 type Product = {
   id: string;
@@ -98,20 +98,15 @@ const items: Product[] = [
 
 const BestSellers = () => {
   return (
-    <section className="w-full max-w-screen-2xl h-auto px-5 md:px-14 flex items-center flex-col mx-auto gap-2 mt-10">
+    <section className="w-full max-w-screen-2xl h-auto px-5 md:px-14 flex items-center flex-col mx-auto gap-10 mt-10">
       <div className="w-full md:text-start text-center">
-        <h1 className="text-3xl text-customBlack font-medium">Best Sellers</h1>
+        <h1 className="text-3xl text-customBlack font-medium select-none">Best Sellers</h1>
       </div>
-      <Marquee
-        pauseOnHover
-        className="[--duration:50s] max-w-screen-2xl [mask-image:linear-gradient(to_right,transparent,black_5%,black_95%,transparent)]"
-      >
-        <div className="flex gap-4 w-max py-8 overflow-x-hidden">
-          {items.map((item) => (
-            <ItemCard key={item.id} product={item} />
-          ))}
-        </div>
-      </Marquee>
+      <CustomSwiper>
+        {items.map((item) => (
+          <ItemCard key={item.id} product={item} />
+        ))}
+      </CustomSwiper>
     </section>
   );
 };

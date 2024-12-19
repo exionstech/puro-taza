@@ -44,11 +44,22 @@ interface VerifyReturnType {
   success: boolean;
 }
 
+interface User {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  isVerified: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
 interface UseAuthReturnTypes {
   loading: boolean;
   success: boolean;
   message: string;
   isLoggedIn: boolean;
+  user: User | null;
   login: (data: LoginData) => Promise<LoginReturnType>;
   register: (data: RegisterData) => Promise<RegisterReturnType>;
   verify: (data: VerifyData) => Promise<VerifyReturnType>;

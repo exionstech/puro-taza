@@ -107,3 +107,5 @@ export const getUsers = () => {
     deleteUser,
   };
 };
+
+export { updateUser}

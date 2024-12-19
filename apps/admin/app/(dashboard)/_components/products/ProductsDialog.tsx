@@ -9,7 +9,7 @@ interface Props {
   mode?: "create" | "edit";
   setMode: (mode: "create" | "edit") => void;
   initialData?: InitialDataType;
-  setInitialData: (initialData: InitialDataType | null) => void;
+  setInitialData: (initialData: any) => void;
 }
 
 const ProductsDialog = ({
@@ -27,7 +27,7 @@ const ProductsDialog = ({
         onOpenChange={() => {
           setOpen(false);
           setMode("create");
-          setInitialData(null);
+          setInitialData(undefined);
         }}
       >
         <DialogContent className="max-w-screen-2xl">

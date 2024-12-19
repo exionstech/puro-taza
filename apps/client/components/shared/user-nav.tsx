@@ -3,6 +3,7 @@ import Link from "next/link";
 import {
   Cog,
   LayoutDashboard,
+  Loader2,
   LogIn,
   LogOutIcon,
   ShoppingBasket,
@@ -21,17 +22,15 @@ import {
 import { useAuth } from "@/hooks/use-auth";
 import DropdownIcon from "./dropdown-icon";
 
-interface UserNavProps {
-  user: any;
-}
-
-export function UserNav({ user }: UserNavProps) {
+export function UserNav() {
   const { logout, isLoggedIn } = useAuth();
+  const { user } = useAuth();
+
   const handleLogout = () => {
     logout();
     window.location.reload();
   };
-  console.log(user);
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -40,7 +39,7 @@ export function UserNav({ user }: UserNavProps) {
           className="border-none font-normal text-lg flex items-center dropdown-button"
         >
           Account
-          <DropdownIcon size={3} className="ml-1"/>
+          <DropdownIcon size={3} className="ml-1" />
         </Button>
       </DropdownMenuTrigger>
 
@@ -49,11 +48,11 @@ export function UserNav({ user }: UserNavProps) {
           <div className="flex flex-col space-y-1">
             <p className="text-sm font-medium leading-none"> {user?.name}</p>
             <p className="text-xs leading-none text-muted-foreground">
-              {user?.contact}
+              {user?.phone}
             </p>
           </div>
         </DropdownMenuLabel>
-        <DropdownMenuSeparator />
+        {user ? <DropdownMenuSeparator /> : null}
         <DropdownMenuGroup>
           <DropdownMenuItem className="hover:cursor-pointer" asChild>
             <Link href="/orders" className="flex items-center">
@@ -72,15 +71,15 @@ export function UserNav({ user }: UserNavProps) {
         <DropdownMenuSeparator />
         {isLoggedIn ? (
           <Button onClick={handleLogout} variant={"outline"} className="w-full">
-            <LogOutIcon/>
+            <LogOutIcon />
             Log Out
-            </Button>
+          </Button>
         ) : (
           <Link href="/sign-in">
             <Button variant={"outline"} className="w-full">
-                <LogIn/>
-                Sign In
-                </Button>
+              <LogIn />
+              Sign In
+            </Button>
           </Link>
         )}
       </DropdownMenuContent>

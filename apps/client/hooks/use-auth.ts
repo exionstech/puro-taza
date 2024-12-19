@@ -4,7 +4,16 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
-import { LoginData, LoginReturnType, RegisterData, RegisterReturnType, UseAuthReturnTypes, VerifyData, VerifyReturnType } from "@/types";
+import {
+  LoginData,
+  LoginReturnType,
+  RegisterData,
+  RegisterReturnType,
+  UseAuthReturnTypes,
+  User,
+  VerifyData,
+  VerifyReturnType,
+} from "@/types";
 
 export const useAuth = (): UseAuthReturnTypes => {
   const router = useRouter();
@@ -12,6 +21,14 @@ export const useAuth = (): UseAuthReturnTypes => {
   const [success, setSuccess] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
+  const [user, setUser] = useState<User | null>(() => {
+    // Initialize user from localStorage if available
+    if (typeof window !== "undefined") {
+      const storedUser = localStorage.getItem("user");
+      return storedUser ? JSON.parse(storedUser) : null;
+    }
+    return null;
+  });
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
 
   const login = async (data: LoginData): Promise<LoginReturnType> => {
@@ -89,6 +106,13 @@ export const useAuth = (): UseAuthReturnTypes => {
         token: localStorage.getItem("token") as string,
       });
 
+      if (response.data.data.client) {
+        const userData = response.data.data.client;
+        setUser(userData);
+        localStorage.setItem("user", JSON.stringify(userData));
+        setIsLoggedIn(true);
+      }
+
       const redirectUrl = new URLSearchParams(window.location.search).get(
         "redirectUrl"
       );
@@ -97,15 +121,19 @@ export const useAuth = (): UseAuthReturnTypes => {
 
       return response.data.data;
     } catch (error: any) {
+      setUser(null);
+      localStorage.removeItem("user");
+      setIsLoggedIn(false);
       return error;
     }
   };
-  
+
   const logout = async (): Promise<void> => {
     try {
       localStorage.removeItem("token");
+      localStorage.removeItem("user");
       Cookies.remove("token");
-
+      setUser(null);
       setIsLoggedIn(false);
     } catch (error: any) {
       console.error(error);
@@ -113,14 +141,24 @@ export const useAuth = (): UseAuthReturnTypes => {
   };
 
   useEffect(() => {
-    setIsLoggedIn(!!Cookies.get("token"));
-  }, [Cookies.get("token")]);
+    const token = Cookies.get("token");
+    setIsLoggedIn(!!token);
+
+    // Load user from localStorage on mount
+    if (typeof window !== "undefined") {
+      const storedUser = localStorage.getItem("user");
+      if (storedUser) {
+        setUser(JSON.parse(storedUser));
+      }
+    }
+  }, []);
 
   return {
     loading,
     success,
     message,
     isLoggedIn,
+    user,
     login,
     register,
     verify,

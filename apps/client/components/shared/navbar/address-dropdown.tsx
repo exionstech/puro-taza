@@ -17,13 +17,12 @@ import { Address, AddressInput } from "@/types";
 import AddAddressModal from "./address-modal";
 import { cn } from "@/lib/utils";
 import { useAddressManagement } from "@/hooks/use-address";
-import { useUser } from "@/hooks/user";
+import { useAuth } from "@/hooks/use-auth";
 
 const AddressDropdown = () => {
-
-  const { user } = useUser();
+  const { user } = useAuth();
   const userId = user?.id || "guest";
-
+  
   const {
     addresses,
     selectedAddress,

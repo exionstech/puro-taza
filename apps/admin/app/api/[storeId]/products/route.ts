@@ -39,9 +39,7 @@ export async function GET(
     const minPrice = searchParams.get("minPrice");
     const maxPrice = searchParams.get("maxPrice");
 
-    const where: any = {
-      storeId: params.storeId,
-    };
+    const where: any = {};
 
     if (categoryId) where.categoryId = categoryId;
     if (subcategoryId) where.subcategoryId = subcategoryId;

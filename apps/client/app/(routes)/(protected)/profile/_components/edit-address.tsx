@@ -20,6 +20,7 @@ const EditAddressSection = ({ user }: AddressProps) => {
     deleteAddress,
     updateAddress,
     setDefaultAddress,
+    addAddress,
   } = useAddressManagement(user?.id ?? "");
 
   const [isAddressModalOpen, setIsAddressModalOpen] = useState(false);
@@ -41,6 +42,24 @@ const EditAddressSection = ({ user }: AddressProps) => {
     setIsAddressModalOpen(true);
   };
 
+  const handleAddressSubmit = async (data: AddressInput) => {
+    try {
+      if (selectedAddress?.id) {
+        await updateAddress(selectedAddress.id, data);
+        toast.success("Address updated successfully");
+      } else {
+        const result = await addAddress(data);
+        if (result) {
+          toast.success("Address added successfully");
+        }
+      }
+      setIsAddressModalOpen(false);
+      setSelectedAddress(null);
+    } catch (error) {
+      toast.error("Failed to save address");
+    }
+  };
+
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between">
@@ -51,7 +70,7 @@ const EditAddressSection = ({ user }: AddressProps) => {
           disabled={addresses.length >= 5}
         >
           <Plus className="w-4 h-4" />
-          Add New Address
+          {addresses.length >= 5 ? "Address Limit Reached" : "Add New Address"}
         </Button>
       </CardHeader>
       <CardContent>
@@ -100,6 +119,11 @@ const EditAddressSection = ({ user }: AddressProps) => {
                       size="icon"
                       onClick={() => handleDeleteClick(address)}
                       disabled={address.isDefault}
+                      title={
+                        address.isDefault
+                          ? "Cannot delete default address"
+                          : "Delete address"
+                      }
                     >
                       <Trash2 className="w-4 h-4" />
                     </Button>
@@ -128,14 +152,7 @@ const EditAddressSection = ({ user }: AddressProps) => {
           }}
           initialData={selectedAddress || undefined}
           existingAddresses={addresses}
-          onSubmit={async (data: AddressInput) => {
-            if (selectedAddress?.id) {
-              updateAddress(selectedAddress.id, data);
-              toast.success("Address updated successfully");
-            }
-            setIsAddressModalOpen(false);
-            setSelectedAddress(null);
-          }}
+          onSubmit={handleAddressSubmit}
         />
       )}
 
@@ -148,9 +165,10 @@ const EditAddressSection = ({ user }: AddressProps) => {
           }}
           onConfirm={async () => {
             if (selectedAddress) {
-              await deleteAddress(selectedAddress.id);
-              setIsDeleteModalOpen(false);
-              setSelectedAddress(null);
+              const success = await deleteAddress(selectedAddress.id);
+              if (success) {
+                toast.success("Address deleted successfully");
+              }
             }
           }}
           address={selectedAddress}

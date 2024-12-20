@@ -1,4 +1,3 @@
-"use client"
 import Logo from './logo';
 import SearchItem from '@/components/shared/navbar/search-item';
 import { UserNav } from './user-nav';

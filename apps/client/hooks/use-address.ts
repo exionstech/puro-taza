@@ -61,10 +61,10 @@ export const useAddressManagement = (clientId: string) => {
 
   // Add address
   const addAddress = useCallback(
-    async (newAddress: AddressInput): Promise<Address | null> => {
-      if (addresses.length >= 10) {
-        toast.error("Maximum limit of 10 addresses reached");
-        return null;
+    async (newAddress: AddressInput): Promise<boolean> => {
+      if (addresses.length >= 5) {
+        toast.error("Maximum limit of 5 addresses reached");
+        return false;
       }
 
       try {
@@ -76,29 +76,33 @@ export const useAddressManagement = (clientId: string) => {
             body: JSON.stringify({
               ...newAddress,
               isDefault: addresses.length === 0 || newAddress.isDefault,
-              label: newAddress.label,
+              label: newAddress.label || "Home",
             }),
           }
         );
 
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
         const data: AddressApiResponse = await response.json();
 
-        if (data.success && data.addresses && !Array.isArray(data.addresses)) {
-          const addedAddress = data.addresses;
-          setAddresses((prev) => [...prev, addedAddress]);
-
-          if (addresses.length === 0 || addedAddress.isDefault) {
-            setSelectedAddress(addedAddress);
+        if (data.success) {
+          // Refresh the addresses list
+          const fetchResponse = await fetch(
+            `${process.env.NEXT_PUBLIC_API_URL}/client/${clientId}/address`
+          );
+          const fetchData: AddressApiResponse = await fetchResponse.json();
+          
+          if (fetchData.success && fetchData.addresses && Array.isArray(fetchData.addresses)) {
+            setAddresses(fetchData.addresses);
           }
-
-          toast.success("Address added successfully");
-          return addedAddress;
+          return true;
         }
-        return null;
+        return false;
       } catch (error) {
-        toast.error("Failed to add address");
         console.error("Error adding address:", error);
-        return null;
+        throw error;
       }
     },
     [addresses, clientId]
@@ -165,6 +169,18 @@ export const useAddressManagement = (clientId: string) => {
   const deleteAddress = useCallback(
     async (addressId: string): Promise<boolean> => {
       try {
+        const addressToDelete = addresses.find(addr => addr.id === addressId);
+        
+        if (!addressToDelete) {
+          toast.error("Address not found");
+          return false;
+        }
+
+        if (addressToDelete.isDefault) {
+          toast.error("Cannot delete default address");
+          return false;
+        }
+
         const response = await fetch(
           `${process.env.NEXT_PUBLIC_API_URL}/client/${clientId}/address/${addressId}`,
           {
@@ -172,31 +188,23 @@ export const useAddressManagement = (clientId: string) => {
           }
         );
 
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
         const data: ApiResponse<void> = await response.json();
 
         if (data.success) {
-          setAddresses((prev) =>
-            prev.filter((addr: Address) => addr.id !== addressId)
-          );
-
-          if (selectedAddress?.id === addressId) {
-            const remaining = addresses.filter(
-              (addr: Address) => addr.id !== addressId
-            );
-            setSelectedAddress(remaining[0] || null);
-          }
-
-          toast.success("Address deleted successfully");
+          setAddresses(prev => prev.filter(addr => addr.id !== addressId));
           return true;
         }
         return false;
       } catch (error) {
-        toast.error("Failed to delete address");
         console.error("Error deleting address:", error);
-        return false;
+        throw error;
       }
     },
-    [addresses, clientId, selectedAddress]
+    [addresses, clientId]
   );
 
   // Set default address

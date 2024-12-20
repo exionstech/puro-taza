@@ -89,7 +89,7 @@ export const AddressDropdown = ({ onAddressSelect }: AddressDropdownProps) => {
   return (
     <>
       <DropdownMenu>
-        <DropdownMenuTrigger asChild className="">
+        <DropdownMenuTrigger asChild className="border-none">
           <Button
             variant="outline"
             className="flex flex-col items-start border-none"
@@ -155,7 +155,7 @@ export const AddressDropdown = ({ onAddressSelect }: AddressDropdownProps) => {
             onSelect={() => setIsMapModalOpen(true)}
             className={cn(
               "cursor-pointer hover:bg-gray-100",
-              addresses.length >= 10 && "opacity-50 pointer-events-none"
+              addresses.length >= 5 && "opacity-50 pointer-events-none"
             )}
           >
             <div className="flex items-center space-x-3">
@@ -168,7 +168,7 @@ export const AddressDropdown = ({ onAddressSelect }: AddressDropdownProps) => {
             onSelect={handleAddNewAddress}
             className={cn(
               "cursor-pointer hover:bg-gray-100",
-              addresses.length >= 10 && "opacity-50 pointer-events-none"
+              addresses.length >= 5 && "opacity-50 pointer-events-none"
             )}
           >
             <div className="flex items-center space-x-3">

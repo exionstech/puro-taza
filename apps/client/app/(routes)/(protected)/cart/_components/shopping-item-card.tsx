@@ -50,13 +50,22 @@ const ShoppingItemCard: React.FC<ShoppingItemCardProps> = ({ item }) => {
         <div className="flex flex-col">
           <h1 className="text-lg font-semibold">{item.name}</h1>
           <h1 className="text-lg font-semibold md:hidden">₹{item.discountedPrice.toFixed(2)}</h1>
-          {item.discount > 0 && (
+          {item.discount > 0 ? (
             <div className="flex items-center gap-2">
               <span className="line-through text-muted-foreground md:text-sm text-xs">
                 ₹{item.price.toFixed(2)}
               </span>
               <span className="text-red-500 md:text-sm text-xs">
                 {item.discount}% OFF
+              </span>
+            </div>
+          ) : (
+            <div className="flex items-center gap-2">
+              <span className="line-through text-muted-foreground md:text-sm text-xs">
+                ₹{item.price.toFixed(2)}
+              </span>
+              <span className="text-red-500 md:text-sm text-xs">
+                0% OFF
               </span>
             </div>
           )}

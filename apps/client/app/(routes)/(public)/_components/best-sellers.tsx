@@ -6,18 +6,18 @@ import { Skeleton } from "@/components/ui/skeleton";
 import useProducts from "@/hooks/use-product";
 
 const BestSellersSkeleton = () => (
-  <div className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-    {[...Array(8)].map((_, i) => (
-      <Card key={i} className="px-5 py-4 rounded-xl shadow-sm">
+  <div className="w-full flex gap-5">
+    {[...Array(4)].map((_, i) => (
+      <Card key={i} className="px-5 py-4 rounded-xl shadow-sm w-full">
         <div className="space-y-4">
-          <Skeleton className="w-full h-[250px] rounded-lg" />
-          <Skeleton className="h-6 w-3/4" />
+          <Skeleton className="w-full h-[180px] rounded-lg" />
+          <Skeleton className="h-4 w-3/4" />
           <div className="flex justify-between items-center">
             <div className="space-y-2">
-              <Skeleton className="h-5 w-20" />
-              <Skeleton className="h-4 w-24" />
+              <Skeleton className="h-2 w-20" />
+              <Skeleton className="h-2 w-24" />
             </div>
-            <Skeleton className="h-10 w-24" />
+            <Skeleton className="h-5 w-24" />
           </div>
         </div>
       </Card>

@@ -4,8 +4,6 @@ import {
   Address,
   AddressInput,
   ApiResponse,
-  LocationFormData,
-  LabelType,
 } from "@/types";
 
 interface AddressApiResponse {
@@ -64,8 +62,8 @@ export const useAddressManagement = (clientId: string) => {
   // Add address
   const addAddress = useCallback(
     async (newAddress: AddressInput): Promise<Address | null> => {
-      if (addresses.length >= 5) {
-        toast.error("Maximum limit of 5 addresses reached");
+      if (addresses.length >= 10) {
+        toast.error("Maximum limit of 10 addresses reached");
         return null;
       }
 
@@ -114,7 +112,7 @@ export const useAddressManagement = (clientId: string) => {
     ): Promise<Address | null> => {
       try {
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/client/${clientId}/address`,
+          `${process.env.NEXT_PUBLIC_API_URL}/client/${clientId}/address/${addressId}`,
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },

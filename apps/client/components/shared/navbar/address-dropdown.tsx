@@ -37,6 +37,7 @@ export const AddressDropdown = ({ onAddressSelect }: AddressDropdownProps) => {
   const [isMapModalOpen, setIsMapModalOpen] = useState(false);
   const [isAddressModalOpen, setIsAddressModalOpen] = useState(false);
   const [editingAddress, setEditingAddress] = useState<Address | null>(null);
+  const [prefilledFormData, setPrefilledFormData] = useState<Partial<AddressInput> | null>(null);
 
   const handleAddressSelect = (address: Address) => {
     setSelectedAddress(address);
@@ -45,23 +46,32 @@ export const AddressDropdown = ({ onAddressSelect }: AddressDropdownProps) => {
 
   const handleAddNewAddress = () => {
     setEditingAddress(null);
+    setPrefilledFormData(null);
     setIsAddressModalOpen(true);
   };
 
   const handleAddressSubmit = async (data: AddressInput) => {
-    if (editingAddress) {
-      await updateAddress(editingAddress.id, data);
-    } else {
-      await addAddress(data);
+    try {
+      if (editingAddress?.id) {
+        // Only update if we have an existing address ID
+        await updateAddress(editingAddress.id, data);
+      } else {
+        // Add new address for both manual and map selection cases
+        await addAddress(data);
+      }
+      setIsAddressModalOpen(false);
+      setEditingAddress(null);
+      setPrefilledFormData(null);
+    } catch (error) {
+      console.error("Error handling address submission:", error);
     }
-    setIsAddressModalOpen(false);
-    setEditingAddress(null);
   };
 
   const handleMapAddressSelect = (locationData: LocationFormData) => {
     setIsMapModalOpen(false);
 
-    const newAddress: AddressInput = {
+    // Create the form data without the Address type-specific fields
+    const newAddressData: AddressInput = {
       address: locationData.address,
       street: locationData.street,
       appartment: locationData.appartment || "",
@@ -70,16 +80,9 @@ export const AddressDropdown = ({ onAddressSelect }: AddressDropdownProps) => {
       isDefault: addresses.length === 0,
     };
 
-    setEditingAddress({
-      ...newAddress,
-      id: "",
-      isDefault: addresses.length === 0,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      latitude: locationData.latitude,
-      longitude: locationData.longitude,
-    });
-
+    // Store the form data to prefill the modal
+    setPrefilledFormData(newAddressData);
+    setEditingAddress(null);
     setIsAddressModalOpen(true);
   };
 
@@ -132,8 +135,7 @@ export const AddressDropdown = ({ onAddressSelect }: AddressDropdownProps) => {
                     <div className="flex flex-col flex-1">
                       <p className="text-sm font-medium">{address.label}</p>
                       <p className="text-xs text-gray-500 line-clamp-1">
-                        {address.appartment}, {address.street},{" "}
-                        {address.address}
+                        {address.appartment}, {address.street}, {address.address}
                       </p>
                     </div>
                     {address.id === selectedAddress?.id && (
@@ -153,7 +155,7 @@ export const AddressDropdown = ({ onAddressSelect }: AddressDropdownProps) => {
             onSelect={() => setIsMapModalOpen(true)}
             className={cn(
               "cursor-pointer hover:bg-gray-100",
-              addresses.length >= 5 && "opacity-50 pointer-events-none"
+              addresses.length >= 10 && "opacity-50 pointer-events-none"
             )}
           >
             <div className="flex items-center space-x-3">
@@ -166,13 +168,13 @@ export const AddressDropdown = ({ onAddressSelect }: AddressDropdownProps) => {
             onSelect={handleAddNewAddress}
             className={cn(
               "cursor-pointer hover:bg-gray-100",
-              addresses.length >= 5 && "opacity-50 pointer-events-none"
+              addresses.length >= 10 && "opacity-50 pointer-events-none"
             )}
           >
             <div className="flex items-center space-x-3">
               <Plus className="w-5 h-5 text-green-600" />
               <span className="text-green-600">
-                {addresses.length < 5
+                {addresses.length < 10
                   ? "Add New Address"
                   : "Maximum Addresses Reached"}
               </span>
@@ -196,9 +198,10 @@ export const AddressDropdown = ({ onAddressSelect }: AddressDropdownProps) => {
           onClose={() => {
             setIsAddressModalOpen(false);
             setEditingAddress(null);
+            setPrefilledFormData(null);
           }}
           onSubmit={handleAddressSubmit}
-          initialData={editingAddress || undefined}
+          initialData={editingAddress || prefilledFormData || undefined}
           existingAddresses={addresses}
         />
       )}

@@ -1,8 +1,8 @@
 import { Button } from '@/components/ui/button';
-import { Products } from '@/types';
+import { Product } from '@/types';
 
 interface OrderSummaryProps {
-  items: Products[];
+  items: (Product & { qty: number })[];
   orderSummary: {
     subtotal: number;
     tax: number;
@@ -33,7 +33,6 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({ orderSummary }) => {
         <span>Total</span>
         <span>₹{total.toFixed(2)}</span>
       </div>
-      <Button className="mt-4">Checkout</Button>
     </div>
   );
 };

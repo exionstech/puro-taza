@@ -1,112 +1,58 @@
 import React from "react";
 import ItemCard from "./sub-components/best-sellers/item-card";
 import CustomSwiper from "@/components/shared/swiper";
+import { Card } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
+import useProducts from "@/hooks/use-product";
 
-type Product = {
-  id: string;
-  name: string;
-  description: string;
-  price: number;
-  discount: number;
-  images: { url: string }[];
-  category: string;
-  qty: number;
-};
-
-const items: Product[] = [
-  {
-    id: "1",
-    name: "Rohu (Rui Fish)",
-    description: "Fresh Rohu Fish",
-    price: 150,
-    discount: 25,
-    images: [{ url: "/home/seller-card/rui.png" }],
-    category: "Fish",
-    qty: 1,
-  },
-  {
-    id: "2",
-    name: "Katla Fish",
-    description: "Fresh Katla Fish",
-    price: 150,
-    discount: 11,
-    images: [{ url: "/home/seller-card/katla.png" }],
-    category: "Fish",
-    qty: 1,
-  },
-  {
-    id: "3",
-    name: "Topshey Fish",
-    description: "Fresh Topshey Fish",
-    price: 150,
-    discount: 14,
-    images: [{ url: "/home/seller-card/topshey.png" }],
-    category: "Fish",
-    qty: 1,
-  },
-  {
-    id: "4",
-    name: "Bata Fish",
-    description: "Fresh Bata Fish",
-    price: 150,
-    discount: 10,
-    images: [{ url: "/home/seller-card/bata.png" }],
-    category: "Fish",
-    qty: 1,
-  },
-  {
-    id: "5",
-    name: "Bhetki Fish",
-    description: "Fresh Bhetki Fish",
-    price: 150,
-    discount: 20,
-    images: [{ url: "/home/seller-card/bhetki.png" }],
-    category: "Fish",
-    qty: 1,
-  },
-  {
-    id: "6",
-    name: "Mud Crab",
-    description: "Fresh Mud Crab",
-    price: 150,
-    discount: 8,
-    images: [{ url: "/home/seller-card/mud-crab.png" }],
-    category: "Crab",
-    qty: 1,
-  },
-  {
-    id: "7",
-    name: "Pabda Fish",
-    description: "Fresh Pabda Fish",
-    price: 150,
-    discount: 20,
-    images: [{ url: "/home/seller-card/pabda.png" }],
-    category: "Fish",
-    qty: 1,
-  },
-  {
-    id: "8",
-    name: "Pomfret Fish",
-    description: "Fresh Pomfret Fish",
-    price: 150,
-    discount: 20,
-    images: [{ url: "/home/seller-card/pomphet.png" }],
-    category: "Fish",
-    qty: 1,
-  },
-];
+const BestSellersSkeleton = () => (
+  <div className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+    {[...Array(8)].map((_, i) => (
+      <Card key={i} className="px-5 py-4 rounded-xl shadow-sm">
+        <div className="space-y-4">
+          <Skeleton className="w-full h-[250px] rounded-lg" />
+          <Skeleton className="h-6 w-3/4" />
+          <div className="flex justify-between items-center">
+            <div className="space-y-2">
+              <Skeleton className="h-5 w-20" />
+              <Skeleton className="h-4 w-24" />
+            </div>
+            <Skeleton className="h-10 w-24" />
+          </div>
+        </div>
+      </Card>
+    ))}
+  </div>
+);
 
 const BestSellers = () => {
+  const { products, isLoading, error } = useProducts();
+
+  if (error) {
+    return null;
+  }
+
   return (
     <section className="w-full max-w-screen-2xl h-auto px-5 md:px-14 flex items-center flex-col mx-auto gap-10 mt-10">
       <div className="w-full md:text-start text-center">
-        <h1 className="text-3xl text-customBlack font-medium select-none">Best Sellers</h1>
+        <h1 className="text-3xl text-customBlack font-medium select-none">
+          Best Sellers
+        </h1>
+        <div className="w-full md:text-start text-center">
+          {isLoading && (
+            <Skeleton className="h-8 w-48" />
+          )}
+        </div>
       </div>
-      <CustomSwiper>
-        {items.map((item) => (
-          <ItemCard key={item.id} product={item} />
-        ))}
-      </CustomSwiper>
+      {isLoading ? (
+        <BestSellersSkeleton />
+      ) : (
+        <CustomSwiper>
+          {products.map((item) => (
+            <ItemCard key={item.id} product={item} />
+          ))}
+        </CustomSwiper>
+      )}
     </section>
   );
 };

@@ -61,7 +61,7 @@ export function UserNav() {
             )}
               </>
             ) : (
-              <span className="text-muted">You are not logged in</span>
+              <span className="text-muted-foreground">You are not logged in</span>
             )}
           </div>
         </DropdownMenuLabel>

@@ -71,21 +71,47 @@ interface SignInFormProps {
 }
 
 
+export type LabelType = 'HOME' | 'WORK' | 'OTHER';
+
 export interface Address {
-  id: number;
+  id: string;
   address: string;
-  isDefault?: boolean;
+  street: string;
+  appartment: string;
+  postalCode: string;
+  isDefault: boolean;
+  label: LabelType;
+  clientId?: string;
   latitude?: number;
   longitude?: number;
-  nickname?: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface AddressInput {
   address: string;
+  street: string;
+  appartment: string;
+  postalCode: string;
   isDefault?: boolean;
+  label: LabelType;
+}
+
+export interface ApiResponse<T> {
+  success: boolean;
+  data?: T;
+  message?: string;
+}
+
+// types/index.ts
+export interface LocationFormData {
+  address: string;
+  street: string;
+  appartment: string;
+  postalCode: string;
+  label: LabelType;
   latitude?: number;
   longitude?: number;
-  nickname?: string;
 }
 
 

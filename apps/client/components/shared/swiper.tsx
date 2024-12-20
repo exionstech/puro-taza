@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useId } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Navigation } from 'swiper/modules';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
@@ -21,6 +21,11 @@ const CustomSwiper: React.FC<CustomSwiperProps> = ({
   breakpoints,
   autoplayDelay = 5000,
 }) => {
+  // Generate unique ID for this swiper instance
+  const uniqueId = useId().replace(/:/g, '');
+  const prevButtonId = `swiper-button-prev-${uniqueId}`;
+  const nextButtonId = `swiper-button-next-${uniqueId}`;
+
   const defaultBreakpoints = {
     320: {
       slidesPerView: 1,
@@ -44,8 +49,8 @@ const CustomSwiper: React.FC<CustomSwiperProps> = ({
         slidesPerView={4}
         loop={true}
         navigation={{
-          nextEl: '.swiper-button-next',
-          prevEl: '.swiper-button-prev',
+          nextEl: `#${nextButtonId}`,
+          prevEl: `#${prevButtonId}`,
           navigationDisabledClass: 'opacity-30',
         }}
         autoplay={{
@@ -65,21 +70,21 @@ const CustomSwiper: React.FC<CustomSwiperProps> = ({
       
       {/* Custom Navigation Buttons with Lucide Icons */}
       <div 
-        className="swiper-button-prev absolute top-1/2 left-0 z-10 transform -translate-y-1/2 p-1 bg-white/70 rounded-full shadow-md flex items-center justify-center hover:bg-white/90 transition-all cursor-pointer duration-300"
+        id={prevButtonId}
+        className="absolute top-1/2 left-0 z-10 transform -translate-y-1/2 p-1 bg-white/70 rounded-full shadow-md flex items-center justify-center hover:bg-white/90 transition-all cursor-pointer duration-300"
         style={{ 
           width: '40px', 
           height: '40px',
-          position: 'absolute'
         }}
       >
         <ChevronLeft className="text-violet" size={20} />
       </div>
       <div 
-        className="swiper-button-next absolute top-1/2 right-0 z-10 transform -translate-y-1/2 p-1 bg-white/70 rounded-full shadow-md flex items-center justify-center hover:bg-white/90 transition-all cursor-pointer duration-300"
+        id={nextButtonId}
+        className="absolute top-1/2 right-0 z-10 transform -translate-y-1/2 p-1 bg-white/70 rounded-full shadow-md flex items-center justify-center hover:bg-white/90 transition-all cursor-pointer duration-300"
         style={{ 
           width: '40px', 
           height: '40px',
-          position: 'absolute'
         }}
       >
         <ChevronRight className="text-violet" size={20} />

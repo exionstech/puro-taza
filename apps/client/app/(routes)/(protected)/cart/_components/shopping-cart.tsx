@@ -1,11 +1,15 @@
 "use client";
+
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { useState, useEffect } from "react";
 import ShoppingItemCard from "./shopping-item-card";
 import OrderSummary from "./order-summary";
 import useCart from "@/hooks/use-cart";
 import EmptyCart from "./empty-cart";
+import { Button } from "@/components/ui/button";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useAuth } from "@/hooks/use-auth";
 
 const formSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -16,40 +20,48 @@ const formSchema = z.object({
 
 type FormData = z.infer<typeof formSchema>;
 
-const ShoppingCart: React.FC = () => {
+const ShoppingCart = () => {
+  const { user } = useAuth();
   const cart = useCart();
+  const [isLoading, setIsLoading] = useState(true);
 
   const { register, handleSubmit, formState } = useForm<FormData>({
     resolver: zodResolver(formSchema),
   });
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, []);
+
   const calculateOrderSummary = () => {
     const itemsWithDiscount = cart.items.map(item => ({
-        ...item,
-        discountedPrice: item.price * (1 - item.discount / 100)
+      ...item,
+      discountedPrice: item.price * (1 - (item.discount || 0) / 100)
     }));
 
-    const subtotal = itemsWithDiscount.reduce((total, item) => 
-        total + item.discountedPrice * item.qty, 0);
-    
+    const subtotal = itemsWithDiscount.reduce((total, item) =>
+      total + item.discountedPrice * item.qty, 0);
+
     const tax = subtotal * 0.05;
     const shipping = subtotal * 0.05;
     const total = subtotal + tax + shipping;
 
-    return { 
-        items: itemsWithDiscount,
-        subtotal, 
-        tax, 
-        shipping, 
-        total 
+    return {
+      items: itemsWithDiscount,
+      subtotal,
+      tax,
+      shipping,
+      total
     };
-};
+  };
 
   const onSubmit = (data: FormData) => {
-    // Calculate order summary
     const orderSummary = calculateOrderSummary();
 
-    // Prepare order details
     const orderDetails = {
       customerInfo: data,
       items: cart.items.map((item) => ({
@@ -58,7 +70,7 @@ const ShoppingCart: React.FC = () => {
         quantity: item.qty,
         price: item.price,
         total: item.price * item.qty,
-        images: item.images,
+        image: item.image?.[0]?.url || "/placeholder-image.png",
       })),
       orderSummary: {
         subtotal: orderSummary.subtotal,
@@ -68,13 +80,19 @@ const ShoppingCart: React.FC = () => {
       },
     };
 
-    // Console log the complete order details
     console.log("Complete Order Details:", orderDetails);
-
-    // TODO: Implement actual order submission to your backend/database
+    // Handle order submission
   };
 
-  if (cart.items.length === 0) {
+  if (isLoading) {
+    return (
+      <div className="w-full h-[60vh] flex items-center justify-center">
+        <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-gray-900"></div>
+      </div>
+    );
+  }
+
+  if (!isLoading && cart.items.length === 0) {
     return <EmptyCart />;
   }
 
@@ -86,17 +104,17 @@ const ShoppingCart: React.FC = () => {
       <div className="flex flex-col md:flex-row gap-5 w-full">
         <div className="md:w-[50%] w-full flex flex-col mt-5 overflow-y-auto max-h-[500px]">
           {cart.items.map((item) => {
-            const discountedPrice = item.price * (1 - item.discount / 100);
+            const discountedPrice = item.price * (1 - (item.discount || 0) / 100);
             return (
               <ShoppingItemCard
                 key={item.id}
                 item={{
                   id: item.id,
                   name: item.name,
-                  image: item.images[0].url,
+                  image: item.image?.[0]?.url || "/placeholder-image.png",
                   price: item.price,
                   discountedPrice,
-                  discount: item.discount,
+                  discount: item.discount || 0,
                   quantity: item.qty,
                 }}
               />
@@ -133,6 +151,9 @@ const ShoppingCart: React.FC = () => {
                 placeholder="Address"
                 className="p-2 border border-gray-300 rounded"
               />
+              <Button type="submit" className="w-full">
+                Place Order
+              </Button>
             </div>
           </form>
         </div>

@@ -1,99 +1,233 @@
 import React from "react";
 import ItemCard from "./sub-components/best-sellers/item-card";
 import CustomSwiper from "@/components/shared/swiper";
-
-type Product = {
-  id: string;
-  name: string;
-  description: string;
-  price: number;
-  discount: number;
-  images: { url: string }[];
-  category: string;
-  qty: number;
-};
+import { Product } from "@/types";
 
 const items: Product[] = [
   {
     id: "1",
     name: "Rohu (Rui Fish)",
-    description: "Fresh Rohu Fish",
+    description: "Fresh Rohu Fish - Premium Quality Bengali Rohu",
     price: 150,
+    stock: 100,
     discount: 25,
-    images: [{ url: "/home/seller-card/rui.png" }],
-    category: "Fish",
-    qty: 1,
+    image: [
+      {
+        id: "rui-1",
+        url: "/home/seller-card/rui.png",
+        key: "rui-main"
+      }
+    ],
+    subcategories: [],
+    categoryId: "fish",
+    category: {
+      id: "fish",
+      name: "Fish",
+      image: [
+        {
+          id: "cat-fish",
+          url: "/categories/fish.png",
+          key: "fish-category"
+        }
+      ]
+    }
   },
   {
     id: "2",
     name: "Katla Fish",
-    description: "Fresh Katla Fish",
+    description: "Fresh Katla Fish - Premium Quality Bengali Katla",
     price: 150,
+    stock: 80,
     discount: 11,
-    images: [{ url: "/home/seller-card/katla.png" }],
-    category: "Fish",
-    qty: 1,
+    image: [
+      {
+        id: "katla-1",
+        url: "/home/seller-card/katla.png",
+        key: "katla-main"
+      }
+    ],
+    subcategories: [],
+    categoryId: "fish",
+    category: {
+      id: "fish",
+      name: "Fish",
+      image: [
+        {
+          id: "cat-fish",
+          url: "/categories/fish.png",
+          key: "fish-category"
+        }
+      ]
+    }
   },
   {
     id: "3",
     name: "Topshey Fish",
-    description: "Fresh Topshey Fish",
+    description: "Fresh Topshey Fish - Premium Quality Bengali Topshey",
     price: 150,
+    stock: 120,
     discount: 14,
-    images: [{ url: "/home/seller-card/topshey.png" }],
-    category: "Fish",
-    qty: 1,
+    image: [
+      {
+        id: "topshey-1",
+        url: "/home/seller-card/topshey.png",
+        key: "topshey-main"
+      }
+    ],
+    subcategories: [],
+    categoryId: "fish",
+    category: {
+      id: "fish",
+      name: "Fish",
+      image: [
+        {
+          id: "cat-fish",
+          url: "/categories/fish.png",
+          key: "fish-category"
+        }
+      ]
+    }
   },
   {
     id: "4",
     name: "Bata Fish",
-    description: "Fresh Bata Fish",
+    description: "Fresh Bata Fish - Premium Quality Bengali Bata",
     price: 150,
+    stock: 90,
     discount: 10,
-    images: [{ url: "/home/seller-card/bata.png" }],
-    category: "Fish",
-    qty: 1,
+    image: [
+      {
+        id: "bata-1",
+        url: "/home/seller-card/bata.png",
+        key: "bata-main"
+      }
+    ],
+    subcategories: [],
+    categoryId: "fish",
+    category: {
+      id: "fish",
+      name: "Fish",
+      image: [
+        {
+          id: "cat-fish",
+          url: "/categories/fish.png",
+          key: "fish-category"
+        }
+      ]
+    }
   },
   {
     id: "5",
     name: "Bhetki Fish",
-    description: "Fresh Bhetki Fish",
+    description: "Fresh Bhetki Fish - Premium Quality Bengali Bhetki",
     price: 150,
+    stock: 70,
     discount: 20,
-    images: [{ url: "/home/seller-card/bhetki.png" }],
-    category: "Fish",
-    qty: 1,
+    image: [
+      {
+        id: "bhetki-1",
+        url: "/home/seller-card/bhetki.png",
+        key: "bhetki-main"
+      }
+    ],
+    subcategories: [],
+    categoryId: "fish",
+    category: {
+      id: "fish",
+      name: "Fish",
+      image: [
+        {
+          id: "cat-fish",
+          url: "/categories/fish.png",
+          key: "fish-category"
+        }
+      ]
+    }
   },
   {
     id: "6",
     name: "Mud Crab",
-    description: "Fresh Mud Crab",
+    description: "Fresh Mud Crab - Premium Quality Bengali Crab",
     price: 150,
+    stock: 50,
     discount: 8,
-    images: [{ url: "/home/seller-card/mud-crab.png" }],
-    category: "Crab",
-    qty: 1,
+    image: [
+      {
+        id: "crab-1",
+        url: "/home/seller-card/mud-crab.png",
+        key: "crab-main"
+      }
+    ],
+    subcategories: [],
+    categoryId: "crab",
+    category: {
+      id: "crab",
+      name: "Crab",
+      image: [
+        {
+          id: "cat-crab",
+          url: "/categories/crab.png",
+          key: "crab-category"
+        }
+      ]
+    }
   },
   {
     id: "7",
     name: "Pabda Fish",
-    description: "Fresh Pabda Fish",
+    description: "Fresh Pabda Fish - Premium Quality Bengali Pabda",
     price: 150,
+    stock: 85,
     discount: 20,
-    images: [{ url: "/home/seller-card/pabda.png" }],
-    category: "Fish",
-    qty: 1,
+    image: [
+      {
+        id: "pabda-1",
+        url: "/home/seller-card/pabda.png",
+        key: "pabda-main"
+      }
+    ],
+    subcategories: [],
+    categoryId: "fish",
+    category: {
+      id: "fish",
+      name: "Fish",
+      image: [
+        {
+          id: "cat-fish",
+          url: "/categories/fish.png",
+          key: "fish-category"
+        }
+      ]
+    }
   },
   {
     id: "8",
     name: "Pomfret Fish",
-    description: "Fresh Pomfret Fish",
+    description: "Fresh Pomfret Fish - Premium Quality Bengali Pomfret",
     price: 150,
+    stock: 60,
     discount: 20,
-    images: [{ url: "/home/seller-card/pomphet.png" }],
-    category: "Fish",
-    qty: 1,
-  },
+    image: [
+      {
+        id: "pomfret-1",
+        url: "/home/seller-card/pomphet.png",
+        key: "pomfret-main"
+      }
+    ],
+    subcategories: [],
+    categoryId: "fish",
+    category: {
+      id: "fish",
+      name: "Fish",
+      image: [
+        {
+          id: "cat-fish",
+          url: "/categories/fish.png",
+          key: "fish-category"
+        }
+      ]
+    }
+  }
 ];
 
 const RecommendedItem = () => {

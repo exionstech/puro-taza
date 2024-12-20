@@ -4,6 +4,7 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
 import useCart from "@/hooks/use-cart";
+import { toast } from "sonner";
 
 interface ShoppingItemCardProps {
   item: {
@@ -27,6 +28,8 @@ const ShoppingItemCard: React.FC<ShoppingItemCardProps> = ({ item }) => {
   const handleDecrement = () => {
     if (item.quantity > 1) {
       cart.updateItemQuantity(item.id, item.quantity - 1);
+    } else {
+      toast.error("Quantity cannot be less than 1");
     }
   };
 
@@ -46,8 +49,8 @@ const ShoppingItemCard: React.FC<ShoppingItemCardProps> = ({ item }) => {
         />
         <div className="flex flex-col">
           <h1 className="text-lg font-semibold">{item.name}</h1>
-          <h1 className="text-lg font-semibold md:hidden">₹{item.discountedPrice}</h1>
-          {item.discountedPrice > 0 && (
+          <h1 className="text-lg font-semibold md:hidden">₹{item.discountedPrice.toFixed(2)}</h1>
+          {item.discount > 0 && (
             <div className="flex items-center gap-2">
               <span className="line-through text-muted-foreground md:text-sm text-xs">
                 ₹{item.price.toFixed(2)}
@@ -57,11 +60,10 @@ const ShoppingItemCard: React.FC<ShoppingItemCardProps> = ({ item }) => {
               </span>
             </div>
           )}
-          {/* only for small screen */}
           <div className="flex items-center gap-2 md:hidden">
             <Button
-              variant={"outline"}
-              size={"icon"}
+              variant="outline"
+              size="icon"
               className="border-none"
               onClick={handleDecrement}
             >
@@ -69,8 +71,8 @@ const ShoppingItemCard: React.FC<ShoppingItemCardProps> = ({ item }) => {
             </Button>
             <span>{item.quantity}</span>
             <Button
-              variant={"outline"}
-              size={"icon"}
+              variant="outline"
+              size="icon"
               className="border-none"
               onClick={handleIncrement}
             >
@@ -82,8 +84,8 @@ const ShoppingItemCard: React.FC<ShoppingItemCardProps> = ({ item }) => {
       <div className="md:flex items-center justify-center gap-5 hidden">
         <div className="flex items-center gap-2">
           <Button
-            variant={"outline"}
-            size={"icon"}
+            variant="outline"
+            size="icon"
             className="border-none"
             onClick={handleDecrement}
           >
@@ -91,29 +93,28 @@ const ShoppingItemCard: React.FC<ShoppingItemCardProps> = ({ item }) => {
           </Button>
           <span>{item.quantity}</span>
           <Button
-            variant={"outline"}
-            size={"icon"}
+            variant="outline"
+            size="icon"
             className="border-none"
             onClick={handleIncrement}
           >
             +
           </Button>
         </div>
-        <h1 className="text-lg font-semibold">₹{item.discountedPrice}</h1>
+        <h1 className="text-lg font-semibold">₹{item.discountedPrice.toFixed(2)}</h1>
         <Button
-          variant={"outline"}
-          size={"icon"}
+          variant="outline"
+          size="icon"
           className="border-none"
           onClick={handleRemove}
         >
           <X />
         </Button>
       </div>
-      {/* only for small screen */}
       <div className="flex items-center gap-1 md:hidden">
         <Button
-          variant={"outline"}
-          size={"icon"}
+          variant="outline"
+          size="icon"
           className="border-none"
           onClick={handleRemove}
         >

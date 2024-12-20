@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useAuth } from "@/hooks/use-auth";
 import DropdownIcon from "./dropdown-icon";
+import { FiShoppingCart } from "react-icons/fi";
 
 export function UserNav() {
   const { logout, isLoggedIn } = useAuth();
@@ -60,6 +61,13 @@ export function UserNav() {
         </DropdownMenuLabel>
         {user ? <DropdownMenuSeparator /> : null}
         <DropdownMenuGroup>
+          <DropdownMenuItem className="hover:cursor-pointer" asChild>
+            <Link href="/cart" className="flex items-center">
+              <FiShoppingCart className="w-4 h-4 mr-3 text-muted-foreground" />
+              Manage Cart
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
           <DropdownMenuItem className="hover:cursor-pointer" asChild>
             <Link href="/orders" className="flex items-center">
               <ShoppingBasket className="w-4 h-4 mr-3 text-muted-foreground" />

@@ -23,7 +23,7 @@ const Category = () => {
         </div>
         <CategoryTable setOpen={setOpen} setMode={setMode} setInitialData={setInitialData} />
       </div>
-      <CategoryDialog open={open} setOpen={setOpen} mode={mode} initialData={initialData} />
+      <CategoryDialog open={open} setOpen={setOpen} mode={mode} setMode={setMode} initialData={initialData} setInitialData={setInitialData} />
     </>
   );
 };

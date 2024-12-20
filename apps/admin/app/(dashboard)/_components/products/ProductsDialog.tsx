@@ -7,18 +7,29 @@ interface Props {
   open: boolean;
   setOpen: (open: boolean) => void;
   mode?: "create" | "edit";
+  setMode: (mode: "create" | "edit") => void;
   initialData?: InitialDataType;
+  setInitialData: (initialData: any) => void;
 }
 
 const ProductsDialog = ({
   open,
   setOpen,
   mode = "create",
+  setMode,
   initialData,
+  setInitialData,
 }: Props) => {
   return (
     open && (
-      <Dialog open={open} onOpenChange={setOpen}>
+      <Dialog
+        open={open}
+        onOpenChange={() => {
+          setOpen(false);
+          setMode("create");
+          setInitialData(undefined);
+        }}
+      >
         <DialogContent className="max-w-screen-2xl">
           <DialogTitle>
             {mode === "create" ? "Create" : "Update"} Product

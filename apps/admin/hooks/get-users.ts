@@ -1,10 +1,17 @@
 import { useState, useEffect } from "react";
 import { useUser } from "@clerk/nextjs";
 import { User, UserType } from "@prisma/client";
-import { getAllUsers, updateUser, deleteUser } from "@/actions/user";
+import {
+  getAllUsers,
+  updateUser,
+  deleteUser,
+  getUserById,
+} from "@/actions/user";
 
 export const getUsers = () => {
   const [users, setUsers] = useState<User[]>([]);
+  const [currentUser, setCurrentUser] = useState<User>();
+  const [isAdmin, setIsAdmin] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isError, setIsError] = useState(false);
   const [error, setError] = useState<Error | null>(null);
@@ -22,7 +29,28 @@ export const getUsers = () => {
     } catch (err) {
       setIsError(true);
       setError(err instanceof Error ? err : new Error("Unknown error"));
+    } finally {
       setIsLoading(false);
+    }
+  };
+
+  const getCurrentUser = async () => {
+    try {
+      if (user) {
+        setIsLoading(true);
+        const fetchedUser = await getUserById(user.id);
+
+        console.log(fetchedUser);
+        console.log(fetchedUser?.role === "ADMIN");
+        if (user.id && fetchedUser) {
+          setCurrentUser(fetchedUser);
+        }
+
+        console.log(currentUser);
+      }
+    } catch (err) {
+      setIsError(true);
+      setError(err instanceof Error ? err : new Error("Unknown error"));
     } finally {
       setIsLoading(false);
     }
@@ -40,7 +68,7 @@ export const getUsers = () => {
       setIsLoading(false);
     }
   };
-  
+
   const deleteUser = async (id: string) => {
     try {
       setIsLoading(true);
@@ -55,13 +83,22 @@ export const getUsers = () => {
   };
 
   useEffect(() => {
-    if (isUserLoaded) {
-      fetchUsers();
+    if (currentUser) {
+      console.log("Current user updated:", currentUser);
+      console.log("Is admin:", isAdmin);
+    }
+  }, [currentUser, isAdmin]);
+
+  useEffect(() => {
+    if (isUserLoaded && user?.id) {
+      getCurrentUser();
     }
   }, [isUserLoaded, user?.id]);
 
   return {
+    currentUser,
     users,
+    isAdmin,
     isLoading: isLoading || !isUserLoaded,
     isError,
     error,
@@ -70,5 +107,5 @@ export const getUsers = () => {
     deleteUser,
   };
 };
-export { updateUser };
 
+export { updateUser}

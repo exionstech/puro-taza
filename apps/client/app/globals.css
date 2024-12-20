@@ -78,6 +78,7 @@
     background: url("/home/hero/hero-main.png");
     background-size: cover;
     background-repeat: no-repeat;
+    background-position: center;
     overflow: hidden;
   }
   .dropdown-button {

@@ -51,7 +51,7 @@ const ItemCard = ({ product }: ItemCardProps) => {
           alt={name}
           height={250}
           width={250}
-          className="shrink-0"
+          className="shrink-0 rounded-xld"
         />
       </div>
       <div className="flex flex-col w-full">

@@ -30,17 +30,8 @@ const useProducts = () => {
         }
 
         const data: ProductsResponse = await response.json();
-        
-        const bestSellers = data.products
-          .sort((a, b) => {
-            const stockDiff = (b.stock || 0) - (a.stock || 0);
-            if (stockDiff !== 0) return stockDiff;
-            
-            return (b.discount || 0) - (a.discount || 0);
-          })
-          .slice(0, 8);
 
-        setProducts(bestSellers);
+        setProducts(data.products);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Something went wrong');
         console.error('Error fetching products:', err);

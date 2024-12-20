@@ -59,9 +59,13 @@ const ItemCard = ({ product }: ItemCardProps) => {
         <div className="w-full flex items-center justify-between">
           <div className="flex flex-col">
             <h1 className="text-lg font-semibold">
-              {discount > 0 && (
+              {discount > 0 ? (
                 <span className="text-sm font-medium text-red-500 mr-2">
                   -{discount}%
+                </span>
+              ) : (
+                <span className="text-sm font-medium text-red-500 mr-2">
+                  -0%
                 </span>
               )}
               {discountedPrice.toFixed(2)}/Kg

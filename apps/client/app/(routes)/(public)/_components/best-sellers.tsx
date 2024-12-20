@@ -10,7 +10,7 @@ const BestSellersSkeleton = () => (
     {[...Array(4)].map((_, i) => (
       <Card key={i} className="px-5 py-4 rounded-xl shadow-sm w-full">
         <div className="space-y-4">
-          <Skeleton className="w-full h-[150px] rounded-lg" />
+          <Skeleton className="w-full h-[180px] rounded-lg" />
           <Skeleton className="h-4 w-3/4" />
           <div className="flex justify-between items-center">
             <div className="space-y-2">

@@ -14,7 +14,7 @@ const CategoryProductCard = ({ product }: CategoryProductCardProps) => {
   const { id, name, image, price, discount = 0 } = product;
 
   const onClick = () => {
-    router.push(`/category/product/${id}`);
+    router.push(`/category/products/${id}`);
   };
 
   const discountedPrice = price - (price * discount) / 100;

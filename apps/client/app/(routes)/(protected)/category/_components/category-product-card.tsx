@@ -20,7 +20,7 @@ const CategoryProductCard = ({ product }: CategoryProductCardProps) => {
   const discountedPrice = price - (price * discount) / 100;
 
   return (
-    <Card className="px-5 py-4 items-center rounded-xl border border-white/10 justify-center flex flex-col md:gap-2 w-full">
+    <Card className="px-5 py-4 items-center rounded-xl shadow-sm justify-center flex flex-col md:gap-2 w-full">
       <div className="w-full h-[30vh] 2xl:h-[25vh] flex items-center justify-center overflow-hidden">
         <Image
           src={image[0]?.url || "/bata.png"}

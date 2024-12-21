@@ -61,7 +61,7 @@ export default function CategoriesPage() {
             selectedCategoryId={selectedCategoryId}
           />
         </div>
-        <div className="md:w-[75%] w-full border max-h-[500px] overflow-y-auto scroll-smooth rounded-lg px-5 py-5">
+        <div className="md:w-[75%] w-full md:border md:max-h-[500px] overflow-y-auto scroll-smooth rounded-lg md:px-5 py-5">
           <CategoryProducts selectedCategoryId={selectedCategoryId}/>
         </div>
       </div>

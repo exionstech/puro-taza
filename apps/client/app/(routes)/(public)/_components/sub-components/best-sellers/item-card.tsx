@@ -44,14 +44,14 @@ const ItemCard = ({ product }: ItemCardProps) => {
   };
 
   return (
-    <Card className="px-5 py-4 items-center rounded-xl h-[50vh] shadow-sm justify-center flex flex-col md:gap-2 w-full">
-      <div className="w-full flex items-center justify-center overflow-hidden">
+    <Card className="px-5 py-5 items-center rounded-xl shadow-sm justify-center flex flex-col md:gap-2 w-full">
+      <div className="w-full h-[30vh] 2xl:h-[25vh] flex items-center justify-center overflow-hidden">
         <Image
-          src={image[0]?.url || "/placeholder-image.png"}
+          src={image[0]?.url || "/bata.png"}
           alt={name}
           height={250}
           width={250}
-          className="shrink-0 rounded-xld"
+          className="shrink-0 rounded-xl"
         />
       </div>
       <div className="flex flex-col w-full">
@@ -76,7 +76,7 @@ const ItemCard = ({ product }: ItemCardProps) => {
             <Button
               onClick={addItem}
               variant={isInCart ? "secondary" : "outline"}
-              className={`border px-8 ${
+              className={`border md:px-8 px-12 ${
                 isInCart 
                   ? "bg-gray-100 text-gray-500 cursor-not-allowed border-gray-300"
                   : "border-violet text-violet hover:bg-violet hover:text-white"

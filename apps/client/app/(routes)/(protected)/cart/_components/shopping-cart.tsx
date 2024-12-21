@@ -9,7 +9,6 @@ import useCart from "@/hooks/use-cart";
 import EmptyCart from "./empty-cart";
 import { Button } from "@/components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useAuth } from "@/hooks/use-auth";
 
 const formSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -21,7 +20,6 @@ const formSchema = z.object({
 type FormData = z.infer<typeof formSchema>;
 
 const ShoppingCart = () => {
-  const { user } = useAuth();
   const cart = useCart();
   const [isLoading, setIsLoading] = useState(true);
 
@@ -87,7 +85,7 @@ const ShoppingCart = () => {
   if (isLoading) {
     return (
       <div className="w-full h-[60vh] flex items-center justify-center">
-        <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-gray-900"></div>
+        <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-gray-900"/>
       </div>
     );
   }
@@ -102,7 +100,7 @@ const ShoppingCart = () => {
         <h1 className="text-2xl font-bold">Shopping Cart</h1>
       </div>
       <div className="flex flex-col md:flex-row gap-5 w-full">
-        <div className="md:w-[50%] w-full flex flex-col mt-5 overflow-y-auto max-h-[500px]">
+        <div className="md:w-[50%] w-full flex flex-col mt-5 overflow-y-auto max-h-[500px] scroll-smooth">
           {cart.items.map((item) => {
             const discountedPrice = item.price * (1 - (item.discount || 0) / 100);
             return (

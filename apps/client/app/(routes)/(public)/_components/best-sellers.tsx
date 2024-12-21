@@ -6,24 +6,42 @@ import { Skeleton } from "@/components/ui/skeleton";
 import useProducts from "@/hooks/use-product";
 
 const BestSellersSkeleton = () => (
-  <div className="w-full flex gap-5">
+  <>
+  <div className="w-full md:flex gap-5 hidden">
     {[...Array(4)].map((_, i) => (
       <Card key={i} className="px-5 py-4 rounded-xl shadow-sm w-full">
         <div className="space-y-4">
           <Skeleton className="w-full h-[180px] rounded-lg" />
-          <Skeleton className="h-4 w-3/4" />
+          <Skeleton className="h-4 w-full" />
           <div className="flex justify-between items-center">
             <div className="space-y-2">
-              <Skeleton className="h-2 w-20" />
-              <Skeleton className="h-2 w-24" />
+              <Skeleton className="h-2 w-full" />
+              <Skeleton className="h-2 w-full" />
             </div>
-            <Skeleton className="h-5 w-24" />
+            <Skeleton className="h-5 w-full" />
           </div>
         </div>
       </Card>
     ))}
   </div>
+  <div className="w-full flex gap-5 md:hidden">
+      <Card className="px-5 py-4 rounded-xl shadow-sm w-full">
+        <div className="space-y-4">
+          <Skeleton className="w-full h-[180px] rounded-lg" />
+          <Skeleton className="h-4 w-full" />
+          <div className="flex justify-between items-center">
+            <div className="space-y-2">
+              <Skeleton className="h-2 w-full" />
+              <Skeleton className="h-2 w-full" />
+            </div>
+            <Skeleton className="h-5 w-full" />
+          </div>
+        </div>
+      </Card>
+  </div>
+  </>
 );
+
 
 const BestSellers = () => {
   const { products, isLoading, error } = useProducts();
@@ -38,9 +56,9 @@ const BestSellers = () => {
         <h1 className="text-3xl text-customBlack font-medium select-none">
           Best Sellers
         </h1>
-        <div className="w-full md:text-start text-center">
+        <div className="w-full">
           {isLoading && (
-            <Skeleton className="h-8 w-48" />
+            <Skeleton className="w-full"/>
           )}
         </div>
       </div>

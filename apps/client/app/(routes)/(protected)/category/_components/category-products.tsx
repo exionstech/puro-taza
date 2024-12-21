@@ -1,6 +1,6 @@
-import { useState } from 'react';
 import { useCategory } from '@/hooks/use-category';
 import CategoryProductCard from './category-product-card';
+import { LoaderPinwheel } from 'lucide-react';
 
 const CategoryProducts = ({ selectedCategoryId }: { selectedCategoryId: string | null }) => {
   const { products, isLoading, error } = useCategory(selectedCategoryId || '');
@@ -16,7 +16,7 @@ const CategoryProducts = ({ selectedCategoryId }: { selectedCategoryId: string |
   if (isLoading) {
     return (
       <div className="w-full h-full flex items-center justify-center">
-        <p>Loading products...</p>
+        <LoaderPinwheel className="w-10 h-10 animate-spin" />
       </div>
     );
   }

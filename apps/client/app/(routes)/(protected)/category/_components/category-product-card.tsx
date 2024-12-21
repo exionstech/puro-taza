@@ -2,27 +2,20 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Product } from "@/types";
 import Image from "next/image";
-import { useRouter } from 'next/navigation';
+import { useRouter } from "next/navigation";
 
 interface CategoryProductCardProps {
   product: Product;
 }
 
 const CategoryProductCard = ({ product }: CategoryProductCardProps) => {
-    const router = useRouter();
+  const router = useRouter();
 
-  const {
-    id,
-    name,
-    image,
-    price,
-    discount = 0,
-  } = product;
+  const { id, name, image, price, discount = 0 } = product;
 
   const onClick = () => {
     router.push(`/category/product/${id}`);
-  }
-
+  };
 
   const discountedPrice = price - (price * discount) / 100;
 
@@ -56,9 +49,7 @@ const CategoryProductCard = ({ product }: CategoryProductCardProps) => {
             <h2 className="text-xs line-through">M.R.P: {price}/kg</h2>
           </div>
           <div className="flex items-center justify-center">
-            <Button onClick={onClick}>
-              View
-            </Button>
+            <Button onClick={onClick}>View</Button>
           </div>
         </div>
       </div>

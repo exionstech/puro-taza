@@ -1,17 +1,26 @@
 "use client";
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbLink,
 } from "@/components/ui/breadcrumb";
 import { CategoryList } from "./_components/category-list";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, LoaderIcon } from "lucide-react";
 import CategoryProducts from './_components/category-products';
 
 export default function CategoriesPage() {
+  const [isLoading, setIsLoading] = useState(true);
   const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
+
+    useEffect(() => {
+      const timer = setTimeout(() => {
+        setIsLoading(false);
+      }, 600);
+  
+      return () => clearTimeout(timer);
+    }, []);
 
   const handleCategorySelect = (categoryId: string) => {
     setSelectedCategoryId(categoryId);
@@ -40,6 +49,11 @@ export default function CategoriesPage() {
           </BreadcrumbItem>
         </Breadcrumb>
       </div>
+      {isLoading ? 
+      <div className='w-full h-[400px] items-start justify-center flex'>
+        <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-gray-900"/>
+      </div> : 
+      <>
       <div className="w-full flex md:flex-row flex-col gap-5">
         <div className="md:w-[25%] w-full overflow-y-auto md:max-h-[500px] scroll-smooth">
           <CategoryList 
@@ -48,9 +62,11 @@ export default function CategoriesPage() {
           />
         </div>
         <div className="md:w-[75%] w-full border min-h-[400px] rounded-lg px-5 py-5">
-          <CategoryProducts selectedCategoryId={selectedCategoryId} />
+          <CategoryProducts selectedCategoryId={selectedCategoryId}/>
         </div>
       </div>
+      </>
+      }
     </div>
   );
 }

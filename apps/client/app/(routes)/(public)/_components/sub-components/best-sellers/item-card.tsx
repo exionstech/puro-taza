@@ -78,7 +78,7 @@ const ItemCard = ({ product }: ItemCardProps) => {
               variant={isInCart ? "secondary" : "outline"}
               className={`border md:px-8 px-12 ${
                 isInCart 
-                  ? "bg-gray-100 text-gray-500 cursor-not-allowed border-gray-300"
+                  ? "text-white cursor-not-allowed bg-violet"
                   : "border-violet text-violet hover:bg-violet hover:text-white"
               }`}
               disabled={isInCart || quantity >= stock}

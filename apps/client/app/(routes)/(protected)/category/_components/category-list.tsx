@@ -1,6 +1,5 @@
 import { useCategories } from "@/hooks/use-category";
 import Image from "next/image";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface CategoryListProps {
   onSelectCategory: (categoryId: string) => void;
@@ -10,42 +9,11 @@ interface CategoryListProps {
 export function CategoryList({ onSelectCategory, selectedCategoryId }: CategoryListProps) {
   const { categories, isLoading, error } = useCategories();
 
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error}</div>;
+  if (isLoading) return <div className="md:flex hidden">Loading...</div>;
+  if (error) return null;
 
   return (
-    <>
-      {/* Mobile dropdown */}
-      <div className="md:hidden w-full">
-        <Select
-          value={selectedCategoryId || ""}
-          onValueChange={onSelectCategory}
-        >
-          <SelectTrigger className="w-full">
-            <SelectValue placeholder="Select a category" />
-          </SelectTrigger>
-          <SelectContent>
-            {categories.map((category) => (
-              <SelectItem key={category.id} value={category.id}>
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 relative overflow-hidden rounded-lg">
-                    <Image
-                      src={category.image?.[0]?.url}
-                      alt={category.name}
-                      fill
-                      className="object-cover"
-                    />
-                  </div>
-                  <span>{category.name}</span>
-                </div>
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
-
-      {/* Desktop list - unchanged */}
-      <div className="w-full md:flex flex-col gap-5 hidden">
+      <div className="w-full md:flex flex-col gap-3 hidden">
         {categories.map((category) => (
           <div 
             key={category.id} 
@@ -56,7 +24,7 @@ export function CategoryList({ onSelectCategory, selectedCategoryId }: CategoryL
           >
             <div className="overflow-y-hidden">
               <Image 
-                src={category.image?.[0]?.url} 
+                src={category.image?.[0]?.url}
                 alt={category.name} 
                 width={65} 
                 height={65} 
@@ -69,6 +37,5 @@ export function CategoryList({ onSelectCategory, selectedCategoryId }: CategoryL
           </div>
         ))}
       </div>
-    </>
   );
 }

@@ -1,6 +1,5 @@
 import { useCategories } from "@/hooks/use-category";
 import Image from "next/image";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface CategoryListProps {
   onSelectCategory: (categoryId: string) => void;

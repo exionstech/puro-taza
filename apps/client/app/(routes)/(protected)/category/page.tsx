@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -8,20 +8,22 @@ import {
 } from "@/components/ui/breadcrumb";
 import { CategoryList } from "./_components/category-list";
 import { ChevronLeft, ChevronRight, LoaderIcon } from "lucide-react";
-import CategoryProducts from './_components/category-products';
-import { MobileCategory } from './_components/mobile-category-dropdown';
+import CategoryProducts from "./_components/category-products";
+import { MobileCategory } from "./_components/mobile-category-dropdown";
 
 export default function CategoriesPage() {
   const [isLoading, setIsLoading] = useState(true);
-  const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
+  const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(
+    null
+  );
 
-    useEffect(() => {
-      const timer = setTimeout(() => {
-        setIsLoading(false);
-      }, 600);
-  
-      return () => clearTimeout(timer);
-    }, []);
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 600);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleCategorySelect = (categoryId: string) => {
     setSelectedCategoryId(categoryId);
@@ -43,35 +45,39 @@ export default function CategoriesPage() {
             </BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbItem>
-            <BreadcrumbLink href="/category" className="flex gap-2 items-center">
-              <ChevronRight className="w-4 h-4 text-muted-foreground"/>
+            <BreadcrumbLink
+              href="/category"
+              className="flex gap-2 items-center"
+            >
+              <ChevronRight className="w-4 h-4 text-muted-foreground" />
               Category
             </BreadcrumbLink>
           </BreadcrumbItem>
         </Breadcrumb>
       </div>
-      {isLoading ? 
-      <div className='w-full h-[400px] items-center justify-center flex'>
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"/>
-      </div> : 
-      <>
-      <div className="w-full flex md:flex-row flex-col gap-5 py-2">
-        <div className="md:w-[25%] w-full overflow-y-auto md:max-h-[500px] scroll-smooth">
-          <CategoryList 
-            onSelectCategory={handleCategorySelect}
-            selectedCategoryId={selectedCategoryId}
-          />
-          <MobileCategory 
-            onSelectCategory={handleCategorySelect}
-            selectedCategoryId={selectedCategoryId}
-          />
+      {isLoading ? (
+        <div className="w-full h-[400px] items-center justify-center flex">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900" />
         </div>
-        <div className="md:w-[75%] w-full md:border md:max-h-[500px] overflow-y-auto scroll-smooth rounded-lg md:px-5 py-5">
-          <CategoryProducts selectedCategoryId={selectedCategoryId}/>
-        </div>
-      </div>
-      </>
-      }
+      ) : (
+        <>
+          <div className="w-full flex md:flex-row flex-col gap-5 py-2">
+            <div className="md:w-[25%] w-full overflow-y-auto md:max-h-[500px] scroll-smooth">
+              <CategoryList
+                onSelectCategory={handleCategorySelect}
+                selectedCategoryId={selectedCategoryId}
+              />
+              <MobileCategory
+                onSelectCategory={handleCategorySelect}
+                selectedCategoryId={selectedCategoryId}
+              />
+            </div>
+            <div className="md:w-[75%] w-full md:border md:max-h-[500px] overflow-y-auto scroll-smooth rounded-lg md:px-5 py-5">
+              <CategoryProducts selectedCategoryId={selectedCategoryId} />
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 }

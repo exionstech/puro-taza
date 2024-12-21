@@ -94,7 +94,7 @@ const ProductDetailsPage = ({ productId }: ProductDetailsPageProps) => {
         <div className="flex gap-10">
           <Button
           variant={"outline"}
-            className="w-full md:w-auto px-12 py-6 text-lg"
+            className="w-full md:w-auto px-12 py-6 text-lg border border-violet hover:bg-violet hover:text-white text-violet"
           >
             {" "}
             Add to Wishlist
@@ -104,7 +104,7 @@ const ProductDetailsPage = ({ productId }: ProductDetailsPageProps) => {
             className={`w-full md:w-auto px-12 py-6 text-lg ${
               isInCart 
                 ? "text-white cursor-not-allowed"
-                : "border-violet text-violet hover:bg-violet hover:text-white"
+                : "text-white hover:bg-white border hover:border-violet hover:text-violet"
             }`}
             disabled={isInCart || quantity >= product.stock}
           >

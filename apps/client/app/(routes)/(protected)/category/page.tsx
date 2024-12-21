@@ -54,14 +54,14 @@ export default function CategoriesPage() {
         <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-gray-900"/>
       </div> : 
       <>
-      <div className="w-full flex md:flex-row flex-col gap-5">
+      <div className="w-full flex md:flex-row flex-col gap-5 py-2">
         <div className="md:w-[25%] w-full overflow-y-auto md:max-h-[500px] scroll-smooth">
           <CategoryList 
             onSelectCategory={handleCategorySelect}
             selectedCategoryId={selectedCategoryId}
           />
         </div>
-        <div className="md:w-[75%] w-full border min-h-[400px] rounded-lg px-5 py-5">
+        <div className="md:w-[75%] w-full border max-h-[500px] overflow-y-auto scroll-smooth rounded-lg px-5 py-5">
           <CategoryProducts selectedCategoryId={selectedCategoryId}/>
         </div>
       </div>

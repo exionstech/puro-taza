@@ -1,45 +1,83 @@
-import { useCategory } from '@/hooks/use-category';
-import CategoryProductCard from './category-product-card';
-import { LoaderPinwheel } from 'lucide-react';
+import { useState, useEffect } from "react";
+import { useCategory, useCategories } from "@/hooks/use-category";
+import CategoryProductCard from "./category-product-card";
+import { Product } from "@/types";
 
-const CategoryProducts = ({ selectedCategoryId }: { selectedCategoryId: string | null }) => {
-  const { products, isLoading, error } = useCategory(selectedCategoryId || '');
+const CategoryProducts = ({
+  selectedCategoryId,
+}: {
+  selectedCategoryId: string | null;
+}) => {
+  const [allProducts, setAllProducts] = useState<Product[]>([]);
+  const [isLoadingAll, setIsLoadingAll] = useState(false);
+  const {
+    products,
+    isLoading: isCategoryLoading,
+    error: categoryError,
+  } = useCategory(selectedCategoryId || "");
+  const { categories } = useCategories();
 
-  if (!selectedCategoryId) {
+  useEffect(() => {
+    const fetchAllProducts = async () => {
+      if (!categories || categories.length === 0) return;
+
+      setIsLoadingAll(true);
+      try {
+        const productsPromises = categories.map(async (category) => {
+          const response = await fetch(
+            `${process.env.NEXT_PUBLIC_API_URL}/${process.env.NEXT_PUBLIC_STORE_ID}/categories/${category.id}`
+          );
+          if (!response.ok) throw new Error("Failed to fetch products");
+          const data = await response.json();
+          return data.category.product || [];
+        });
+
+        const productsArrays = await Promise.all(productsPromises);
+        const allProductsFlat = productsArrays.flat();
+        setAllProducts(allProductsFlat);
+      } catch (error) {
+        console.error("Error fetching all products:", error);
+      } finally {
+        setIsLoadingAll(false);
+      }
+    };
+
+    if (!selectedCategoryId) {
+      fetchAllProducts();
+    }
+  }, [categories, selectedCategoryId]);
+
+  if (selectedCategoryId ? isCategoryLoading : isLoadingAll) {
     return (
       <div className="w-full h-full flex items-center justify-center">
-        <p className="text-muted-foreground text-lg">Select a category to view products</p>
+        <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-gray-900" />
       </div>
     );
   }
 
-  if (isLoading) {
+  // Error state
+  if (selectedCategoryId && categoryError) {
     return (
       <div className="w-full h-full flex items-center justify-center">
-        <LoaderPinwheel className="w-10 h-10 animate-spin" />
+        <p className="text-red-500">No products found</p>
       </div>
     );
   }
 
-  if (error) {
+  // No products state
+  const displayProducts = selectedCategoryId ? products : allProducts;
+  if (displayProducts.length === 0) {
     return (
       <div className="w-full h-full flex items-center justify-center">
-        <p className="text-red-500">Error: {error}</p>
+        <p className="text-muted-foreground">No products found</p>
       </div>
     );
   }
 
-  if (products.length === 0) {
-    return (
-      <div className="w-full h-full flex items-center justify-center">
-        <p className="text-muted-foreground">No products found in this category</p>
-      </div>
-    );
-  }
-
+  // Display products
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-      {products.map((product) => (
+      {displayProducts.map((product) => (
         <CategoryProductCard key={product.id} product={product} />
       ))}
     </div>

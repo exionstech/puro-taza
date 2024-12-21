@@ -20,14 +20,14 @@ const CategoryProductCard = ({ product }: CategoryProductCardProps) => {
   const discountedPrice = price - (price * discount) / 100;
 
   return (
-    <Card className="px-5 py-4 items-center rounded-xl h-[50vh] shadow-sm justify-center flex flex-col md:gap-2 w-full">
-      <div className="w-full flex items-center justify-center overflow-hidden">
+    <Card className="px-5 py-4 items-center rounded-xl border border-white/10 justify-center flex flex-col md:gap-2 w-full">
+      <div className="w-full h-[30vh] 2xl:h-[25vh] flex items-center justify-center overflow-hidden">
         <Image
-          src={image[0]?.url || "/placeholder-image.png"}
+          src={image[0]?.url || "/bata.png"}
           alt={name}
-          height={250}
-          width={250}
-          className="shrink-0 rounded-xld"
+          height={150}
+          width={150}
+          className="shrink-0 rounded-xl"
         />
       </div>
       <div className="flex flex-col w-full">
@@ -49,7 +49,7 @@ const CategoryProductCard = ({ product }: CategoryProductCardProps) => {
             <h2 className="text-xs line-through">M.R.P: {price}/kg</h2>
           </div>
           <div className="flex items-center justify-center">
-            <Button onClick={onClick}>View</Button>
+            <Button onClick={onClick} className="px-12 md:px-8">View</Button>
           </div>
         </div>
       </div>

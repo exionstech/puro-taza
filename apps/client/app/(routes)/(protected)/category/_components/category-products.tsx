@@ -58,8 +58,8 @@ const CategoryProducts = ({
   // Error state
   if (selectedCategoryId && categoryError) {
     return (
-      <div className="w-full h-full flex items-center justify-center">
-        <p className="text-red-500">No products found</p>
+      <div className="w-full h-[400px] flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900" />
       </div>
     );
   }
@@ -68,8 +68,8 @@ const CategoryProducts = ({
   const displayProducts = selectedCategoryId ? products : allProducts;
   if (displayProducts.length === 0) {
     return (
-      <div className="w-full h-full flex items-center justify-center">
-        <p className="text-muted-foreground">No products found</p>
+      <div className="w-full h-[400px] flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900" />
       </div>
     );
   }

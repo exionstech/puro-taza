@@ -8,7 +8,7 @@ const MyOrders = () => {
   return (
     <div className="w-full flex flex-col gap-10">
         <div className="w-full">
-            <h1 className="text-xl font-bold">My Orders</h1>
+            <h1 className="text-3xl font-bold">My Orders</h1>
         </div>
       <Tabs defaultValue="ongoing" className="w-full">
         <TabsList className="justify-between flex w-full">

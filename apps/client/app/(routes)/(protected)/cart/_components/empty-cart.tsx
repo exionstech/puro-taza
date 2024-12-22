@@ -15,7 +15,7 @@ const EmptyCart = () => {
         height={450}
         className="shrink-0"
       />
-      <Link href={"/"}>
+      <Link href={"/category"}>
       <Button variant={"outline"} className="border-none flex items-center text-lg">
         <ChevronLeft className="w-5 h-5 mr-2"/>
         Continue Shopping

@@ -75,39 +75,36 @@ const CheckoutForm = ({ user, addresses, onSubmit }: CheckoutFormProps) => {
           {...register("name")}
           type="text"
           placeholder="Name"
-          className="p-2 border border-gray-300 rounded bg-gray-100 cursor-not-allowed"
-          disabled
+          className="p-2 border border-gray-300 rounded"
         />
         <input
           {...register("email")}
           type="email"
           placeholder="Email"
-          className="p-2 border border-gray-300 rounded bg-gray-100 cursor-not-allowed"
-          disabled
+          className="p-2 border border-gray-300 rounded0"
         />
         <input
           {...register("mobile")}
           type="tel"
           placeholder="Mobile"
-          className="p-2 border border-gray-300 rounded bg-gray-100 cursor-not-allowed"
-          disabled
+          className="p-2 border border-gray-300 rounded"
         />
 
         <Select
           value={selectedAddressId}
           onValueChange={handleAddressChange}
         >
-          <SelectTrigger className="w-full">
+          <SelectTrigger className="">
             <SelectValue placeholder="Select an address" />
           </SelectTrigger>
-          <SelectContent className="md:w-[70%] flex flex-col gap-3">
-            {addresses.map((address) => (
-              <>
-              <SelectItem key={address.id} value={address.id}>
-                {address.label} - {formatAddressToString(address)}
-              </SelectItem>
-              <Separator/>
-              </>
+          <SelectContent className="md:w-[90%] flex flex-col gap-3">
+            {addresses.map((address, index) => (
+              <div key={address.id}>
+                <SelectItem value={address.id}>
+                  {address.label} - {formatAddressToString(address)}
+                </SelectItem>
+                {index < addresses.length - 1 && <Separator />}
+              </div>
             ))}
           </SelectContent>
         </Select>

@@ -68,8 +68,9 @@ const CategoryProducts = ({
   const displayProducts = selectedCategoryId ? products : allProducts;
   if (displayProducts.length === 0) {
     return (
-      <div className="w-full h-[400px] flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900" />
+      <div className="w-full h-[400px] flex items-center justify-center font-medium text-xl gap-5">
+        No products Available
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-gray-200 border-t-violet" />
       </div>
     );
   }

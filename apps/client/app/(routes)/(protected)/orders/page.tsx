@@ -9,7 +9,7 @@ import EmptyOrder from "./_components/empty-card";
 
 const OrderPage = () => {
   return (
-    <section className="w-full max-w-screen-2xl mx-auto px-5 md:px-14 flex items-start flex-col">
+    <section className="w-full max-w-screen-2xl mx-auto px-5 md:px-14 flex items-start flex-col gap-3">
       <div className="flex w-full mt-16">
         <Breadcrumb>
             <BreadcrumbItem>

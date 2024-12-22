@@ -33,6 +33,10 @@ const EditAddressSection = ({ user }: AddressProps) => {
   };
 
   const handleDeleteClick = (address: Address) => {
+    if (address.isDefault) {
+      toast.error("Cannot delete default address");
+      return;
+    }
     setSelectedAddress(address);
     setIsDeleteModalOpen(true);
   };
@@ -42,13 +46,32 @@ const EditAddressSection = ({ user }: AddressProps) => {
     setIsAddressModalOpen(true);
   };
 
+  const handleSetDefault = async (addressId: string) => {
+    try {
+      const success = await setDefaultAddress(addressId);
+      if (!success) {
+        toast.error("Failed to set default address");
+      }
+    } catch (error) {
+      toast.error("Failed to set default address");
+    }
+  };
+
   const handleAddressSubmit = async (data: AddressInput) => {
     try {
       if (selectedAddress?.id) {
+        const currentDefault = addresses.find(addr => addr.isDefault);
+        // If setting a new default address, or updating the current default address
+        if (data.isDefault && (!currentDefault || currentDefault.id !== selectedAddress.id)) {
+          await setDefaultAddress(selectedAddress.id);
+        }
         await updateAddress(selectedAddress.id, data);
         toast.success("Address updated successfully");
       } else {
-        const result = await addAddress(data);
+        const result = await addAddress({
+          ...data,
+          isDefault: addresses.length === 0 || data.isDefault
+        });
         if (result) {
           toast.success("Address added successfully");
         }
@@ -91,12 +114,18 @@ const EditAddressSection = ({ user }: AddressProps) => {
                   <div className="flex items-center gap-2">
                     <MapPin className="w-5 h-5 text-violet" />
                     <span className="font-medium">{address.label}</span>
+                    {address.isDefault && (
+                      <span className="text-xs bg-violet text-white px-2 py-1 rounded">
+                        Default
+                      </span>
+                    )}
                   </div>
                   <div className="flex items-center gap-2">
                     <Button
                       variant="ghost"
                       size="icon"
-                      onClick={() => setDefaultAddress(address.id)}
+                      onClick={() => handleSetDefault(address.id)}
+                      disabled={address.isDefault}
                       title={
                         address.isDefault ? "Default address" : "Set as default"
                       }
@@ -168,6 +197,8 @@ const EditAddressSection = ({ user }: AddressProps) => {
               const success = await deleteAddress(selectedAddress.id);
               if (success) {
                 toast.success("Address deleted successfully");
+                setIsDeleteModalOpen(false);
+                setSelectedAddress(null);
               }
             }
           }}

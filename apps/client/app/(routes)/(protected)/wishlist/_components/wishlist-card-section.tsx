@@ -6,10 +6,11 @@ import useWishlist from "@/hooks/use-wishlist";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import EmptyWishlist from "./empty-wishlist";
-import { useEffect } from "react";
+import useCart from "@/hooks/use-cart";
 
 const WishlistCardSection = () => {
   const wishlist = useWishlist();
+  const cart = useCart();
   const router = useRouter();
 
   if (wishlist.isLoading) {
@@ -76,67 +77,73 @@ const WishlistCardSection = () => {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
-      {wishlist.items.map((product) => (
-        <Card
-          key={product.id}
-          className="px-5 py-4 items-center rounded-xl shadow-sm justify-center flex flex-col md:gap-2 w-full"
-        >
-          <div className="w-full h-[30vh] 2xl:h-[25vh] flex items-center justify-center overflow-hidden">
-            <Image
-              src={product.image[0]?.url || "/bata.png"}
-              alt={product.name}
-              height={150}
-              width={150}
-              className="shrink-0 rounded-xl"
-            />
-          </div>
-          <div className="flex flex-col w-full">
-            <h1 className="text-customBlack text-xl font-normal">
-              {product.name}
-            </h1>
-            <div className="w-full flex flex-col gap-4 items-center">
-              <div className="flex items-center gap-5 w-full text-start">
-                <h1 className="text-lg font-semibold">
-                  {(product.discount ?? 0) > 0 ? (
-                    <span className="text-sm font-medium text-red-500 mr-2">
-                      -{product.discount}%
-                    </span>
-                  ) : (
-                    <span className="text-sm font-medium text-red-500 mr-2">
-                      -0%
-                    </span>
-                  )}
-                  {(
-                    product.price -
-                    (product.price * (product.discount || 0)) / 100
-                  ).toFixed(2)}
-                  /Kg
-                </h1>
-                <h2 className="text-xs line-through">
-                  M.R.P: {product.price}/kg
-                </h2>
-              </div>
-              <div className="flex gap-5 w-full">
-                <Button
-                  onClick={() =>
-                    router.push(`/category/products/${product.id}`)
-                  }
-                  className="w-1/2"
-                >
-                  View
-                </Button>
-                <Button
-                  variant="outline"
-                  onClick={() => wishlist.removeItem(product.id)}
-                  className="w-1/2 border-violet text-violet font-medium"
-                >
-                  Remove
-                </Button>
+      {wishlist.items.map((product) => {
+        const isInCart = cart.items.some((item) => item.id === product.id);
+        return (
+          <Card
+            key={product.id}
+            className="px-5 py-4 items-center rounded-xl shadow-sm justify-center flex flex-col md:gap-2 w-full"
+          >
+            <div className="w-full h-[30vh] 2xl:h-[25vh] flex items-center justify-center overflow-hidden">
+              <Image
+                src={product.image[0]?.url || "/bata.png"}
+                alt={product.name}
+                height={150}
+                width={150}
+                className="shrink-0 rounded-xl"
+              />
+            </div>
+            <div className="flex flex-col w-full">
+              <h1 className="text-customBlack text-xl font-normal">
+                {product.name}
+              </h1>
+              <div className="w-full flex flex-col gap-4 items-center">
+                <div className="flex items-center gap-5 w-full text-start">
+                  <h1 className="text-lg font-semibold">
+                    {(product.discount ?? 0) > 0 ? (
+                      <span className="text-sm font-medium text-red-500 mr-2">
+                        -{product.discount}%
+                      </span>
+                    ) : (
+                      <span className="text-sm font-medium text-red-500 mr-2">
+                        -0%
+                      </span>
+                    )}
+                    {(
+                      product.price -
+                      (product.price * (product.discount || 0)) / 100
+                    ).toFixed(2)}
+                    /Kg
+                  </h1>
+                  <h2 className="text-xs line-through">
+                    M.R.P: {product.price}/kg
+                  </h2>
+                </div>
+                <div className="flex gap-5 w-full">
+                  <Button
+                    onClick={() => cart.addItem(product)}
+                    variant={isInCart ? "secondary" : "outline"}
+                    className={`border md:px-8 px-12 ${
+                      isInCart
+                        ? "text-white cursor-not-allowed bg-violet"
+                        : "border-violet text-violet hover:bg-violet hover:text-white"
+                    }`}
+                    disabled={isInCart || product.stock <= 0}
+                  >
+                    {isInCart ? "Added" : "ADD"}
+                  </Button>
+                  <Button
+                    onClick={() => wishlist.removeItem(product.id)}
+                    className="w-1/2 font-medium"
+                  >
+                    Remove
+                  </Button>
+                </div>
               </div>
             </div>
-          </div>
-        </Card>
-      ))}
+          </Card>
+        );
+      })}
     </div>
   );
 };

@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import {
-  Loader2,
+  Heart,
   LogIn,
   LogOutIcon,
   ShoppingBasket,
@@ -45,22 +45,10 @@ export function UserNav() {
       <DropdownMenuContent className="w-60" align="end" forceMount>
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
-            {isLoggedIn ? (
-              <>
-              {user ? (
-              <>
               <p className="text-sm font-medium leading-none"> {user?.name}</p>
             <p className="text-xs leading-none text-muted-foreground">
               {user?.phone}
             </p>
-              </>
-            ): (
-              <Loader2 className="w-6 h-6 animate-spin"/>
-            )}
-              </>
-            ) : (
-              <span className="text-muted-foreground">You are not logged in</span>
-            )}
           </div>
         </DropdownMenuLabel>
         {user ? <DropdownMenuSeparator /> : null}
@@ -69,6 +57,13 @@ export function UserNav() {
             <Link href="/cart" className="flex items-center">
               <FiShoppingCart className="w-4 h-4 mr-3 text-muted-foreground" />
               Manage Cart
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem className="hover:cursor-pointer" asChild>
+            <Link href="/wishlist" className="flex items-center">
+              <Heart className="w-4 h-4 mr-3 text-muted-foreground" />
+              Wishlist
             </Link>
           </DropdownMenuItem>
           <DropdownMenuSeparator />

@@ -15,27 +15,27 @@ export default function Page({ params }: { params: { productId: string } }) {
   return (
     <div className="w-full min-h-screen max-w-screen-2xl mx-auto px-5 md:px-14 flex flex-col mt-20">
       <div className="mb-8">
-        <Breadcrumb className="flex gap-5 items-center">
+        <Breadcrumb className="flex md:gap-5 gap-3 items-center">
           <BreadcrumbItem>
-            <BreadcrumbLink href="/category" className="flex gap-2 items-center">
+            <BreadcrumbLink href="/category" className="flex gap-2 items-center text-xs md:text-lg">
               <ChevronLeft className="w-5 h-5" />
               Back
             </BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbItem>
-            <BreadcrumbLink href="/" className="flex ml-4 gap-2 items-center text-muted-foreground hover:text-muted-foreground">
+            <BreadcrumbLink href="/" className="flex ml-4 gap-2 items-center text-muted-foreground hover:text-muted-foreground text-xs md:text-lg">
               Home
             </BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbItem>
-            <BreadcrumbLink href="/category" className="flex gap-2 items-center text-muted-foreground hover:text-muted-foreground">
+            <BreadcrumbLink href="/category" className="flex gap-2 items-center text-muted-foreground hover:text-muted-foreground text-xs md:text-lg">
               <ChevronRight className="w-4 h-4" />
               Category
             </BreadcrumbLink>
           </BreadcrumbItem>
           {product?.category && (
             <BreadcrumbItem>
-              <BreadcrumbLink href={""} className="flex gap-2 items-center text-muted-foreground hover:text-muted-foreground">
+              <BreadcrumbLink href={""} className="flex gap-2 items-center text-muted-foreground hover:text-muted-foreground text-xs md:text-lg">
                 <ChevronRight className="w-4 h-4" />
                 {product.category.name}
               </BreadcrumbLink>
@@ -43,7 +43,7 @@ export default function Page({ params }: { params: { productId: string } }) {
           )}
           {product && (
             <BreadcrumbItem>
-              <BreadcrumbLink className="flex gap-2 items-center">
+              <BreadcrumbLink className="flex gap-2 items-center text-xs md:text-lg">
                 <ChevronRight className="w-4 h-4 text-muted-foreground" />
                 {product.name}
               </BreadcrumbLink>

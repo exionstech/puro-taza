@@ -75,9 +75,9 @@ const EditAddressSection = ({ user }: AddressProps) => {
       </CardHeader>
       <CardContent>
         {isLoading ? (
-          <div className="text-center py-8">Loading addresses...</div>
+          <div className="text-center h-[250px] py-8">Loading addresses...</div>
         ) : addresses.length === 0 ? (
-          <div className="text-center py-8 text-gray-500">
+          <div className="text-center h-[250px] py-8 text-gray-500">
             You haven't added any addresses yet.
           </div>
         ) : (

@@ -5,6 +5,7 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import useProductDetails from "@/hooks/use-product-details";
 import useCart from "@/hooks/use-cart";
+import useWishlist from "@/hooks/use-wishlist";
 
 interface ProductDetailsPageProps {
   productId: string;
@@ -16,12 +17,13 @@ const ProductDetailsPage = ({ productId }: ProductDetailsPageProps) => {
   const [isInCart, setIsInCart] = useState<boolean>(false);
   const [quantity, setQuantity] = useState(1);
   const cart = useCart();
+  const wishlist = useWishlist();
 
   useEffect(() => {
-      const cartQty = cart.getItemQuantity(productId);
-      setQuantity(cartQty);
-      setIsInCart(cartQty > 0);
-    }, [cart, productId]);
+    const cartQty = cart.getItemQuantity(productId);
+    setQuantity(cartQty);
+    setIsInCart(cartQty > 0);
+  }, [cart, productId]);
 
   if (isLoading) {
     return (
@@ -53,6 +55,16 @@ const ProductDetailsPage = ({ productId }: ProductDetailsPageProps) => {
     cart.addItem(product, quantity);
   };
 
+  const handleToggleWishlist = () => {
+    if (wishlist.isItemInWishlist(product.id)) {
+      wishlist.removeItem(product.id);
+    } else {
+      wishlist.addItem(product);
+    }
+  };
+
+  const isInWishlist = wishlist.isItemInWishlist(product.id);
+
   const discountedPrice =
     product.price - (product.price * (product.discount || 0)) / 100;
 
@@ -73,8 +85,11 @@ const ProductDetailsPage = ({ productId }: ProductDetailsPageProps) => {
             {product.name}
           </h1>
           <p className="text-lg">
-            {product.description || "No description available"} {" "}
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Numquam sunt impedit, nulla blanditiis atque consectetur facilis earum. Natus fugiat in ducimus eius, ratione obcaecati distinctio omnis totam animi quaerat porro maxime ab sapiente at ipsam est laborum veritatis. Non, esse.
+            {product.description || "No description available"} Lorem ipsum
+            dolor sit amet consectetur adipisicing elit. Numquam sunt impedit,
+            nulla blanditiis atque consectetur facilis earum. Natus fugiat in
+            ducimus eius, ratione obcaecati distinctio omnis totam animi quaerat
+            porro maxime ab sapiente at ipsam est laborum veritatis. Non, esse.
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -93,16 +108,20 @@ const ProductDetailsPage = ({ productId }: ProductDetailsPageProps) => {
         </div>
         <div className="flex gap-10">
           <Button
-          variant={"outline"}
-            className="w-full md:w-auto px-12 py-6 text-lg border border-violet hover:bg-violet hover:text-white text-violet"
+            onClick={handleToggleWishlist}
+            variant={isInWishlist ? "default" : "outline"}
+            className={`w-full py-6 md:w-auto md:px-12 text-lg border ${
+              isInWishlist
+                ? ""
+                : "border-violet hover:bg-violet hover:text-white text-violet"
+            }`}
           >
-            {" "}
-            Add to Wishlist
+            {isInWishlist ? "Remove from Wishlist" : "Add to Wishlist"}
           </Button>
           <Button
             onClick={handleAddToCart}
-            className={`w-full md:w-auto px-12 py-6 text-lg ${
-              isInCart 
+            className={`w-full md:w-auto md:px-12 py-6 text-lg ${
+              isInCart
                 ? "text-white cursor-not-allowed"
                 : "text-white hover:bg-white border hover:border-violet hover:text-violet"
             }`}

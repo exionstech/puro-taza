@@ -31,17 +31,24 @@ interface Category {
 
 interface WishlistStore {
   items: Product[];
+  isLoading: boolean;
   addItem: (data: Product) => void;
   removeItem: (id: string) => void;
   removeAll: () => void;
   isItemInWishlist: (id: string) => boolean;
+  setLoading: (status: boolean) => void;
 }
 
 const useWishlist = create(
   persist<WishlistStore>(
     (set, get) => ({
       items: [],
+      isLoading: true, // Start with loading true
       
+      setLoading: (status: boolean) => {
+        set({ isLoading: status });
+      },
+
       addItem: (data: Product) => {
         const currentItems = get().items;
         const existingItem = currentItems.find((item) => item.id === data.id);
@@ -73,6 +80,10 @@ const useWishlist = create(
     {
       name: "wishlist-storage",
       storage: createJSONStorage(() => localStorage),
+      onRehydrateStorage: () => (state) => {
+        // When storage is rehydrated, set loading to false
+        state?.setLoading(false);
+      },
     }
   )
 );

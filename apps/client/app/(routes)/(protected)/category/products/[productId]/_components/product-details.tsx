@@ -18,10 +18,10 @@ const ProductDetailsPage = ({ productId }: ProductDetailsPageProps) => {
   const cart = useCart();
 
   useEffect(() => {
-      const cartQty = cart.getItemQuantity(productId);
-      setQuantity(cartQty);
-      setIsInCart(cartQty > 0);
-    }, [cart, productId]);
+    const cartQty = cart.getItemQuantity(productId);
+    setQuantity(cartQty);
+    setIsInCart(cartQty > 0);
+  }, [cart, productId]);
 
   if (isLoading) {
     return (
@@ -73,8 +73,11 @@ const ProductDetailsPage = ({ productId }: ProductDetailsPageProps) => {
             {product.name}
           </h1>
           <p className="text-lg">
-            {product.description || "No description available"} {" "}
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Numquam sunt impedit, nulla blanditiis atque consectetur facilis earum. Natus fugiat in ducimus eius, ratione obcaecati distinctio omnis totam animi quaerat porro maxime ab sapiente at ipsam est laborum veritatis. Non, esse.
+            {product.description || "No description available"} Lorem ipsum
+            dolor sit amet consectetur adipisicing elit. Numquam sunt impedit,
+            nulla blanditiis atque consectetur facilis earum. Natus fugiat in
+            ducimus eius, ratione obcaecati distinctio omnis totam animi quaerat
+            porro maxime ab sapiente at ipsam est laborum veritatis. Non, esse.
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -93,7 +96,7 @@ const ProductDetailsPage = ({ productId }: ProductDetailsPageProps) => {
         </div>
         <div className="flex gap-10">
           <Button
-          variant={"outline"}
+            variant={"outline"}
             className="w-full md:w-auto px-12 py-6 text-lg border border-violet hover:bg-violet hover:text-white text-violet"
           >
             {" "}
@@ -102,7 +105,7 @@ const ProductDetailsPage = ({ productId }: ProductDetailsPageProps) => {
           <Button
             onClick={handleAddToCart}
             className={`w-full md:w-auto px-12 py-6 text-lg ${
-              isInCart 
+              isInCart
                 ? "text-white cursor-not-allowed"
                 : "text-white hover:bg-white border hover:border-violet hover:text-violet"
             }`}

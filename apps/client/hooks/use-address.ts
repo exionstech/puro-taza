@@ -68,6 +68,9 @@ export const useAddressManagement = (clientId: string) => {
       }
 
       try {
+        // If this is the first address or marked as default, ensure it's set as default
+        const shouldBeDefault = addresses.length === 0 || newAddress.isDefault;
+        
         const response = await fetch(
           `${process.env.NEXT_PUBLIC_API_URL}/client/${clientId}/address`,
           {
@@ -75,7 +78,7 @@ export const useAddressManagement = (clientId: string) => {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               ...newAddress,
-              isDefault: addresses.length === 0 || newAddress.isDefault,
+              isDefault: shouldBeDefault,
               label: newAddress.label || "Home",
             }),
           }
@@ -96,6 +99,9 @@ export const useAddressManagement = (clientId: string) => {
           
           if (fetchData.success && fetchData.addresses && Array.isArray(fetchData.addresses)) {
             setAddresses(fetchData.addresses);
+            if (shouldBeDefault) {
+              toast.success("New default address set successfully");
+            }
           }
           return true;
         }
@@ -115,22 +121,33 @@ export const useAddressManagement = (clientId: string) => {
       updatedAddress: AddressInput
     ): Promise<Address | null> => {
       try {
+        // If setting as default, first remove default from other addresses
+        if (updatedAddress.isDefault) {
+          const currentDefault = addresses.find(addr => addr.isDefault && addr.id !== addressId);
+          if (currentDefault) {
+            await fetch(
+              `${process.env.NEXT_PUBLIC_API_URL}/client/${clientId}/address/${currentDefault.id}`,
+              {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ ...currentDefault, isDefault: false }),
+              }
+            );
+          }
+        }
+
         const response = await fetch(
           `${process.env.NEXT_PUBLIC_API_URL}/client/${clientId}/address/${addressId}`,
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              ...updatedAddress,
-              label: updatedAddress.label,
-            }),
+            body: JSON.stringify(updatedAddress),
           }
         );
 
         const data: AddressApiResponse = await response.json();
 
         if (data.success) {
-          // Fetch the updated addresses since the API doesn't return the updated address
           const fetchResponse = await fetch(
             `${process.env.NEXT_PUBLIC_API_URL}/client/${clientId}/address`
           );
@@ -150,6 +167,10 @@ export const useAddressManagement = (clientId: string) => {
               setSelectedAddress(updated || null);
             }
 
+            if (updatedAddress.isDefault) {
+              toast.success("Default address updated successfully");
+            }
+
             if (updated) {
               return updated;
             }
@@ -162,7 +183,67 @@ export const useAddressManagement = (clientId: string) => {
         return null;
       }
     },
-    [clientId, selectedAddress]
+    [clientId, selectedAddress, addresses]
+  );
+
+  // Set default address
+  const setDefaultAddress = useCallback(
+    async (addressId: string): Promise<boolean> => {
+      try {
+        const newDefaultAddress = addresses.find(addr => addr.id === addressId);
+        if (!newDefaultAddress) return false;
+
+        // Remove default from current default address
+        const currentDefault = addresses.find(addr => addr.isDefault);
+        if (currentDefault && currentDefault.id !== addressId) {
+          await fetch(
+            `${process.env.NEXT_PUBLIC_API_URL}/client/${clientId}/address/${currentDefault.id}`,
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ ...currentDefault, isDefault: false }),
+            }
+          );
+        }
+
+        // Set new default address
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/client/${clientId}/address/${addressId}`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ ...newDefaultAddress, isDefault: true }),
+          }
+        );
+
+        const data: AddressApiResponse = await response.json();
+
+        if (data.success) {
+          const fetchResponse = await fetch(
+            `${process.env.NEXT_PUBLIC_API_URL}/client/${clientId}/address`
+          );
+          const fetchData: AddressApiResponse = await fetchResponse.json();
+
+          if (
+            fetchData.success &&
+            fetchData.addresses &&
+            Array.isArray(fetchData.addresses)
+          ) {
+            setAddresses(fetchData.addresses);
+            const updated = fetchData.addresses.find(addr => addr.id === addressId);
+            setSelectedAddress(updated || null);
+            toast.success("Default address updated successfully");
+          }
+          return true;
+        }
+        return false;
+      } catch (error) {
+        toast.error("Failed to set default address");
+        console.error("Error setting default address:", error);
+        return false;
+      }
+    },
+    [addresses, clientId]
   );
 
   // Delete address
@@ -196,6 +277,10 @@ export const useAddressManagement = (clientId: string) => {
 
         if (data.success) {
           setAddresses(prev => prev.filter(addr => addr.id !== addressId));
+          if (selectedAddress?.id === addressId) {
+            const defaultAddress = addresses.find(addr => addr.isDefault);
+            setSelectedAddress(defaultAddress || addresses[0] || null);
+          }
           return true;
         }
         return false;
@@ -204,59 +289,7 @@ export const useAddressManagement = (clientId: string) => {
         throw error;
       }
     },
-    [addresses, clientId]
-  );
-
-  // Set default address
-  const setDefaultAddress = useCallback(
-    async (addressId: string): Promise<boolean> => {
-      try {
-        const address = addresses.find(
-          (addr: Address) => addr.id === addressId
-        );
-        if (!address) return false;
-
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/client/${clientId}/address/${addressId}`,
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ ...address, isDefault: true }),
-          }
-        );
-
-        const data: AddressApiResponse = await response.json();
-
-        if (data.success) {
-          // Fetch the updated addresses since the API doesn't return the updated address
-          const fetchResponse = await fetch(
-            `${process.env.NEXT_PUBLIC_API_URL}/client/${clientId}/address`
-          );
-          const fetchData: AddressApiResponse = await fetchResponse.json();
-
-          if (
-            fetchData.success &&
-            fetchData.addresses &&
-            Array.isArray(fetchData.addresses)
-          ) {
-            setAddresses(fetchData.addresses);
-            const updated = fetchData.addresses.find(
-              (addr: Address) => addr.id === addressId
-            );
-            setSelectedAddress(updated || null);
-          }
-
-          toast.success("Default address updated");
-          return true;
-        }
-        return false;
-      } catch (error) {
-        toast.error("Failed to set default address");
-        console.error("Error setting default address:", error);
-        return false;
-      }
-    },
-    [addresses, clientId]
+    [addresses, clientId, selectedAddress]
   );
 
   return {

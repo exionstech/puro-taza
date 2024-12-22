@@ -59,7 +59,10 @@ const UserMobileNav = () => {
       <SheetTrigger>
         <AlignJustify className="h-7 w-7 shrink-0" />
       </SheetTrigger>
-      <SheetContent side="left" className="px-5 py-10 bg-white/95 backdrop-blur-xl">
+      <SheetContent
+        side="left"
+        className="px-5 py-10 bg-white/95 backdrop-blur-xl"
+      >
         <SheetHeader>
           <SheetTitle className="text-2xl font-semibold">
             {isLoggedIn ? `Welcome, ${user?.name}` : "Menu"}
@@ -75,7 +78,7 @@ const UserMobileNav = () => {
               key={nav.title}
               href={nav.href}
               className={`flex items-center gap-3 px-4 py-2 text-lg text-violet font-medium rounded-md transition-colors border border-violet/10
-                ${pathname === nav.href ? 'bg-violet/5' : 'hover:bg-accent hover:text-accent-foreground'}`}
+                ${pathname === nav.href ? "bg-violet/5" : "hover:bg-accent hover:text-accent-foreground"}`}
             >
               {nav.icon}
               {nav.title}
@@ -86,7 +89,7 @@ const UserMobileNav = () => {
             <Link
               href="/cart"
               className={`flex items-center gap-3 px-4 py-2 text-lg text-violet font-medium rounded-md transition-colors border border-violet/10
-                ${pathname === '/cart' ? 'bg-violet/5' : 'hover:bg-accent hover:text-accent-foreground'}`}
+                ${pathname === "/cart" ? "bg-violet/5" : "hover:bg-accent hover:text-accent-foreground"}`}
             >
               <ShoppingCart className="h-4 w-4" />
               Manage Cart
@@ -105,8 +108,8 @@ const UserMobileNav = () => {
             </Button>
           ) : (
             <Link href="/sign-in" className="w-full">
-              <Button 
-                className={`w-full justify-start gap-2 text-lg ${pathname === '/sign-in' ? 'bg-violet/5' : ''}`}
+              <Button
+                className={`w-full justify-start gap-2 text-lg ${pathname === "/sign-in" ? "bg-violet/5" : ""}`}
               >
                 <LogIn className="h-4 w-4" />
                 Sign In

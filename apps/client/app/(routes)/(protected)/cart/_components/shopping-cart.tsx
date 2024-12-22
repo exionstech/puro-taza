@@ -1,31 +1,21 @@
 "use client";
 
-import { useForm } from "react-hook-form";
-import { z } from "zod";
 import { useState, useEffect } from "react";
 import ShoppingItemCard from "./shopping-item-card";
 import OrderSummary from "./order-summary";
 import useCart from "@/hooks/use-cart";
+import { useAuth } from "@/hooks/use-auth";
+import { useAddressManagement } from "@/hooks/use-address";
 import EmptyCart from "./empty-cart";
-import { Button } from "@/components/ui/button";
-import { zodResolver } from "@hookform/resolvers/zod";
-
-const formSchema = z.object({
-  name: z.string().min(1, "Name is required"),
-  email: z.string().email("Invalid email address"),
-  mobile: z.string().min(10, "Mobile number must be at least 10 digits"),
-  address: z.string().min(1, "Address is required"),
-});
-
-type FormData = z.infer<typeof formSchema>;
+import CheckoutForm from "./checkout-form";
 
 const ShoppingCart = () => {
   const cart = useCart();
+  const { user } = useAuth();
+  const { addresses, isLoading: isLoadingAddresses } = useAddressManagement(
+    user?.id ?? ""
+  );
   const [isLoading, setIsLoading] = useState(true);
-
-  const { register, handleSubmit, formState } = useForm<FormData>({
-    resolver: zodResolver(formSchema),
-  });
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -36,13 +26,15 @@ const ShoppingCart = () => {
   }, []);
 
   const calculateOrderSummary = () => {
-    const itemsWithDiscount = cart.items.map(item => ({
+    const itemsWithDiscount = cart.items.map((item) => ({
       ...item,
-      discountedPrice: item.price * (1 - (item.discount || 0) / 100)
+      discountedPrice: item.price * (1 - (item.discount || 0) / 100),
     }));
 
-    const subtotal = itemsWithDiscount.reduce((total, item) =>
-      total + item.discountedPrice * item.qty, 0);
+    const subtotal = itemsWithDiscount.reduce(
+      (total, item) => total + item.discountedPrice * item.qty,
+      0
+    );
 
     const tax = subtotal * 0.05;
     const shipping = subtotal * 0.05;
@@ -53,15 +45,21 @@ const ShoppingCart = () => {
       subtotal,
       tax,
       shipping,
-      total
+      total,
     };
   };
 
-  const onSubmit = (data: FormData) => {
+  const handleSubmit = (data: any) => {
     const orderSummary = calculateOrderSummary();
+    const selectedAddress = addresses.find(
+      (addr) => addr.id === data.selectedAddressId
+    );
 
     const orderDetails = {
-      customerInfo: data,
+      customerInfo: {
+        ...data,
+        addressDetails: selectedAddress,
+      },
       items: cart.items.map((item) => ({
         id: item.id,
         name: item.name,
@@ -79,13 +77,13 @@ const ShoppingCart = () => {
     };
 
     console.log("Complete Order Details:", orderDetails);
-    // Handle order submission
+    console.log("Form Data:", data);
   };
 
-  if (isLoading) {
+  if (isLoading || isLoadingAddresses) {
     return (
       <div className="w-full h-[60vh] flex items-center justify-center">
-        <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-gray-900"/>
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900" />
       </div>
     );
   }
@@ -102,7 +100,8 @@ const ShoppingCart = () => {
       <div className="flex flex-col lg:flex-row gap-5 w-full">
         <div className="lg:w-[50%] w-full flex flex-col mt-5 overflow-y-auto max-h-[500px] scroll-smooth">
           {cart.items.map((item) => {
-            const discountedPrice = item.price * (1 - (item.discount || 0) / 100);
+            const discountedPrice =
+              item.price * (1 - (item.discount || 0) / 100);
             return (
               <ShoppingItemCard
                 key={item.id}
@@ -124,36 +123,11 @@ const ShoppingCart = () => {
             items={cart.items}
             orderSummary={calculateOrderSummary()}
           />
-          <form onSubmit={handleSubmit(onSubmit)} className="mt-4">
-            <div className="flex flex-col gap-4">
-              <input
-                {...register("name")}
-                type="text"
-                placeholder="Name"
-                className="p-2 border border-gray-300 rounded"
-              />
-              <input
-                {...register("email")}
-                type="email"
-                placeholder="Email"
-                className="p-2 border border-gray-300 rounded"
-              />
-              <input
-                {...register("mobile")}
-                type="tel"
-                placeholder="Mobile"
-                className="p-2 border border-gray-300 rounded"
-              />
-              <textarea
-                {...register("address")}
-                placeholder="Address"
-                className="p-2 border border-gray-300 rounded"
-              />
-              <Button type="submit" className="w-full">
-                Place Order
-              </Button>
-            </div>
-          </form>
+          <CheckoutForm 
+            user={user}
+            addresses={addresses}
+            onSubmit={handleSubmit}
+          />
         </div>
       </div>
     </div>

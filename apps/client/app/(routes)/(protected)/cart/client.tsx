@@ -11,9 +11,9 @@ import {
   
   const CartClientPage = () => {
     const router = useRouter();
-    const { login } = useAuth();
+    const { isLoggedIn } = useAuth();
   
-    if (!login){
+    if (!isLoggedIn){
       router.push("/sign-in");
     }
   

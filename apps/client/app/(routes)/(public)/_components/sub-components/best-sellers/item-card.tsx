@@ -5,12 +5,14 @@ import { Product } from "@/types";
 import Image from "next/image";
 import useCart from '@/hooks/use-cart';
 import { toast } from 'sonner';
+import { useAuth } from '@/hooks/use-auth';
 
 interface ItemCardProps {
   product: Product;
 }
 
 const ItemCard = ({ product }: ItemCardProps) => {
+  const { isLoggedIn } = useAuth();
   const cart = useCart();
   const [quantity, setQuantity] = useState<number>(0);
   const [isInCart, setIsInCart] = useState<boolean>(false);
@@ -33,14 +35,19 @@ const ItemCard = ({ product }: ItemCardProps) => {
   }, [cart, id]);
 
   const addItem = () => {
-    if (quantity >= stock) {
-      toast.error("Cannot add more than available stock");
+    if (!isLoggedIn) {
+      toast.error("Please login to add items to cart");
       return;
+    } else {
+      if (quantity >= stock) {
+        toast.error("Cannot add more than available stock");
+        return;
+      }
+      const newQuantity = quantity + 1;
+      cart.addItem(product, newQuantity);
+      setQuantity(newQuantity);
+      setIsInCart(true);
     }
-    const newQuantity = quantity + 1;
-    cart.addItem(product, newQuantity);
-    setQuantity(newQuantity);
-    setIsInCart(true);
   };
 
   return (

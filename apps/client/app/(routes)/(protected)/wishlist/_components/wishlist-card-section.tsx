@@ -84,7 +84,7 @@ const WishlistCardSection = () => {
             key={product.id}
             className="px-5 py-4 items-center rounded-xl shadow-sm justify-center flex flex-col md:gap-2 w-full"
           >
-            <div className="w-full h-[30vh] 2xl:h-[25vh] flex items-center justify-center overflow-hidden">
+            <div className="w-full h-[22vh] 2xl:h-[20vh] flex items-center justify-center overflow-hidden">
               <Image
                 src={product.image[0]?.url || "/bata.png"}
                 alt={product.name}
@@ -119,7 +119,7 @@ const WishlistCardSection = () => {
                     M.R.P: {product.price}/kg
                   </h2>
                 </div>
-                <div className="flex gap-5 w-full">
+                <div className="flex lg:gap-3 justify-between w-full">
                   <Button
                     onClick={() => cart.addItem(product)}
                     variant={isInCart ? "secondary" : "outline"}
@@ -130,11 +130,11 @@ const WishlistCardSection = () => {
                     }`}
                     disabled={isInCart || product.stock <= 0}
                   >
-                    {isInCart ? "Added" : "ADD"}
+                    {isInCart ? "Carted" : "Cart"}
                   </Button>
                   <Button
                     onClick={() => wishlist.removeItem(product.id)}
-                    className="w-1/2 font-medium"
+                    className="w-auto font-medium"
                   >
                     Remove
                   </Button>

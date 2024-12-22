@@ -5,6 +5,7 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import useProductDetails from "@/hooks/use-product-details";
 import useCart from "@/hooks/use-cart";
+import useWishlist from "@/hooks/use-wishlist";
 
 interface ProductDetailsPageProps {
   productId: string;
@@ -16,6 +17,7 @@ const ProductDetailsPage = ({ productId }: ProductDetailsPageProps) => {
   const [isInCart, setIsInCart] = useState<boolean>(false);
   const [quantity, setQuantity] = useState(1);
   const cart = useCart();
+  const wishlist = useWishlist();
 
   useEffect(() => {
     const cartQty = cart.getItemQuantity(productId);
@@ -52,6 +54,16 @@ const ProductDetailsPage = ({ productId }: ProductDetailsPageProps) => {
   const handleAddToCart = () => {
     cart.addItem(product, quantity);
   };
+
+  const handleToggleWishlist = () => {
+    if (wishlist.isItemInWishlist(product.id)) {
+      wishlist.removeItem(product.id);
+    } else {
+      wishlist.addItem(product);
+    }
+  };
+
+  const isInWishlist = wishlist.isItemInWishlist(product.id);
 
   const discountedPrice =
     product.price - (product.price * (product.discount || 0)) / 100;
@@ -96,15 +108,19 @@ const ProductDetailsPage = ({ productId }: ProductDetailsPageProps) => {
         </div>
         <div className="flex gap-10">
           <Button
-            variant={"outline"}
-            className="w-full md:w-auto px-12 py-6 text-lg border border-violet hover:bg-violet hover:text-white text-violet"
+            onClick={handleToggleWishlist}
+            variant={isInWishlist ? "default" : "outline"}
+            className={`w-full py-6 md:w-auto md:px-12 text-lg border ${
+              isInWishlist
+                ? ""
+                : "border-violet hover:bg-violet hover:text-white text-violet"
+            }`}
           >
-            {" "}
-            Add to Wishlist
+            {isInWishlist ? "Remove from Wishlist" : "Add to Wishlist"}
           </Button>
           <Button
             onClick={handleAddToCart}
-            className={`w-full md:w-auto px-12 py-6 text-lg ${
+            className={`w-full md:w-auto md:px-12 py-6 text-lg ${
               isInCart
                 ? "text-white cursor-not-allowed"
                 : "text-white hover:bg-white border hover:border-violet hover:text-violet"

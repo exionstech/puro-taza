@@ -1,32 +1,13 @@
 "use client";
 
-import { useForm } from "react-hook-form";
-import { z } from "zod";
 import { useState, useEffect } from "react";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import ShoppingItemCard from "./shopping-item-card";
 import OrderSummary from "./order-summary";
 import useCart from "@/hooks/use-cart";
 import { useAuth } from "@/hooks/use-auth";
 import { useAddressManagement } from "@/hooks/use-address";
 import EmptyCart from "./empty-cart";
-import { Button } from "@/components/ui/button";
-import { zodResolver } from "@hookform/resolvers/zod";
-
-const formSchema = z.object({
-  name: z.string().min(1, "Name is required"),
-  email: z.string().email("Invalid email address"),
-  mobile: z.string().min(10, "Mobile number must be at least 10 digits"),
-  address: z.string().min(1, "Address is required"),
-});
-
-type FormData = z.infer<typeof formSchema>;
+import CheckoutForm from "./checkout-form";
 
 const ShoppingCart = () => {
   const cart = useCart();
@@ -34,21 +15,7 @@ const ShoppingCart = () => {
   const { addresses, isLoading: isLoadingAddresses } = useAddressManagement(
     user?.id ?? ""
   );
-  const [selectedAddressId, setSelectedAddressId] = useState<string>("");
   const [isLoading, setIsLoading] = useState(true);
-
-  const { register, handleSubmit, formState, setValue, watch } =
-    useForm<FormData>({
-      resolver: zodResolver(formSchema),
-      defaultValues: {
-        name: user?.name || "",
-        email: user?.email || "",
-        mobile: user?.phone || "",
-        address: "",
-      },
-    });
-
-  const watchedAddress = watch("address");
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -57,31 +24,6 @@ const ShoppingCart = () => {
 
     return () => clearTimeout(timer);
   }, []);
-
-  // Set default address when addresses are loaded
-  useEffect(() => {
-    if (addresses.length > 0) {
-      const defaultAddress = addresses.find((addr) => addr.isDefault);
-      if (defaultAddress) {
-        setSelectedAddressId(defaultAddress.id);
-        const formattedAddress = formatAddressToString(defaultAddress);
-        setValue("address", formattedAddress);
-      }
-    }
-  }, [addresses, setValue]);
-
-  const formatAddressToString = (address: any) => {
-    return `${address.appartment ? address.appartment + ", " : ""}${address.street}, ${address.address}, ${address.postalCode}`;
-  };
-
-  const handleAddressChange = (addressId: string) => {
-    const selectedAddress = addresses.find((addr) => addr.id === addressId);
-    if (selectedAddress) {
-      setSelectedAddressId(addressId);
-      const formattedAddress = formatAddressToString(selectedAddress);
-      setValue("address", formattedAddress);
-    }
-  };
 
   const calculateOrderSummary = () => {
     const itemsWithDiscount = cart.items.map((item) => ({
@@ -107,16 +49,15 @@ const ShoppingCart = () => {
     };
   };
 
-  const onSubmit = (data: FormData) => {
+  const handleSubmit = (data: any) => {
     const orderSummary = calculateOrderSummary();
     const selectedAddress = addresses.find(
-      (addr) => addr.id === selectedAddressId
+      (addr) => addr.id === data.selectedAddressId
     );
 
     const orderDetails = {
       customerInfo: {
         ...data,
-        selectedAddressId,
         addressDetails: selectedAddress,
       },
       items: cart.items.map((item) => ({
@@ -142,7 +83,7 @@ const ShoppingCart = () => {
   if (isLoading || isLoadingAddresses) {
     return (
       <div className="w-full h-[60vh] flex items-center justify-center">
-        <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-gray-900" />
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900" />
       </div>
     );
   }
@@ -182,59 +123,11 @@ const ShoppingCart = () => {
             items={cart.items}
             orderSummary={calculateOrderSummary()}
           />
-          <form onSubmit={handleSubmit(onSubmit)} className="mt-4">
-            <div className="flex flex-col gap-4">
-              <input
-                {...register("name")}
-                type="text"
-                placeholder="Name"
-                className="p-2 border border-gray-300 rounded bg-gray-100 cursor-not-allowed"
-                disabled
-              />
-              <input
-                {...register("email")}
-                type="email"
-                placeholder="Email"
-                className="p-2 border border-gray-300 rounded bg-gray-100 cursor-not-allowed"
-                disabled
-              />
-              <input
-                {...register("mobile")}
-                type="tel"
-                placeholder="Mobile"
-                className="p-2 border border-gray-300 rounded bg-gray-100 cursor-not-allowed"
-                disabled
-              />
-
-              <Select
-                value={selectedAddressId}
-                onValueChange={handleAddressChange}
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Select an address" />
-                </SelectTrigger>
-                <SelectContent className="w-[90%]">
-                  {addresses.map((address) => (
-                    <SelectItem key={address.id} value={address.id}>
-                      {address.label} - {formatAddressToString(address)}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-
-              <textarea
-                {...register("address")}
-                placeholder="Address"
-                className="p-2 border border-gray-300 rounded"
-                value={watchedAddress}
-                onChange={(e) => setValue("address", e.target.value)}
-              />
-
-              <Button type="submit" className="w-full">
-                Place Order
-              </Button>
-            </div>
-          </form>
+          <CheckoutForm 
+            user={user}
+            addresses={addresses}
+            onSubmit={handleSubmit}
+          />
         </div>
       </div>
     </div>

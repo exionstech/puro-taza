@@ -39,6 +39,7 @@ const ItemCard = ({ product }: ItemCardProps) => {
 
   const addItem = () => {
     if (!isLoggedIn) {
+      toast.error("Please sign in to add items to cart");
       router.push("/sign-in");
       return;
     } else {

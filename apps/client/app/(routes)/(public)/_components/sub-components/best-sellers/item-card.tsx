@@ -6,12 +6,15 @@ import Image from "next/image";
 import useCart from '@/hooks/use-cart';
 import { toast } from 'sonner';
 import { useAuth } from '@/hooks/use-auth';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 interface ItemCardProps {
   product: Product;
 }
 
 const ItemCard = ({ product }: ItemCardProps) => {
+  const router = useRouter();
   const { isLoggedIn } = useAuth();
   const cart = useCart();
   const [quantity, setQuantity] = useState<number>(0);
@@ -36,7 +39,7 @@ const ItemCard = ({ product }: ItemCardProps) => {
 
   const addItem = () => {
     if (!isLoggedIn) {
-      toast.error("Please login to add items to cart");
+      router.push("/sign-in");
       return;
     } else {
       if (quantity >= stock) {
@@ -47,10 +50,12 @@ const ItemCard = ({ product }: ItemCardProps) => {
       cart.addItem(product, newQuantity);
       setQuantity(newQuantity);
       setIsInCart(true);
+      router.push(`/category/products/${id}`);
     }
   };
 
   return (
+    <Link key={id} href={`/category/products/${id}`} className='cursor-pointer'>
     <Card className="px-5 py-5 items-center rounded-xl shadow-sm justify-center flex flex-col md:gap-2 w-full">
       <div className="w-full h-[30vh] 2xl:h-[25vh] flex items-center justify-center overflow-hidden">
         <Image
@@ -96,6 +101,7 @@ const ItemCard = ({ product }: ItemCardProps) => {
         </div>
       </div>
     </Card>
+    </Link>
   );
 };
 

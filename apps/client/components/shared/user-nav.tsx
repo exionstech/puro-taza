@@ -54,9 +54,9 @@ export function UserNav() {
         {user ? <DropdownMenuSeparator /> : null}
         <DropdownMenuGroup>
           <DropdownMenuItem className="hover:cursor-pointer" asChild>
-            <Link href="/cart" className="flex items-center">
+            <Link href="/category" className="flex items-center">
               <FiShoppingCart className="w-4 h-4 mr-3 text-muted-foreground" />
-              Manage Cart
+              Categories
             </Link>
           </DropdownMenuItem>
           <DropdownMenuSeparator />

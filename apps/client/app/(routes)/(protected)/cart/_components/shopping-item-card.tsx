@@ -38,7 +38,7 @@ const ShoppingItemCard: React.FC<ShoppingItemCardProps> = ({ item }) => {
   };
 
   return (
-    <div className="w-full flex items-center justify-between px-3 py-5 border-b-2 border-muted">
+    <div key={item.id} className="w-full flex items-center justify-between px-3 py-5 border-b-2 border-muted">
       <div className="flex gap-5 items-center">
         <Image
           src={item.image}

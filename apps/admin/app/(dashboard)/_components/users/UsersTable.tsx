@@ -76,7 +76,7 @@ const UsersTable = () => {
       ) : (
         <TableBody className="flex items-center justify-center w-full">
           <h1 className="text-gray-400 mt-5 text-center">
-            No sub-categories found.
+            No users found.
           </h1>
         </TableBody>
       )}

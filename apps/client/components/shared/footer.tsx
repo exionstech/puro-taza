@@ -1,3 +1,5 @@
+"use client"
+import { useCategories } from "@/hooks/use-category";
 import Link from "next/link";
 
 const footerItemsLinks = [
@@ -11,19 +13,9 @@ const footerItemsLinks = [
   { title: "Contact", link: "/contact" },
 ];
 
-const footerItemsCategories = [
-  { title: "Sea water fish", link: "/categories/sea-water-fish" },
-  { title: "Salt water fish", link: "/categories/salt-water-fish" },
-  { title: "Prawns", link: "/categories/prawns" },
-  { title: "Fresh water fish", link: "/categories/fresh-water-fish" },
-  { title: "Dry fish", link: "/categories/dry-fish" },
-  { title: "Premium sea foods", link: "/categories/premium-sea-foods" },
-  { title: "Frozen fish", link: "/categories/frozen-fish" },
-  { title: "Fillet", link: "/categories/fillet" },
-  { title: "Ready to cook", link: "/categories/ready-to-cook" },
-];
 
 const FooterSection = () => {
+  const { categories } = useCategories();
   return (
     <section className="w-full border-t mx-auto mt-10 md:mt-20">
     <div className="w-full max-w-screen-2xl px-[1rem] md:px-14 mx-auto flex flex-col md:flex-row items-start gap-10">
@@ -66,22 +58,22 @@ const FooterSection = () => {
           </div>
           <div className="flex items-center lg:gap-16 gap-4">
             <div className="flex flex-col gap-3 items-start">
-              {footerItemsCategories.slice(0, 4).map((item) => (
+              {categories.slice(0, 4).map((item) => (
                 <Link
-                  href={item.link}
-                  key={item.title}
+                  href={"/category"}
+                  key={item.name}
                 >
-                  <h1 className="text-customGray text-sm">{item.title}</h1>
+                  <h1 className="text-customGray text-sm">{item.name}</h1>
                 </Link>
               ))}
             </div>
             <div className="flex flex-col gap-3 items-start">
-              {footerItemsCategories.slice(4, 8).map((item) => (
+              {categories.slice(4, 8).map((item) => (
                 <Link
-                  href={item.link}
-                  key={item.title}
+                  href={"/category"}
+                  key={item.name}
                 >
-                  <h1 className="text-customGray text-sm">{item.title}</h1>
+                  <h1 className="text-customGray text-sm">{item.name}</h1>
                 </Link>
               ))}
             </div>

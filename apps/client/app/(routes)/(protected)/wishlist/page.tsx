@@ -8,7 +8,7 @@ export default function Page() {
       <div className="flex w-full flex-col gap-4">
                 <Breadcrumb>
                     <BreadcrumbItem>
-                        <BreadcrumbLink href="/category" className="flex gap-2 items-center">
+                        <BreadcrumbLink href="/" className="flex gap-2 items-center">
                             <ChevronLeft className="w-4 h-4"/>
                             Back
                         </BreadcrumbLink>

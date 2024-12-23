@@ -14,7 +14,7 @@ const CategoryCard = () => {
                 Sweet water <br /> fish
               </h1>
               <p className="text-sm">Fresh sweet water fishes just for you</p>
-              <Link href={""}>
+              <Link href={"/category"}>
                 <Button variant={"outline"} className="text-black px-8">
                   Order Now
                 </Button>
@@ -45,7 +45,7 @@ const CategoryCard = () => {
                 Fresh <br /> prawns
               </h1>
               <p className="text-sm">Pure Taste, Freshly Delivered Daily</p>
-              <Link href={""}>
+              <Link href={"/category"}>
                 <Button variant={"outline"} className="text-black px-8">
                   Order Now
                 </Button>
@@ -67,7 +67,7 @@ const CategoryCard = () => {
                 Ready <br /> to cook
               </h1>
               <p className="text-sm">Straight from Sea to Your Plate, Fresh.</p>
-              <Link href={""}>
+              <Link href={"/category"}>
                 <Button variant={"outline"} className="text-black px-8">
                   Order Now
                 </Button>
@@ -85,7 +85,7 @@ const CategoryCard = () => {
           </div>
         </div>
         <div className="w-full items-center justify-center flex">
-          <Link href={""} className="px-8 border-none flex items-center justify-center space-x-2">
+          <Link href={"/category"} className="px-8 border-none flex items-center justify-center space-x-2">
               <h1 className="text-black text-lg">View More</h1>
               <ChevronsRight className="size-6 md:mt-1" />
           </Link>

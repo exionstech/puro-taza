@@ -1,12 +1,5 @@
 import React from "react";
 import CategoryCard from "./sub-components/hero/category-card";
-// import ImageSlider from "./sub-components/hero/image-slider";
-
-const heroImages = [
-  '/home/hero/hero-main.png',
-  '/home/hero/hero-secondary.png',
-  '/home/hero/hero-tertiary.png',
-];
 
 const Hero = () => {
   return (

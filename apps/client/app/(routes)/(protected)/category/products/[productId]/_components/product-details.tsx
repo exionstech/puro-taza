@@ -85,11 +85,7 @@ const ProductDetailsPage = ({ productId }: ProductDetailsPageProps) => {
             {product.name}
           </h1>
           <p className="text-lg">
-            {product.description || "No description available"} Lorem ipsum
-            dolor sit amet consectetur adipisicing elit. Numquam sunt impedit,
-            nulla blanditiis atque consectetur facilis earum. Natus fugiat in
-            ducimus eius, ratione obcaecati distinctio omnis totam animi quaerat
-            porro maxime ab sapiente at ipsam est laborum veritatis. Non, esse.
+            {product.description || "No description available"}
           </p>
         </div>
         <div className="flex items-center gap-2">

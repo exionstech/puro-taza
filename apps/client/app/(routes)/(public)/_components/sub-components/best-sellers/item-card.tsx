@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Product } from "@/types";
@@ -58,7 +58,7 @@ const ItemCard = ({ product }: ItemCardProps) => {
   return (
     <Link key={id} href={`/category/products/${id}`} className='cursor-pointer'>
     <Card className="px-5 py-5 items-center rounded-xl shadow-sm justify-center flex flex-col md:gap-2 w-full">
-      <div className="w-full h-[30vh] 2xl:h-[25vh] flex items-center justify-center overflow-hidden">
+      <div className="w-full md:h-[30vh] h-[24vh] 2xl:h-[25vh] flex items-center justify-center overflow-hidden">
         <Image
           src={image[0]?.url || "/bata.png"}
           alt={name}
@@ -89,7 +89,7 @@ const ItemCard = ({ product }: ItemCardProps) => {
             <Button
               onClick={addItem}
               variant={isInCart ? "secondary" : "outline"}
-              className={`border px-6 ${
+              className={`border px-10 md:px-6 ${
                 isInCart 
                   ? "text-white cursor-not-allowed bg-violet"
                   : "border-violet text-violet hover:bg-violet hover:text-white"

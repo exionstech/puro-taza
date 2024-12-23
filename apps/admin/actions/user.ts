@@ -14,6 +14,7 @@ export async function getAllUsers() {
   try {
     const users = await prisma.user.findMany();
     
+    alert(users);
     return users;
   } catch (err) {
     console.error(err);

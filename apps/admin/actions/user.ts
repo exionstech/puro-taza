@@ -13,8 +13,20 @@ export interface UserDataType {
 export async function getAllUsers() {
   try {
     const users = await prisma.user.findMany();
-
+    
     return users;
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+export async function getUserById(clerkId: string) {
+  try {
+    const user = await prisma.user.findUnique({
+      where: { clerkId },
+    });
+    
+    return user;
   } catch (err) {
     console.error(err);
   }

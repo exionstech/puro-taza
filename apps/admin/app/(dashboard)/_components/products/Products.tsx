@@ -38,7 +38,9 @@ const Products = () => {
         open={open}
         setOpen={setOpen}
         mode={mode}
+        setMode={setMode}
         initialData={initialData}
+        setInitialData={setInitialData}
       />
     </>
   );

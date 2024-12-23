@@ -1,27 +1,44 @@
-// app/api/[storeId]/products/route.ts
-import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { NextResponse } from "next/server";
 
-// GET Products
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type, Authorization",
+  "Access-Control-Max-Age": "86400",
+};
+
+function corsResponse(response: NextResponse) {
+  Object.entries(corsHeaders).forEach(([key, value]) => {
+    response.headers.set(key, value);
+  });
+  return response;
+}
+
+export async function OPTIONS() {
+  return corsResponse(
+    new NextResponse(null, {
+      status: 204,
+    })
+  );
+}
+
 export async function GET(
-  req: NextRequest,
+  req: Request,
   { params }: { params: { storeId: string } }
 ) {
   try {
     const { searchParams } = new URL(req.url);
 
-    // Pagination and filtering parameters
     const page = parseInt(searchParams.get("page") || "1");
     const limit = parseInt(searchParams.get("limit") || "10");
     const skip = (page - 1) * limit;
 
-    // Optional filters
     const categoryId = searchParams.get("categoryId");
     const subcategoryId = searchParams.get("subcategoryId");
     const minPrice = searchParams.get("minPrice");
     const maxPrice = searchParams.get("maxPrice");
 
-    // Construct where clause
     const where: any = {};
 
     if (categoryId) where.categoryId = categoryId;
@@ -32,7 +49,6 @@ export async function GET(
       if (maxPrice) where.price.lte = parseFloat(maxPrice);
     }
 
-    // Fetch products
     const products = await prisma.product.findMany({
       where,
       skip,
@@ -46,7 +62,6 @@ export async function GET(
       },
     });
 
-    // Count total products for pagination
     const total = await prisma.product.count({ where });
     const afterDiscount = products.map((product) => ({
       ...product,
@@ -55,86 +70,67 @@ export async function GET(
         : product.price,
     }));
 
-    return NextResponse.json({
-      products: afterDiscount,
-      pagination: {
-        currentPage: page,
-        totalPages: Math.ceil(total / limit),
-        totalProducts: total,
-      },
-    });
+    return corsResponse(
+      NextResponse.json({
+        products: afterDiscount,
+        pagination: {
+          currentPage: page,
+          totalPages: Math.ceil(total / limit),
+          totalProducts: total,
+        },
+      })
+    );
   } catch (error) {
     console.error("[PRODUCTS_GET]", error);
-    return new NextResponse("Internal error", { status: 500 });
+    return corsResponse(
+      NextResponse.json({ error: "Failed to fetch products" }, { status: 500 })
+    );
   }
 }
 
-// POST Create Product
 export async function POST(
-  req: NextRequest,
+  req: Request,
   { params }: { params: { storeId: string } }
 ) {
   try {
-    // Get the request body
     const body = await req.json();
 
-    // Destructure and validate required fields
-    const {
-      name,
-      description,
-      price,
-      categoryId,
-      stock,
-      image,
-      discount,
-      subcategories,
-    } = body;
-
-    // Validate required fields
-    if (!name) {
-      return new NextResponse("Name is required", { status: 400 });
+    if (!body.name) {
+      return corsResponse(
+        NextResponse.json({ error: "Name is required" }, { status: 400 })
+      );
     }
 
-    if (!price) {
-      return new NextResponse("Price is required", { status: 400 });
+    if (!body.price) {
+      return corsResponse(
+        NextResponse.json({ error: "Price is required" }, { status: 400 })
+      );
     }
 
-    if (!categoryId) {
-      return new NextResponse("Category ID is required", { status: 400 });
+    if (!body.categoryId) {
+      return corsResponse(
+        NextResponse.json({ error: "Category ID is required" }, { status: 400 })
+      );
     }
 
-    const subdata = await prisma.subcategory.findMany({
-      include: {
-        image: true,
-      },
-    });
-
-    const addSubcategories = subcategories?.map(
-      (subcategoryId: string) =>
-        subdata.find((sub) => sub.id === subcategoryId) || {}
-    );
-
-    // Create product
     const product = await prisma.product.create({
       data: {
-        name,
-        description,
-        price,
-        stock: stock || 0,
-        discount: discount || 0,
-        categoryId,
-        subcategories: addSubcategories,
+        name: body.name,
+        description: body.description,
+        price: body.price,
+        stock: body.stock || 0,
+        discount: body.discount || 0,
+        categoryId: body.categoryId,
       },
       include: {
-        image: true,
         category: true,
+        image: true,
       },
     });
 
-    // Create images if provided
-    if (image && Array.isArray(image)) {
+    if (body.image && Array.isArray(body.image)) {
       await Promise.all(
-        image
+        body.image
           .filter((img: { url: string; key: string }) => img.url && img.key)
           .map(async (img: { url: string; key: string }) => {
             await prisma.image.create({
@@ -148,9 +144,13 @@ export async function POST(
       );
     }
 
-    return NextResponse.json(product);
+    return corsResponse(
+      NextResponse.json({ product: product }, { status: 200 })
+    );
   } catch (error) {
     console.error("[PRODUCTS_POST]", error);
-    return new NextResponse("Internal error", { status: 500 });
+    return corsResponse(
+      NextResponse.json({ error: "Failed to create product" }, { status: 500 })
+    );
   }
 }

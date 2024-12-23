@@ -99,14 +99,14 @@ const CategoryForm = ({ mode = "create", initialData, setOpen }: Props) => {
       mode === "create"
         ? createCategory(body)
         : updateCategory(initialData.id, updatedBody!);
-
+      
       toast.success("Category created successfully");
-      setOpen(false);
     } catch (error) {
       console.log("Error: ", error);
       toast.error("Failed to create category");
     } finally {
       setLoading(false);
+      setOpen(false);
     }
   };
 

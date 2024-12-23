@@ -64,7 +64,7 @@ export default function Page({ params }: { params: { productId: string } }) {
           )}
         </Breadcrumb>
       </div>
-      <div className="md:px-20 mt-10">
+      <div className="lg:px-20 mt-10">
         <ProductDetailsPage productId={params.productId} />
       </div>
       <div className="">{/* Review Section... */}</div>

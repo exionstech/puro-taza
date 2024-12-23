@@ -81,15 +81,15 @@ const ItemCard = ({ product }: ItemCardProps) => {
                   -0%
                 </span>
               )}
-              {discountedPrice.toFixed(2)}/Kg
+              {discountedPrice.toFixed(2)}<span className='text-sm'>/Kg</span>
             </h1>
             <h2 className="text-xs line-through">M.R.P: {price}/kg</h2>
           </div>
-          <div className="flex items-center justify-center">
+          <div className="flex items-center">
             <Button
               onClick={addItem}
               variant={isInCart ? "secondary" : "outline"}
-              className={`border md:px-8 px-12 ${
+              className={`border px-6 ${
                 isInCart 
                   ? "text-white cursor-not-allowed bg-violet"
                   : "border-violet text-violet hover:bg-violet hover:text-white"

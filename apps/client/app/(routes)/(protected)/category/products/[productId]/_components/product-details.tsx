@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import useProductDetails from "@/hooks/use-product-details";
 import useCart from "@/hooks/use-cart";
 import useWishlist from "@/hooks/use-wishlist";
+import ProductImageComponent from "./image-component";
 
 interface ProductDetailsPageProps {
   productId: string;
@@ -70,13 +71,10 @@ const ProductDetailsPage = ({ productId }: ProductDetailsPageProps) => {
 
   return (
     <div className="w-full flex md:flex-row flex-col md:gap-10 gap-5">
-      <div className="flex items-center justify-center border rounded-xl p-4 h-[300px] overflow-hidden">
-        <Image
-          src={product.image[selectedImageIndex]?.url || "/placeholder.png"}
-          alt={product.name}
-          width={500}
-          height={300}
-          className="rounded-xl object-contain"
+      <div className="flex items-center justify-center border rounded-xl p-4 overflow-hidden pb-10">
+        <ProductImageComponent
+          images={product.image}
+          productName={product.name}
         />
       </div>
       <div className="flex items-start flex-col gap-4 w-full">

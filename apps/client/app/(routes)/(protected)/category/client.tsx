@@ -40,7 +40,7 @@ export default function CategoryClientPage() {
             </BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbItem>
-            <BreadcrumbLink className="flex ml-4 gap-2 items-center text-muted-foreground hover:text-muted-foreground">
+            <BreadcrumbLink href="/" className="flex ml-4 gap-2 items-center text-muted-foreground hover:text-muted-foreground">
               Home
             </BreadcrumbLink>
           </BreadcrumbItem>

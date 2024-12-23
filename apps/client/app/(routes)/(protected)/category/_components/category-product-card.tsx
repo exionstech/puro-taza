@@ -51,7 +51,7 @@ const CategoryProductCard = ({ product }: CategoryProductCardProps) => {
               <h2 className="text-xs line-through">M.R.P: {price}/kg</h2>
             </div>
             <div className="flex items-center justify-center">
-              <Button onClick={onClick} className="px-12 md:px-8">
+              <Button onClick={onClick} className="px-8">
                 View
               </Button>
             </div>

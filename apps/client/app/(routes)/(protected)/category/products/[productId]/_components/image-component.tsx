@@ -24,8 +24,8 @@ const ProductImageComponent: React.FC<ProductImageComponentProps> = ({
   };
 
   return (
-    <div className="relative w-[500px]">
-      <div className="aspect-[4/3] relative rounded-xl p-4">
+    <div className="relative w-[500px] border rounded-xl">
+      <div className="aspect-[4/3] relative p-4">
         <div className="relative w-full h-full flex items-center justify-center">
           <Image
             src={images?.[selectedIndex]?.url || "/placeholder.png"}
@@ -39,7 +39,7 @@ const ProductImageComponent: React.FC<ProductImageComponentProps> = ({
       </div>
       
       {hasMultipleImages && (
-        <div className="absolute -bottom-8 left-0 right-0 flex justify-center items-center gap-2">
+        <div className="absolute bottom-4 left-0 right-0 flex justify-center items-center gap-2">
           {images.map((_, index) => (
             <button
               key={index}

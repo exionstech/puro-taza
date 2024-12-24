@@ -78,7 +78,7 @@ const ProductDetailsPage = ({ productId }: ProductDetailsPageProps) => {
 
   return (
     <div className="w-full flex lg:flex-row flex-col lg:gap-10 gap-5">
-      <div className="flex items-center justify-center border rounded-xl p-4 overflow-hidden pb-10">
+      <div className="flex items-center justify-center p-4 overflow-hidden pb-10">
         <ProductImageComponent
           images={product.image}
           productName={product.name}

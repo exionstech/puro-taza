@@ -58,7 +58,7 @@ const ItemCard = ({ product }: ItemCardProps) => {
   return (
     <Link key={id} href={`/category/products/${id}`} className='cursor-pointer'>
     <Card className="px-5 py-5 items-center rounded-xl shadow-sm justify-center flex flex-col md:gap-2 w-full">
-      <div className="w-full md:h-[30vh] h-[24vh] 2xl:h-[25vh] flex items-center justify-center overflow-hidden">
+      <div className="w-full md:h-[30vh] h-[24vh] 2xl:h-[25vh] flex items-center justify-center overflow-hidden rounded-xl">
         <Image
           src={image[0]?.url || "/bata.png"}
           alt={name}

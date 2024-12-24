@@ -31,7 +31,7 @@ const ProductImageComponent: React.FC<ProductImageComponentProps> = ({
             src={images?.[selectedIndex]?.url || "/placeholder.png"}
             alt={`${productName} - Image ${selectedIndex + 1}`}
             fill
-            className="object-cover rounded-xl"
+            className="object-contain rounded-xl"
             sizes="(max-width: 500px) 100vw, 500px"
             priority
           />

@@ -85,7 +85,7 @@ const ProductDetailsPage = ({ productId }: ProductDetailsPageProps) => {
         />
       </div>
       <div className="flex items-start flex-col gap-4 w-full">
-        <div className="w-full">
+        <div className="w-full mt-3">
           <h1 className="text-3xl font-semibold text-customBlack">
             {product.name}
           </h1>

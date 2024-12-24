@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import Image from 'next/image';
+import React, { useState } from "react";
+import Image from "next/image";
 
 interface ProductImage {
   url: string;
@@ -12,9 +12,9 @@ interface ProductImageComponentProps {
   productName: string;
 }
 
-const ProductImageComponent: React.FC<ProductImageComponentProps> = ({ 
-  images = [], 
-  productName 
+const ProductImageComponent: React.FC<ProductImageComponentProps> = ({
+  images = [],
+  productName,
 }) => {
   const [selectedIndex, setSelectedIndex] = useState<number>(0);
   const hasMultipleImages: boolean = images && images.length > 1;
@@ -25,19 +25,19 @@ const ProductImageComponent: React.FC<ProductImageComponentProps> = ({
 
   return (
     <div className="relative w-[500px] border rounded-xl">
-      <div className="aspect-[4/3] relative p-4">
+      <div className="aspect-[4/3] relative">
         <div className="relative w-full h-full flex items-center justify-center">
           <Image
             src={images?.[selectedIndex]?.url || "/placeholder.png"}
             alt={`${productName} - Image ${selectedIndex + 1}`}
             fill
-            className="object-contain p-2"
+            className="object-cover rounded-xl"
             sizes="(max-width: 500px) 100vw, 500px"
             priority
           />
         </div>
       </div>
-      
+
       {hasMultipleImages && (
         <div className="absolute bottom-4 left-0 right-0 flex justify-center items-center gap-2">
           {images.map((_, index) => (
@@ -45,9 +45,9 @@ const ProductImageComponent: React.FC<ProductImageComponentProps> = ({
               key={index}
               onClick={() => handleDotClick(index)}
               className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
-                selectedIndex === index 
-                  ? 'bg-violet w-4' 
-                  : 'bg-violet/70 hover:bg-gray-600'
+                selectedIndex === index
+                  ? "bg-violet w-4"
+                  : "bg-violet/70 hover:bg-gray-600"
               }`}
               aria-label={`View image ${index + 1}`}
             />

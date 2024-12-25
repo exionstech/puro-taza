@@ -2,6 +2,16 @@ import { useState, useEffect } from "react";
 import { useCategory, useCategories } from "@/hooks/use-category";
 import CategoryProductCard from "./category-product-card";
 import { Product } from "@/types";
+import { ArrowDown, ArrowDownUp, SlidersHorizontal } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 
 const CategoryProducts = ({
   selectedCategoryId,
@@ -77,11 +87,47 @@ const CategoryProducts = ({
 
   // Display products
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+   <div className="w-full flex flex-col gap-10 items-center">
+    <div className="flex gap-5 w-full items-start">
+    <Select>
+      <SelectTrigger className="flex items-center gap-2 cursor-pointer w-auto text-violet">
+        <SlidersHorizontal className="w-5 h-5" />
+        <SelectValue placeholder="Filters" />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectGroup>
+          <SelectLabel>Fruits</SelectLabel>
+          <SelectItem value="apple">Apple</SelectItem>
+          <SelectItem value="banana">Banana</SelectItem>
+          <SelectItem value="blueberry">Blueberry</SelectItem>
+          <SelectItem value="grapes">Grapes</SelectItem>
+          <SelectItem value="pineapple">Pineapple</SelectItem>
+        </SelectGroup>
+      </SelectContent>
+    </Select>
+    <Select>
+      <SelectTrigger className="flex items-center gap-2 cursor-pointer w-auto text-violet">
+      <ArrowDownUp className="w-5 h-5 text-violet" />
+        <SelectValue placeholder="Sort" />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectGroup>
+          <SelectLabel>Fruits</SelectLabel>
+          <SelectItem value="apple">Apple</SelectItem>
+          <SelectItem value="banana">Banana</SelectItem>
+          <SelectItem value="blueberry">Blueberry</SelectItem>
+          <SelectItem value="grapes">Grapes</SelectItem>
+          <SelectItem value="pineapple">Pineapple</SelectItem>
+        </SelectGroup>
+      </SelectContent>
+    </Select>
+    </div>
+     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-full">
       {displayProducts.map((product) => (
         <CategoryProductCard key={product.id} product={product} />
       ))}
     </div>
+   </div>
   );
 };
 

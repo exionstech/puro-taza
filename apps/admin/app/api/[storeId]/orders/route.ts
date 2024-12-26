@@ -1,98 +1,100 @@
-import { NextRequest, NextResponse } from "next/server";
+// app/api/orders/route.ts
 import { prisma } from "@/lib/prisma";
+import { NextResponse } from "next/server";
 
-// GET Orders
-export async function GET(
-  req: NextRequest,
-  { params }: { params: { storeId: string } }
-) {
+interface ProductOrderInput {
+  id: string;
+  subcategory?: string;
+  quantity: string;
+}
+
+interface OrderInput {
+  products: ProductOrderInput[];
+  userId: string;
+  addressId: string;
+}
+
+// GET all orders
+export async function GET(req: Request) {
   try {
-    // Fetch Orders
     const orders = await prisma.orders.findMany({
       include: {
         address: true,
-        client: true,
-      },
+        client: true
+      }
     });
 
-    const completePropuctOrder = orders.map((order) => ({
-      ...order,
-    }));
-    
-    return NextResponse.json({
-      orders: completePropuctOrder,
-    });
+    return NextResponse.json({ orders: orders });
   } catch (error) {
-    console.error("[ORDERS_GET]", error);
-    return new NextResponse("Internal error", { status: 500 });
+    console.error('Failed to fetch orders:', error);
+    return NextResponse.json(
+      { error: 'Failed to fetch orders' },
+      { status: 500 }
+    );
   }
 }
 
-// POST Create Product
-export async function POST(
-  req: NextRequest,
-  { params }: { params: { storeId: string } }
-) {
+// POST new order
+export async function POST(req: Request) {
   try {
-    // Get the request body
     const body = await req.json();
+    const orderData: OrderInput = body.orders;
 
-    // Destructure and validate required fields
-    const {
-      name,
-      description,
-      price,
-      categoryId,
-      stock,
-      image,
-      discount,
-      subcategories,
-    } = body;
-
-    // Validate required fields
-    if (!name) {
-      return new NextResponse("Name is required", { status: 400 });
-    }
-
-    if (!price) {
-      return new NextResponse("Price is required", { status: 400 });
-    }
-
-    if (!categoryId) {
-      return new NextResponse("Category ID is required", { status: 400 });
-    }
-
-    const subdata = await prisma.subcategory.findMany({
-      include: {
-        image: true,
-      },
+    // Fetch all products in one query
+    const productIds = orderData.products.map(product => product.id);
+    const products = await prisma.product.findMany({
+      where: {
+        id: {
+          in: productIds
+        }
+      }
     });
 
-    const addSubcategories = subcategories?.map(
-      (subcategoryId: string) =>
-        subdata.find((sub) => sub.id === subcategoryId) || {}
-    );
+    // Create a map for quick product lookup
+    const productMap = new Map(products.map(product => [product.id, product]));
 
-    // Create product
-    const product = await prisma.product.create({
+    // Calculate total amount and prepare products JSON
+    let totalAmount = 0;
+    const processedProducts = orderData.products.map(orderProduct => {
+      const product = productMap.get(orderProduct.id);
+      if (!product) {
+        throw new Error(`Product not found: ${orderProduct.id}`);
+      }
+
+      const quantity = parseInt(orderProduct.quantity);
+      const itemTotal = product.price * quantity;
+      totalAmount += itemTotal;
+
+      return {
+        id: orderProduct.id,
+        name: product.name,
+        price: product.price,
+        quantity: quantity,
+        subtotal: itemTotal,
+        subcategory: orderProduct.subcategory || null
+      };
+    });
+
+    // Create the order
+    const order = await prisma.orders.create({
       data: {
-        name,
-        description,
-        price,
-        stock: stock || 0,
-        discount: discount || 0,
-        categoryId,
-        subcategories: addSubcategories,
+        amount: totalAmount,
+        products: processedProducts,
+        clientId: orderData.userId,
+        addressId: orderData.addressId
       },
       include: {
-        image: true,
-        category: true,
-      },
+        address: true,
+        client: true
+      }
     });
 
-    return NextResponse.json(product);
+    return NextResponse.json({order: order}, { status: 201 });
   } catch (error) {
-    console.error("[PRODUCTS_POST]", error);
-    return new NextResponse("Internal error", { status: 500 });
+    console.error('Failed to create order:', error);
+    return NextResponse.json(
+      { error: 'Failed to create order' },
+      { status: 500 }
+    );
   }
 }

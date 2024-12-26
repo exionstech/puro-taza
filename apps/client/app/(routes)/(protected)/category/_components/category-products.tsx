@@ -112,12 +112,11 @@ const CategoryProducts = ({
       </SelectTrigger>
       <SelectContent>
         <SelectGroup>
-          <SelectLabel>Fruits</SelectLabel>
-          <SelectItem value="apple">Apple</SelectItem>
-          <SelectItem value="banana">Banana</SelectItem>
-          <SelectItem value="blueberry">Blueberry</SelectItem>
-          <SelectItem value="grapes">Grapes</SelectItem>
-          <SelectItem value="pineapple">Pineapple</SelectItem>
+          <SelectLabel>Price</SelectLabel>
+          <SelectItem value="0">100 - 300</SelectItem>
+          <SelectItem value="300">300 - 600</SelectItem>
+          <SelectItem value="600">600 - 1000</SelectItem>
+          <SelectItem value="1000">more than 1000</SelectItem>
         </SelectGroup>
       </SelectContent>
     </Select>

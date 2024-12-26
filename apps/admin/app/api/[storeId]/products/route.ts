@@ -50,16 +50,10 @@ export async function GET(
     }
 
     const products = await prisma.product.findMany({
-      where,
-      skip,
-      take: limit,
       include: {
         category: true,
         image: true,
-      },
-      orderBy: {
-        createdAt: "desc",
-      },
+      }
     });
 
     const total = await prisma.product.count({ where });

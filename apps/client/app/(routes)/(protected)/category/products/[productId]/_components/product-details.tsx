@@ -1,11 +1,20 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import useProductDetails from "@/hooks/use-product-details";
 import useCart from "@/hooks/use-cart";
 import useWishlist from "@/hooks/use-wishlist";
+import ProductImageComponent from "./image-component";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface ProductDetailsPageProps {
   productId: string;
@@ -13,7 +22,6 @@ interface ProductDetailsPageProps {
 
 const ProductDetailsPage = ({ productId }: ProductDetailsPageProps) => {
   const { product, isLoading, error } = useProductDetails(productId);
-  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [isInCart, setIsInCart] = useState<boolean>(false);
   const [quantity, setQuantity] = useState(1);
   const cart = useCart();
@@ -69,27 +77,20 @@ const ProductDetailsPage = ({ productId }: ProductDetailsPageProps) => {
     product.price - (product.price * (product.discount || 0)) / 100;
 
   return (
-    <div className="w-full flex md:flex-row flex-col md:gap-10 gap-5">
-      <div className="flex items-center justify-center border rounded-xl p-4 h-[300px] overflow-hidden">
-        <Image
-          src={product.image[selectedImageIndex]?.url || "/placeholder.png"}
-          alt={product.name}
-          width={500}
-          height={300}
-          className="rounded-xl object-contain"
+    <div className="w-full flex lg:flex-row flex-col lg:gap-10 gap-5">
+      <div className="flex items-center justify-center p-4 overflow-hidden pb-10">
+        <ProductImageComponent
+          images={product.image}
+          productName={product.name}
         />
       </div>
       <div className="flex items-start flex-col gap-4 w-full">
-        <div className="w-full">
+        <div className="w-full mt-3">
           <h1 className="text-3xl font-semibold text-customBlack">
             {product.name}
           </h1>
           <p className="text-lg">
-            {product.description || "No description available"} Lorem ipsum
-            dolor sit amet consectetur adipisicing elit. Numquam sunt impedit,
-            nulla blanditiis atque consectetur facilis earum. Natus fugiat in
-            ducimus eius, ratione obcaecati distinctio omnis totam animi quaerat
-            porro maxime ab sapiente at ipsam est laborum veritatis. Non, esse.
+            {product.description || "No description available"}
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -103,14 +104,25 @@ const ProductDetailsPage = ({ productId }: ProductDetailsPageProps) => {
         </div>
         <div className="flex items-center gap-4">
           <div className="flex gap-2 items-center">
-            <h1>Select Quantity</h1>
+            {/* <h1>Select Quantity</h1>
+            <Select>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Select a fruit" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectLabel>Quantity</SelectLabel>
+                  <SelectItem value="apple"></SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select> */}
           </div>
         </div>
-        <div className="flex gap-10">
+        <div className="flex gap-10 w-full items-center">
           <Button
             onClick={handleToggleWishlist}
             variant={isInWishlist ? "default" : "outline"}
-            className={`w-full py-6 md:w-auto md:px-12 text-lg border ${
+            className={`w-full py-6 lg:px-12 text-lg border ${
               isInWishlist
                 ? ""
                 : "border-violet hover:bg-violet hover:text-white text-violet"
@@ -120,7 +132,7 @@ const ProductDetailsPage = ({ productId }: ProductDetailsPageProps) => {
           </Button>
           <Button
             onClick={handleAddToCart}
-            className={`w-full md:w-auto md:px-12 py-6 text-lg ${
+            className={`w-full lg:px-12 py-6 text-lg ${
               isInCart
                 ? "text-white cursor-not-allowed"
                 : "text-white hover:bg-white border hover:border-violet hover:text-violet"

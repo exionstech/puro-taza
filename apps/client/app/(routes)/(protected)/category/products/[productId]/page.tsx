@@ -8,6 +8,7 @@ import {
   BreadcrumbLink,
 } from "@/components/ui/breadcrumb";
 import useProductDetails from "@/hooks/use-product-details";
+import RelatedProducts from "./_components/related-products";
 
 export default function Page({ params }: { params: { productId: string } }) {
   const { product } = useProductDetails(params.productId);
@@ -17,25 +18,37 @@ export default function Page({ params }: { params: { productId: string } }) {
       <div className="mb-8">
         <Breadcrumb className="flex md:gap-5 gap-3 items-center">
           <BreadcrumbItem>
-            <BreadcrumbLink href="/category" className="flex gap-2 items-center text-xs md:text-lg">
+            <BreadcrumbLink
+              href="/category"
+              className="flex gap-2 items-center text-xs md:text-lg"
+            >
               <ChevronLeft className="w-5 h-5" />
               Back
             </BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbItem>
-            <BreadcrumbLink href="/" className="flex ml-4 gap-2 items-center text-muted-foreground hover:text-muted-foreground text-xs md:text-lg">
+            <BreadcrumbLink
+              href="/"
+              className="flex ml-4 gap-2 items-center text-muted-foreground hover:text-muted-foreground text-xs md:text-lg"
+            >
               Home
             </BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbItem>
-            <BreadcrumbLink href="/category" className="flex gap-2 items-center text-muted-foreground hover:text-muted-foreground text-xs md:text-lg">
+            <BreadcrumbLink
+              href="/category"
+              className="flex gap-2 items-center text-muted-foreground hover:text-muted-foreground text-xs md:text-lg"
+            >
               <ChevronRight className="w-4 h-4" />
               Category
             </BreadcrumbLink>
           </BreadcrumbItem>
           {product?.category && (
             <BreadcrumbItem>
-              <BreadcrumbLink href={""} className="flex gap-2 items-center text-muted-foreground hover:text-muted-foreground text-xs md:text-lg">
+              <BreadcrumbLink
+                href={"/category"}
+                className="flex gap-2 items-center text-muted-foreground hover:text-muted-foreground text-xs md:text-lg"
+              >
                 <ChevronRight className="w-4 h-4" />
                 {product.category.name}
               </BreadcrumbLink>
@@ -51,8 +64,19 @@ export default function Page({ params }: { params: { productId: string } }) {
           )}
         </Breadcrumb>
       </div>
-      <div className="md:px-20 mt-10">
-      <ProductDetailsPage productId={params.productId} />
+      <div className="lg:px-20 mt-10">
+        <ProductDetailsPage productId={params.productId} />
+      </div>
+      <div className="">{/* Review Section... */}</div>
+      <div className="w-full flex mt-10">
+        <div className="w-full flex mt-10">
+          {product && (
+            <RelatedProducts
+              categoryId={product.categoryId}
+              currentProductId={product.id}
+            />
+          )}
+        </div>
       </div>
     </div>
   );

@@ -76,8 +76,11 @@ const ShoppingCart = () => {
       },
     };
 
-    console.log("Complete Order Details:", orderDetails);
-    console.log("Form Data:", data);
+    console.log(
+      "Selected Address:",
+      selectedAddress,
+      "Address ID:" + data
+    )
   };
 
   if (isLoading || isLoadingAddresses) {

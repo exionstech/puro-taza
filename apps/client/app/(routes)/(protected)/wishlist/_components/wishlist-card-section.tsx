@@ -4,14 +4,12 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import useWishlist from "@/hooks/use-wishlist";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 import EmptyWishlist from "./empty-wishlist";
 import useCart from "@/hooks/use-cart";
 
 const WishlistCardSection = () => {
   const wishlist = useWishlist();
   const cart = useCart();
-  const router = useRouter();
 
   if (wishlist.isLoading) {
     return (
@@ -88,9 +86,16 @@ const WishlistCardSection = () => {
               <Image
                 src={product.image[0]?.url || "/bata.png"}
                 alt={product.name}
-                height={150}
-                width={150}
-                className="shrink-0 rounded-xl"
+                height={160}
+                width={160}
+                className="shrink-0 rounded-xl hidden md:flex"
+              />
+              <Image
+                src={product.image[0]?.url || "/bata.png"}
+                alt={product.name}
+                height={200}
+                width={200}
+                className="shrink-0 rounded-xl md:hidden"
               />
             </div>
             <div className="flex flex-col w-full">
@@ -134,7 +139,7 @@ const WishlistCardSection = () => {
                   </Button>
                   <Button
                     onClick={() => wishlist.removeItem(product.id)}
-                    className="w-auto font-medium"
+                    className="w-auto md:px-4 px-8 font-medium"
                   >
                     Remove
                   </Button>

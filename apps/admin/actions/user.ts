@@ -13,8 +13,8 @@ export interface UserDataType {
 export async function getAllUsers() {
   try {
     const users = await prisma.user.findMany();
-    
-    alert(users);
+
+    console.log(users)
     return users;
   } catch (err) {
     console.error(err);

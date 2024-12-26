@@ -8,6 +8,7 @@ export async function getStores(): Promise<Store[]> {
     const stores = await prisma.store.findMany();
     return stores;
   } catch (error) {
+    console.log(error)
     throw new Error("Failed to fetch stores");
   }
 }

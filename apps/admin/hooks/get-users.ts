@@ -1,12 +1,6 @@
 import { useState, useEffect } from "react";
 import { useUser } from "@clerk/nextjs";
 import { User, UserType } from "@prisma/client";
-import {
-  getAllUsers,
-  updateUser,
-  deleteUser,
-  getUserById,
-} from "@/actions/user";
 
 export const getUsers = () => {
   const [users, setUsers] = useState<User[]>([]);
@@ -21,10 +15,14 @@ export const getUsers = () => {
   const fetchUsers = async () => {
     try {
       setIsLoading(true);
-      const fetchedUsers = await getAllUsers();
+      const response = await fetch("/api/users")
 
-      if (user?.id && fetchedUsers) {
-        setUsers(fetchedUsers);
+      if (response.ok) {
+        const fetchedUsers = await response.json();
+
+        if (user?.id && fetchedUsers) {
+          setUsers(fetchedUsers.users);
+        }
       }
     } catch (err) {
       setIsError(true);
@@ -38,15 +36,15 @@ export const getUsers = () => {
     try {
       if (user) {
         setIsLoading(true);
-        const fetchedUser = await getUserById(user.id);
+        const response = await fetch(`/api/users/${user.id}`);
 
-        console.log(fetchedUser);
-        console.log(fetchedUser?.role === "ADMIN");
-        if (user.id && fetchedUser) {
-          setCurrentUser(fetchedUser);
+        if (response.ok) {
+          const fetchedUser = await response.json();
+
+          if (user?.id && fetchedUser) {
+            setCurrentUser(fetchedUser.user);
+          }
         }
-
-        console.log(currentUser);
       }
     } catch (err) {
       setIsError(true);
@@ -59,8 +57,17 @@ export const getUsers = () => {
   const updateUser = async (id: string, role: UserType) => {
     try {
       setIsLoading(true);
-      await updateUser(id, role);
-      fetchUsers();
+      const response = await fetch(`/api/users/${id}`,
+        {
+          method: "PATCH",
+          body: JSON.stringify(role)
+        }
+      )
+
+      if (response.ok) {
+        fetchUsers();
+        getCurrentUser();
+      }
     } catch (err) {
       setIsError(true);
       setError(err instanceof Error ? err : new Error("Unknown error"));
@@ -72,8 +79,15 @@ export const getUsers = () => {
   const deleteUser = async (id: string) => {
     try {
       setIsLoading(true);
-      await deleteUser(id);
-      fetchUsers();
+      const response = await fetch(`/api/users/${id}`,
+        {
+          method: "DELETE",
+        }
+      )
+
+      if (response.ok) {
+        fetchUsers();
+      }
     } catch (err) {
       setIsError(true);
       setError(err instanceof Error ? err : new Error("Unknown error"));
@@ -83,14 +97,8 @@ export const getUsers = () => {
   };
 
   useEffect(() => {
-    if (currentUser) {
-      console.log("Current user updated:", currentUser);
-      console.log("Is admin:", isAdmin);
-    }
-  }, [currentUser, isAdmin]);
-
-  useEffect(() => {
     if (isUserLoaded && user?.id) {
+      fetchUsers();
       getCurrentUser();
     }
   }, [isUserLoaded, user?.id]);
@@ -107,5 +115,3 @@ export const getUsers = () => {
     deleteUser,
   };
 };
-
-export { updateUser}

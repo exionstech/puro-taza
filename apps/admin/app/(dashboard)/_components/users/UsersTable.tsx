@@ -26,6 +26,7 @@ const UsersTable = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredSubCategories, setFilteredSubCategories] = useState(users);
 
+  console.log(users)
   useEffect(() => {
     setFilteredSubCategories(
       users.filter((user) =>
@@ -43,7 +44,7 @@ const UsersTable = () => {
   }
 
   return (
-    <div className="flex flex-col mt-5">
+    <section className="flex flex-col mt-5">
       <Input
         placeholder="Search"
         className="w-1/6"
@@ -80,7 +81,7 @@ const UsersTable = () => {
           </h1>
         </TableBody>
       )}
-    </div>
+    </section>
   );
 };
 

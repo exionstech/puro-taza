@@ -26,7 +26,7 @@ import { toast } from "sonner";
 import { Separator } from "./ui/separator";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { getUsers, updateUser } from "@/hooks/get-users";
+import { getUsers } from "@/hooks/get-users";
 import { UserType } from "@prisma/client";
 
 const FormSchema = z.object({
@@ -39,7 +39,7 @@ interface Props {
 }
 
 const RoleBox = ({ id, user_role }: Props) => {
-  const { isLoading, users } = getUsers();
+  const { isLoading, users, updateUser } = getUsers();
   const { user } = useUser();
   const pathname = usePathname();
 

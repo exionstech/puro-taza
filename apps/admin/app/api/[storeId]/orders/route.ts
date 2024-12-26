@@ -89,7 +89,7 @@ export async function POST(req: Request) {
       }
     });
 
-    return NextResponse.json({order: order}, { status: 201 });
+    return NextResponse.json({order: order.id}, { status: 201 });
   } catch (error) {
     console.error('Failed to create order:', error);
     return NextResponse.json(

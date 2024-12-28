@@ -115,83 +115,44 @@ export interface LocationFormData {
 }
 
 
-
-
-type Product = {
+interface Product {
   id: string;
   name: string;
   description: string;
   price: number;
-  discount: number;
-  images: { url: string }[];
-  category: string;
-  qty: number;
-};
-
-type AboutItem = {
-  title: string;
-  description: string;
-};
-
-type AboutProduct = {
-  categoryName: string;
-  aboutItems: AboutItem[];
-  customerSay: string;
-  rating: string;
-};
-
-interface ProductDetailsProps {
-  prodcut: Product;
-  aboutProduct?: AboutProduct;
+  stock: number;
+  discount?: number;
+  image: Image[];
+  subcategories: any[];
+  categoryId: string;
+  category: Category;
+  discounted_price?: number;
 }
 
-export interface Products {
+interface Category {
   id: string;
   name: string;
-  description: string;
-  price: number;
-  discount: number;
-  images: { url: string }[];
-  category: string;
-  qty: number;
+  image: Image[];
+  product?: Product[];
 }
 
-export interface Category {
+interface Subcategory {
   id: string;
-  billboardId: string;
-  billboardLabel: string;
   name: string;
-  description: string;
-  banner: string;
-  categoryDesc: { video: string; desc: string }[];
+  image: Image[];
 }
 
-export interface Size {
+interface Image {
   id: string;
-  name: string;
-  value: string;
+  url: string;
+  key: string;
 }
 
-export interface Orders {
+interface Order {
   id: string;
-  userId: string;
-  name: string;
-  email: string;
-  isPaid: boolean;
-  phone: string;
-  orderItems: Products[];
-  address: string;
-  order_status: string;
-  session_id: string;
   amount: number;
-  isCancelled: boolean;
-  isReturned: boolean;
-  return_or_refund: string;
-  returnImages: { url: string }[];
-  cancelled_items: Products[];
-  returned_items: Products[];
-  refundableamount: number;
-  sent_email: boolean;
-  paymentId: string;
-  return_reason: string;
+  status: 'PENDING' | 'CONFIRMED' | 'CANCELLED' | 'DELIVERED';
+  products: any[];
+  address?: Address;
+  client?: Client;
 }

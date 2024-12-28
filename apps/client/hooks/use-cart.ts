@@ -1,20 +1,46 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import { toast } from "sonner";
-import { Products } from "@/types";
 
-interface CartItem extends Products {
+interface Image {
+  id: string;
+  url: string;
+  key: string;
+}
+
+interface Product {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  stock: number;
+  discount?: number;
+  image: Image[];
+  subcategories: any[];
+  categoryId: string;
+  category: Category;
+  discounted_price?: number;
+}
+
+interface Category {
+  id: string;
+  name: string;
+  image: Image[];
+  product?: Product[];
+}
+
+interface CartItem extends Product {
   qty: number;
 }
 
 interface CartStore {
   items: CartItem[];
-  addItem: (data: Products, qty?: number) => void;
+  addItem: (data: Product, qty?: number) => void;
   removeItem: (id: string) => void;
   removeAll: () => void;
   updateItemQuantity: (id: string, qty: number) => void;
   getItemQuantity: (id: string) => number;
-  buyNow: (data: Products, qty?: number) => void;
+  buyNow: (data: Product, qty?: number) => void;
   removeAllAfterPurchase: () => void;
 }
 
@@ -22,7 +48,7 @@ const useCart = create(
   persist<CartStore>(
     (set, get) => ({
       items: [],
-      addItem: (data: Products, qty?: number) => {
+      addItem: (data: Product, qty?: number) => {
         const currentItems = get().items;
         const existingItem = currentItems.find((item) => item.id === data.id);
 
@@ -34,7 +60,7 @@ const useCart = create(
         set({ items: [...currentItems, { ...data, qty: qty || 1 }] });
         toast.success("Item added to cart");
       },
-      buyNow: (data: Products, qty?: number) => {
+      buyNow: (data: Product, qty?: number) => {
         const currentItems = get().items;
         const existingItem = currentItems.find((item) => item.id === data.id);
         if (!existingItem) {

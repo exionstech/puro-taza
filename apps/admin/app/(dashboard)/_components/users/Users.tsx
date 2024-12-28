@@ -5,9 +5,7 @@ const Users = () => {
   return (
     <div className="py-5">
       <h1 className="text-xl font-semibold">Users</h1>
-      <UsersTable 
-        
-      />
+      <UsersTable />
     </div>
   );
 };

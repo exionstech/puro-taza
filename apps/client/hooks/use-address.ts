@@ -61,13 +61,16 @@ export const useAddressManagement = (clientId: string) => {
 
   // Add address
   const addAddress = useCallback(
-    async (newAddress: AddressInput): Promise<Address | null> => {
-      if (addresses.length >= 10) {
-        toast.error("Maximum limit of 10 addresses reached");
-        return null;
+    async (newAddress: AddressInput): Promise<boolean> => {
+      if (addresses.length >= 5) {
+        toast.error("Maximum limit of 5 addresses reached");
+        return false;
       }
 
       try {
+        // If this is the first address or marked as default, ensure it's set as default
+        const shouldBeDefault = addresses.length === 0 || newAddress.isDefault;
+        
         const response = await fetch(
           `${process.env.NEXT_PUBLIC_API_URL}/client/${clientId}/address`,
           {
@@ -75,30 +78,37 @@ export const useAddressManagement = (clientId: string) => {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               ...newAddress,
-              isDefault: addresses.length === 0 || newAddress.isDefault,
-              label: newAddress.label,
+              isDefault: shouldBeDefault,
+              label: newAddress.label || "Home",
             }),
           }
         );
 
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
         const data: AddressApiResponse = await response.json();
 
-        if (data.success && data.addresses && !Array.isArray(data.addresses)) {
-          const addedAddress = data.addresses;
-          setAddresses((prev) => [...prev, addedAddress]);
-
-          if (addresses.length === 0 || addedAddress.isDefault) {
-            setSelectedAddress(addedAddress);
+        if (data.success) {
+          // Refresh the addresses list
+          const fetchResponse = await fetch(
+            `${process.env.NEXT_PUBLIC_API_URL}/client/${clientId}/address`
+          );
+          const fetchData: AddressApiResponse = await fetchResponse.json();
+          
+          if (fetchData.success && fetchData.addresses && Array.isArray(fetchData.addresses)) {
+            setAddresses(fetchData.addresses);
+            if (shouldBeDefault) {
+              toast.success("New default address set successfully");
+            }
           }
-
-          toast.success("Address added successfully");
-          return addedAddress;
+          return true;
         }
-        return null;
+        return false;
       } catch (error) {
-        toast.error("Failed to add address");
         console.error("Error adding address:", error);
-        return null;
+        throw error;
       }
     },
     [addresses, clientId]
@@ -111,22 +121,33 @@ export const useAddressManagement = (clientId: string) => {
       updatedAddress: AddressInput
     ): Promise<Address | null> => {
       try {
+        // If setting as default, first remove default from other addresses
+        if (updatedAddress.isDefault) {
+          const currentDefault = addresses.find(addr => addr.isDefault && addr.id !== addressId);
+          if (currentDefault) {
+            await fetch(
+              `${process.env.NEXT_PUBLIC_API_URL}/client/${clientId}/address/${currentDefault.id}`,
+              {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ ...currentDefault, isDefault: false }),
+              }
+            );
+          }
+        }
+
         const response = await fetch(
           `${process.env.NEXT_PUBLIC_API_URL}/client/${clientId}/address/${addressId}`,
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              ...updatedAddress,
-              label: updatedAddress.label,
-            }),
+            body: JSON.stringify(updatedAddress),
           }
         );
 
         const data: AddressApiResponse = await response.json();
 
         if (data.success) {
-          // Fetch the updated addresses since the API doesn't return the updated address
           const fetchResponse = await fetch(
             `${process.env.NEXT_PUBLIC_API_URL}/client/${clientId}/address`
           );
@@ -146,6 +167,10 @@ export const useAddressManagement = (clientId: string) => {
               setSelectedAddress(updated || null);
             }
 
+            if (updatedAddress.isDefault) {
+              toast.success("Default address updated successfully");
+            }
+
             if (updated) {
               return updated;
             }
@@ -158,69 +183,42 @@ export const useAddressManagement = (clientId: string) => {
         return null;
       }
     },
-    [clientId, selectedAddress]
-  );
-
-  // Delete address
-  const deleteAddress = useCallback(
-    async (addressId: string): Promise<boolean> => {
-      try {
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/client/${clientId}/address/${addressId}`,
-          {
-            method: "DELETE",
-          }
-        );
-
-        const data: ApiResponse<void> = await response.json();
-
-        if (data.success) {
-          setAddresses((prev) =>
-            prev.filter((addr: Address) => addr.id !== addressId)
-          );
-
-          if (selectedAddress?.id === addressId) {
-            const remaining = addresses.filter(
-              (addr: Address) => addr.id !== addressId
-            );
-            setSelectedAddress(remaining[0] || null);
-          }
-
-          toast.success("Address deleted successfully");
-          return true;
-        }
-        return false;
-      } catch (error) {
-        toast.error("Failed to delete address");
-        console.error("Error deleting address:", error);
-        return false;
-      }
-    },
-    [addresses, clientId, selectedAddress]
+    [clientId, selectedAddress, addresses]
   );
 
   // Set default address
   const setDefaultAddress = useCallback(
     async (addressId: string): Promise<boolean> => {
       try {
-        const address = addresses.find(
-          (addr: Address) => addr.id === addressId
-        );
-        if (!address) return false;
+        const newDefaultAddress = addresses.find(addr => addr.id === addressId);
+        if (!newDefaultAddress) return false;
 
+        // Remove default from current default address
+        const currentDefault = addresses.find(addr => addr.isDefault);
+        if (currentDefault && currentDefault.id !== addressId) {
+          await fetch(
+            `${process.env.NEXT_PUBLIC_API_URL}/client/${clientId}/address/${currentDefault.id}`,
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ ...currentDefault, isDefault: false }),
+            }
+          );
+        }
+
+        // Set new default address
         const response = await fetch(
           `${process.env.NEXT_PUBLIC_API_URL}/client/${clientId}/address/${addressId}`,
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ ...address, isDefault: true }),
+            body: JSON.stringify({ ...newDefaultAddress, isDefault: true }),
           }
         );
 
         const data: AddressApiResponse = await response.json();
 
         if (data.success) {
-          // Fetch the updated addresses since the API doesn't return the updated address
           const fetchResponse = await fetch(
             `${process.env.NEXT_PUBLIC_API_URL}/client/${clientId}/address`
           );
@@ -232,13 +230,10 @@ export const useAddressManagement = (clientId: string) => {
             Array.isArray(fetchData.addresses)
           ) {
             setAddresses(fetchData.addresses);
-            const updated = fetchData.addresses.find(
-              (addr: Address) => addr.id === addressId
-            );
+            const updated = fetchData.addresses.find(addr => addr.id === addressId);
             setSelectedAddress(updated || null);
+            toast.success("Default address updated successfully");
           }
-
-          toast.success("Default address updated");
           return true;
         }
         return false;
@@ -249,6 +244,52 @@ export const useAddressManagement = (clientId: string) => {
       }
     },
     [addresses, clientId]
+  );
+
+  // Delete address
+  const deleteAddress = useCallback(
+    async (addressId: string): Promise<boolean> => {
+      try {
+        const addressToDelete = addresses.find(addr => addr.id === addressId);
+        
+        if (!addressToDelete) {
+          toast.error("Address not found");
+          return false;
+        }
+
+        if (addressToDelete.isDefault) {
+          toast.error("Cannot delete default address");
+          return false;
+        }
+
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/client/${clientId}/address/${addressId}`,
+          {
+            method: "DELETE",
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data: ApiResponse<void> = await response.json();
+
+        if (data.success) {
+          setAddresses(prev => prev.filter(addr => addr.id !== addressId));
+          if (selectedAddress?.id === addressId) {
+            const defaultAddress = addresses.find(addr => addr.isDefault);
+            setSelectedAddress(defaultAddress || addresses[0] || null);
+          }
+          return true;
+        }
+        return false;
+      } catch (error) {
+        console.error("Error deleting address:", error);
+        throw error;
+      }
+    },
+    [addresses, clientId, selectedAddress]
   );
 
   return {

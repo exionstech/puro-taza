@@ -20,6 +20,7 @@ const EditAddressSection = ({ user }: AddressProps) => {
     deleteAddress,
     updateAddress,
     setDefaultAddress,
+    addAddress,
   } = useAddressManagement(user?.id ?? "");
 
   const [isAddressModalOpen, setIsAddressModalOpen] = useState(false);
@@ -32,6 +33,10 @@ const EditAddressSection = ({ user }: AddressProps) => {
   };
 
   const handleDeleteClick = (address: Address) => {
+    if (address.isDefault) {
+      toast.error("Cannot delete default address");
+      return;
+    }
     setSelectedAddress(address);
     setIsDeleteModalOpen(true);
   };
@@ -39,6 +44,43 @@ const EditAddressSection = ({ user }: AddressProps) => {
   const handleAddNewAddress = () => {
     setSelectedAddress(null);
     setIsAddressModalOpen(true);
+  };
+
+  const handleSetDefault = async (addressId: string) => {
+    try {
+      const success = await setDefaultAddress(addressId);
+      if (!success) {
+        toast.error("Failed to set default address");
+      }
+    } catch (error) {
+      toast.error("Failed to set default address");
+    }
+  };
+
+  const handleAddressSubmit = async (data: AddressInput) => {
+    try {
+      if (selectedAddress?.id) {
+        const currentDefault = addresses.find(addr => addr.isDefault);
+        // If setting a new default address, or updating the current default address
+        if (data.isDefault && (!currentDefault || currentDefault.id !== selectedAddress.id)) {
+          await setDefaultAddress(selectedAddress.id);
+        }
+        await updateAddress(selectedAddress.id, data);
+        toast.success("Address updated successfully");
+      } else {
+        const result = await addAddress({
+          ...data,
+          isDefault: addresses.length === 0 || data.isDefault
+        });
+        if (result) {
+          toast.success("Address added successfully");
+        }
+      }
+      setIsAddressModalOpen(false);
+      setSelectedAddress(null);
+    } catch (error) {
+      toast.error("Failed to save address");
+    }
   };
 
   return (
@@ -51,14 +93,14 @@ const EditAddressSection = ({ user }: AddressProps) => {
           disabled={addresses.length >= 5}
         >
           <Plus className="w-4 h-4" />
-          Add New Address
+          {addresses.length >= 5 ? "Address Limit Reached" : "Add New Address"}
         </Button>
       </CardHeader>
       <CardContent>
         {isLoading ? (
-          <div className="text-center py-8">Loading addresses...</div>
+          <div className="text-center h-[250px] py-8">Loading addresses...</div>
         ) : addresses.length === 0 ? (
-          <div className="text-center py-8 text-gray-500">
+          <div className="text-center h-[250px] py-8 text-gray-500">
             You haven't added any addresses yet.
           </div>
         ) : (
@@ -72,12 +114,18 @@ const EditAddressSection = ({ user }: AddressProps) => {
                   <div className="flex items-center gap-2">
                     <MapPin className="w-5 h-5 text-violet" />
                     <span className="font-medium">{address.label}</span>
+                    {address.isDefault && (
+                      <span className="text-xs bg-violet text-white px-2 py-1 rounded">
+                        Default
+                      </span>
+                    )}
                   </div>
                   <div className="flex items-center gap-2">
                     <Button
                       variant="ghost"
                       size="icon"
-                      onClick={() => setDefaultAddress(address.id)}
+                      onClick={() => handleSetDefault(address.id)}
+                      disabled={address.isDefault}
                       title={
                         address.isDefault ? "Default address" : "Set as default"
                       }
@@ -100,6 +148,11 @@ const EditAddressSection = ({ user }: AddressProps) => {
                       size="icon"
                       onClick={() => handleDeleteClick(address)}
                       disabled={address.isDefault}
+                      title={
+                        address.isDefault
+                          ? "Cannot delete default address"
+                          : "Delete address"
+                      }
                     >
                       <Trash2 className="w-4 h-4" />
                     </Button>
@@ -128,14 +181,7 @@ const EditAddressSection = ({ user }: AddressProps) => {
           }}
           initialData={selectedAddress || undefined}
           existingAddresses={addresses}
-          onSubmit={async (data: AddressInput) => {
-            if (selectedAddress?.id) {
-              updateAddress(selectedAddress.id, data);
-              toast.success("Address updated successfully");
-            }
-            setIsAddressModalOpen(false);
-            setSelectedAddress(null);
-          }}
+          onSubmit={handleAddressSubmit}
         />
       )}
 
@@ -148,9 +194,12 @@ const EditAddressSection = ({ user }: AddressProps) => {
           }}
           onConfirm={async () => {
             if (selectedAddress) {
-              await deleteAddress(selectedAddress.id);
-              setIsDeleteModalOpen(false);
-              setSelectedAddress(null);
+              const success = await deleteAddress(selectedAddress.id);
+              if (success) {
+                toast.success("Address deleted successfully");
+                setIsDeleteModalOpen(false);
+                setSelectedAddress(null);
+              }
             }
           }}
           address={selectedAddress}

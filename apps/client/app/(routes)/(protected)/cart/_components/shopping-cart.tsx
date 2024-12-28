@@ -1,64 +1,72 @@
 "use client";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
+
+import { useState, useEffect } from "react";
 import ShoppingItemCard from "./shopping-item-card";
 import OrderSummary from "./order-summary";
 import useCart from "@/hooks/use-cart";
+import { useAuth } from "@/hooks/use-auth";
+import { useAddressManagement } from "@/hooks/use-address";
 import EmptyCart from "./empty-cart";
+import CheckoutForm from "./checkout-form";
 
-const formSchema = z.object({
-  name: z.string().min(1, "Name is required"),
-  email: z.string().email("Invalid email address"),
-  mobile: z.string().min(10, "Mobile number must be at least 10 digits"),
-  address: z.string().min(1, "Address is required"),
-});
-
-type FormData = z.infer<typeof formSchema>;
-
-const ShoppingCart: React.FC = () => {
+const ShoppingCart = () => {
   const cart = useCart();
+  const { user } = useAuth();
+  const { addresses, isLoading: isLoadingAddresses } = useAddressManagement(
+    user?.id ?? ""
+  );
+  const [isLoading, setIsLoading] = useState(true);
 
-  const { register, handleSubmit, formState } = useForm<FormData>({
-    resolver: zodResolver(formSchema),
-  });
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   const calculateOrderSummary = () => {
-    const itemsWithDiscount = cart.items.map(item => ({
-        ...item,
-        discountedPrice: item.price * (1 - item.discount / 100)
+    const itemsWithDiscount = cart.items.map((item) => ({
+      ...item,
+      discountedPrice: item.price * (1 - (item.discount || 0) / 100),
     }));
 
-    const subtotal = itemsWithDiscount.reduce((total, item) => 
-        total + item.discountedPrice * item.qty, 0);
-    
+    const subtotal = itemsWithDiscount.reduce(
+      (total, item) => total + item.discountedPrice * item.qty,
+      0
+    );
+
     const tax = subtotal * 0.05;
     const shipping = subtotal * 0.05;
     const total = subtotal + tax + shipping;
 
-    return { 
-        items: itemsWithDiscount,
-        subtotal, 
-        tax, 
-        shipping, 
-        total 
+    return {
+      items: itemsWithDiscount,
+      subtotal,
+      tax,
+      shipping,
+      total,
     };
-};
+  };
 
-  const onSubmit = (data: FormData) => {
-    // Calculate order summary
+  const handleSubmit = (data: any) => {
     const orderSummary = calculateOrderSummary();
+    const selectedAddress = addresses.find(
+      (addr) => addr.id === data.selectedAddressId
+    );
 
-    // Prepare order details
     const orderDetails = {
-      customerInfo: data,
+      customerInfo: {
+        ...data,
+        addressDetails: selectedAddress,
+      },
       items: cart.items.map((item) => ({
         id: item.id,
         name: item.name,
         quantity: item.qty,
         price: item.price,
         total: item.price * item.qty,
-        images: item.images,
+        image: item.image?.[0]?.url || "/placeholder-image.png",
       })),
       orderSummary: {
         subtotal: orderSummary.subtotal,
@@ -68,13 +76,22 @@ const ShoppingCart: React.FC = () => {
       },
     };
 
-    // Console log the complete order details
-    console.log("Complete Order Details:", orderDetails);
-
-    // TODO: Implement actual order submission to your backend/database
+    console.log(
+      "Selected Address:",
+      selectedAddress,
+      "Address ID:" + data
+    )
   };
 
-  if (cart.items.length === 0) {
+  if (isLoading || isLoadingAddresses) {
+    return (
+      <div className="w-full h-[60vh] flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900" />
+      </div>
+    );
+  }
+
+  if (!isLoading && cart.items.length === 0) {
     return <EmptyCart />;
   }
 
@@ -83,58 +100,37 @@ const ShoppingCart: React.FC = () => {
       <div className="w-full mt-3">
         <h1 className="text-2xl font-bold">Shopping Cart</h1>
       </div>
-      <div className="flex flex-col md:flex-row gap-5 w-full">
-        <div className="md:w-[50%] w-full flex flex-col mt-5 overflow-y-auto max-h-[500px]">
+      <div className="flex flex-col lg:flex-row gap-5 w-full">
+        <div className="lg:w-[50%] w-full flex flex-col mt-5 overflow-y-auto max-h-[500px] scroll-smooth">
           {cart.items.map((item) => {
-            const discountedPrice = item.price * (1 - item.discount / 100);
+            const discountedPrice =
+              item.price * (1 - (item.discount || 0) / 100);
             return (
               <ShoppingItemCard
                 key={item.id}
                 item={{
                   id: item.id,
                   name: item.name,
-                  image: item.images[0].url,
+                  image: item.image?.[0]?.url || "/placeholder-image.png",
                   price: item.price,
                   discountedPrice,
-                  discount: item.discount,
+                  discount: item.discount || 0,
                   quantity: item.qty,
                 }}
               />
             );
           })}
         </div>
-        <div className="md:w-[50%] w-full flex flex-col">
+        <div className="lg:w-[50%] w-full flex flex-col">
           <OrderSummary
             items={cart.items}
             orderSummary={calculateOrderSummary()}
           />
-          <form onSubmit={handleSubmit(onSubmit)} className="mt-4">
-            <div className="flex flex-col gap-4">
-              <input
-                {...register("name")}
-                type="text"
-                placeholder="Name"
-                className="p-2 border border-gray-300 rounded"
-              />
-              <input
-                {...register("email")}
-                type="email"
-                placeholder="Email"
-                className="p-2 border border-gray-300 rounded"
-              />
-              <input
-                {...register("mobile")}
-                type="tel"
-                placeholder="Mobile"
-                className="p-2 border border-gray-300 rounded"
-              />
-              <textarea
-                {...register("address")}
-                placeholder="Address"
-                className="p-2 border border-gray-300 rounded"
-              />
-            </div>
-          </form>
+          <CheckoutForm 
+            user={user}
+            addresses={addresses}
+            onSubmit={handleSubmit}
+          />
         </div>
       </div>
     </div>

@@ -1,6 +1,6 @@
 "use client"
 import React, { useState } from "react";
-import { Plus, MapPin, LocateFixed } from "lucide-react";
+import { Plus, MapPin, LocateFixed, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -17,6 +17,7 @@ import { useAddressManagement } from "@/hooks/use-address";
 import { GoogleMapModal } from "./google-map-modal";
 import { AddressModal } from "./address-modal";
 import { useAuth } from "@/hooks/use-auth";
+import { toast } from "sonner";
 
 interface AddressDropdownProps {
   onAddressSelect?: (address: Address) => void;
@@ -32,6 +33,7 @@ export const AddressDropdown = ({ onAddressSelect }: AddressDropdownProps) => {
     addAddress,
     updateAddress,
     setSelectedAddress,
+    setDefaultAddress,
   } = useAddressManagement(clientId);
 
   const [isMapModalOpen, setIsMapModalOpen] = useState(false);
@@ -39,9 +41,16 @@ export const AddressDropdown = ({ onAddressSelect }: AddressDropdownProps) => {
   const [editingAddress, setEditingAddress] = useState<Address | null>(null);
   const [prefilledFormData, setPrefilledFormData] = useState<Partial<AddressInput> | null>(null);
 
-  const handleAddressSelect = (address: Address) => {
+  const handleAddressSelect = async (address: Address) => {
     setSelectedAddress(address);
-    onAddressSelect?.(address);
+    if (!address.isDefault) {
+      const success = await setDefaultAddress(address.id);
+      if (success) {
+        onAddressSelect?.(address);
+      }
+    } else {
+      onAddressSelect?.(address);
+    }
   };
 
   const handleAddNewAddress = () => {
@@ -53,24 +62,28 @@ export const AddressDropdown = ({ onAddressSelect }: AddressDropdownProps) => {
   const handleAddressSubmit = async (data: AddressInput) => {
     try {
       if (editingAddress?.id) {
-        // Only update if we have an existing address ID
         await updateAddress(editingAddress.id, data);
+        toast.success("Address updated successfully");
       } else {
-        // Add new address for both manual and map selection cases
-        await addAddress(data);
+        const success = await addAddress({
+          ...data,
+          isDefault: addresses.length === 0 || data.isDefault
+        });
+        if (success) {
+          toast.success("Address added successfully");
+        }
       }
       setIsAddressModalOpen(false);
       setEditingAddress(null);
       setPrefilledFormData(null);
     } catch (error) {
-      console.error("Error handling address submission:", error);
+      toast.error("Failed to save address");
     }
   };
 
   const handleMapAddressSelect = (locationData: LocationFormData) => {
     setIsMapModalOpen(false);
 
-    // Create the form data without the Address type-specific fields
     const newAddressData: AddressInput = {
       address: locationData.address,
       street: locationData.street,
@@ -80,7 +93,6 @@ export const AddressDropdown = ({ onAddressSelect }: AddressDropdownProps) => {
       isDefault: addresses.length === 0,
     };
 
-    // Store the form data to prefill the modal
     setPrefilledFormData(newAddressData);
     setEditingAddress(null);
     setIsAddressModalOpen(true);
@@ -89,7 +101,7 @@ export const AddressDropdown = ({ onAddressSelect }: AddressDropdownProps) => {
   return (
     <>
       <DropdownMenu>
-        <DropdownMenuTrigger asChild className="">
+        <DropdownMenuTrigger asChild className="border-none">
           <Button
             variant="outline"
             className="flex flex-col items-start border-none"
@@ -97,12 +109,15 @@ export const AddressDropdown = ({ onAddressSelect }: AddressDropdownProps) => {
             <h1 className="text-violet text-lg font-medium text-left">
               Select Address
             </h1>
-            <p className="flex items-center">
+            <p className="flex items-center gap-2">
               <span className="text-sm text-gray-600 line-clamp-1 max-w-[20vh] rounded-r-lg [mask-image:linear-gradient(to_right,transparent,black_0%,black_95%,transparent)]">
                 {selectedAddress
                   ? selectedAddress.address
                   : "No address selected"}
               </span>
+              {selectedAddress?.isDefault && (
+                <Star className="w-4 h-4 text-yellow-500" />
+              )}
             </p>
           </Button>
         </DropdownMenuTrigger>
@@ -133,16 +148,19 @@ export const AddressDropdown = ({ onAddressSelect }: AddressDropdownProps) => {
                   <div className="flex items-center space-x-3">
                     <MapPin className="w-5 h-5 text-violet" />
                     <div className="flex flex-col flex-1">
-                      <p className="text-sm font-medium">{address.label}</p>
+                      <div className="flex items-center gap-2">
+                        <p className="text-sm font-medium">{address.label}</p>
+                        {address.isDefault && (
+                          <span className="text-xs bg-violet text-white px-2 py-0.5 rounded">
+                            Default
+                          </span>
+                        )}
+                      </div>
                       <p className="text-xs text-gray-500 line-clamp-1">
-                        {address.appartment}, {address.street}, {address.address}
+                        {address.appartment && `${address.appartment}, `}
+                        {address.street}, {address.address}
                       </p>
                     </div>
-                    {address.id === selectedAddress?.id && (
-                      <span className="text-xs bg-violet text-white px-2 py-1 rounded">
-                        Selected
-                      </span>
-                    )}
                   </div>
                 </DropdownMenuItem>
               ))}
@@ -155,7 +173,7 @@ export const AddressDropdown = ({ onAddressSelect }: AddressDropdownProps) => {
             onSelect={() => setIsMapModalOpen(true)}
             className={cn(
               "cursor-pointer hover:bg-gray-100",
-              addresses.length >= 10 && "opacity-50 pointer-events-none"
+              addresses.length >= 5 && "opacity-50 pointer-events-none"
             )}
           >
             <div className="flex items-center space-x-3">
@@ -168,13 +186,13 @@ export const AddressDropdown = ({ onAddressSelect }: AddressDropdownProps) => {
             onSelect={handleAddNewAddress}
             className={cn(
               "cursor-pointer hover:bg-gray-100",
-              addresses.length >= 10 && "opacity-50 pointer-events-none"
+              addresses.length >= 5 && "opacity-50 pointer-events-none"
             )}
           >
             <div className="flex items-center space-x-3">
               <Plus className="w-5 h-5 text-green-600" />
               <span className="text-green-600">
-                {addresses.length < 10
+                {addresses.length < 5
                   ? "Add New Address"
                   : "Maximum Addresses Reached"}
               </span>

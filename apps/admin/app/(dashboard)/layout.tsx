@@ -20,11 +20,10 @@ const Layout = ({
   const router = useRouter();
 
   useEffect(() => {
-    console.log(isAdmin, currentUser);
     if (isUserLoaded && !isLoading) {
       if (stores.length === 0) {
         router.push("/");
-      } else if (!isloadedUser && !isAdmin) {
+      } else if (isloadedUser && !isAdmin) {
         router.push("/waiting/access");
       }
     }

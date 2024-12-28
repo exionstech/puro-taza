@@ -3,16 +3,6 @@
 import { prisma } from "@/lib/prisma";
 import { Store } from "@prisma/client";
 
-export async function getStores(): Promise<Store[]> {
-  try {
-    const stores = await prisma.store.findMany();
-    return stores;
-  } catch (error) {
-    console.log(error)
-    throw new Error("Failed to fetch stores");
-  }
-}
-
 export async function getStore(storeId: string): Promise<Store> {
   try {
     const store = await prisma.store.findUnique({
@@ -24,7 +14,7 @@ export async function getStore(storeId: string): Promise<Store> {
     if (!store) {
       throw new Error("Store not found");
     }
-
+    
     return store;
   } catch (error) {
     throw new Error("Failed to fetch stores");

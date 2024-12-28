@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { getStores } from "@/actions/store";
 import { Store } from "@prisma/client";
 import { useUser } from "@clerk/nextjs";
 
@@ -14,7 +13,14 @@ export const useStores = () => {
   const fetchStores = async () => {
     try {
       setIsLoading(true);
-      const fetchedStores = await getStores();
+      const response = await fetch("/api/store");
+
+      if (!response.ok) {
+        throw new Error(response.statusText);
+      }
+
+      const data = await response.json();
+      const fetchedStores = await data.stores;
       if (user?.id) {
         setStores(fetchedStores);
       }

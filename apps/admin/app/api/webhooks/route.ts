@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { Webhook } from "svix";
 import { headers } from "next/headers";
 import { WebhookEvent } from "@clerk/nextjs/server";
-import { createUser } from "@/actions/user";
 import { UserType } from "@prisma/client";
 
 export async function POST(req: NextRequest) {
@@ -67,7 +66,15 @@ export async function POST(req: NextRequest) {
       role: "USER" as UserType,
     };
 
-    const newUser = await createUser(userData);
+    const response = await fetch("/api/users", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(userData),
+    });
+
+    const newUser = await response.json();
 
     console.log("New user created:", newUser);
 
